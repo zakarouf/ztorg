@@ -14,7 +14,7 @@ char g_editor () {
 	int x = 0, y = 0;
 	uint8_t trail_enable=0;
 	int scr_x=0, scr_y=0;
-	char key, option, trail=mapED.world[y][x];
+	char key=' ', option, trail=mapED.world[y][x];
 	char name[54];
 	if(e1.linkcount > 1){e1.linkcount = 0;}
 	render_scr();
@@ -103,13 +103,9 @@ char g_editor () {
 
 
 
-
-
-
-
 int g_normal (int x, int y, unsigned int emode) {
 	map1.crnt=1;
-	char key, trail=map1.world[y][x];
+	char key=' ', trail=map1.world[y][x];
 
 	while (p1.MODE == 'n') {
 
