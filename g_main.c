@@ -94,10 +94,12 @@ char g_editor () {
 		key = getch();
 		//endwin();
 	}
+
 	mapED.crnt=0;
 	clear();
 	echo();
 	return p1.MODE;
+
 }
 
 
