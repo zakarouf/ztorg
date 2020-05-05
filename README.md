@@ -3,7 +3,7 @@
 This is My First Attempt to have something remotely big Project
 And As of Uploading this Repo to Github (5th May 2020), I have only
 been coding for few months. I just wanted to do something in Quarentine
-So I Decided to learn basic programming. This is the it.
+So I Decided to learn basic programming. This is it.
 
 ### Installation & Execution
 
