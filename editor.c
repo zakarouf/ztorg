@@ -67,7 +67,7 @@ void fillup_box (int x, int y, int ex, int ey, char c) {
 
 void draw_circle (int x, int y, char c) {
     int i, j, r, f;
-    mvscanw(mapED.Y+6,0,"%d", &r);
+    scanw("%d", &r);
     f = r-1;
     for (i = 0; i < mapED.Y; ++i) {
         for (j = 0; j < mapED.X; ++j) {
@@ -82,7 +82,7 @@ void draw_circle (int x, int y, char c) {
 // Draw & Fill Circle
 void fillup_circle (int x, int y, char c) {
     int i, j, r;
-    mvscanw(mapED.Y+6,0,"%d", &r);
+    scanw("%d", &r);
     for (i = 0; i < mapED.Y; ++i) {
         for (j = 0; j < mapED.X; ++j) {
 

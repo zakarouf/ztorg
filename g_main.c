@@ -11,9 +11,8 @@
 char g_editor () {
 
 	mapED.crnt=1;
-	int x = 0, y = 0;
+	int x = mapED.X/2, y = mapED.Y/2;
 	uint8_t trail_enable=0;
-	int scr_x=0, scr_y=0;
 	char key=' ', option, trail=mapED.world[y][x];
 	char name[54];
 	if(e1.linkcount > 1){e1.linkcount = 0;}
@@ -43,7 +42,7 @@ char g_editor () {
 					x++;
 				break;
 			case 'c':
-				printw("\nChange Trail ");
+				//printw("\nChange Trail ");
 				trail = getch();break;
 			case 'v':
 				trail_enable = trail_enable^1;break;
@@ -63,7 +62,7 @@ char g_editor () {
 				if(option == 'a'){e1.X = x; e1.Y = y;}
 				if(option == '['){draw_box (x, y, e1.X, e1.Y ,trail);}
 				if(option == ']'){fillup_box (x, y, e1.X, e1.Y, trail);}
-				if(option == 's'){fillup_circle(x, y, trail);}
+				if(option == 'o'){fillup_circle(x, y, trail);}
 				if(option == 'c'){draw_circle(x, y, trail);}
 				noecho();
 			case 'e':
@@ -87,12 +86,12 @@ char g_editor () {
 		}
 		mapED.world[y][x]=p1.SELF;
 
-		render_scr_ED(scr_x, scr_y);
-		mvprintw(e1.Y, e1.X*2+1,"X");
-		mvprintw(mapED.Y+2, scr_x,"X - %d Y - %d\nTRAIL - %d:%c", x, y, trail_enable, trail);
+		render_scr_fin_ED (x, y);
+		//mvprintw(e1.Y, e1.X*2+1,"X");
+		printw("\nX - %d Y - %d\nTRAIL - %d:%c", x, y, trail_enable, trail);
 
 		key = getch();
-		//endwin();
+
 	}
 
 	mapED.crnt=0;
@@ -165,7 +164,8 @@ int g_normal (int x, int y, unsigned int emode) {
 		// update player
 		map1.world[y][x]=p1.SELF;
 
-		render_scr();
+		render_scr_fin (x,y);
+		//render_scr();
 		key = getch();
 	}
 	return 0;

@@ -2,25 +2,17 @@
 #include <stdio.h>
 #include <string.h>
 
+#define SCREEN_X_range 21/2
+#define SCREEN_Y_range 21/2
+
 int main(int argc, char const *argv[])
 {
+    initscr();
+    printw("%i\n %i", SCREEN_X_range, SCREEN_Y_range);
+    refresh();
+    getch();
+    endwin();
 
-    char map_dir[52]="./maps/";                             // Directory
-    char check[5];
-    map1.crnt = 1;
-
-    sprintf(map1.name, "%s", map_name);
-
-
-    strcat(map_dir, map1.name);
-    FILE *map_file;
-    map_file = fopen(map_dir, "r");
-
-    if (map_file == NULL) {
-        printw("Map Doesnt Exist");
-        return -1;
-    }
 
     return 0;
-	return 0;
 }
