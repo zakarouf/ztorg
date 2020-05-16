@@ -1,3 +1,14 @@
+/*
+-----------------------------------------------------
+SCREEN RENDERER SEGMENT
+'fin' mode renders only surrounding of player (better
+	for bigger maps.)
+
+TODO: Fix error while rendering map with smaller scale
+	  than SCREEN X/Y Dimention.
+	  ADD Windows
+----------------------------------------------------*/
+
 #include "render.h"
 #include "map.h"
 #include <ncurses.h>

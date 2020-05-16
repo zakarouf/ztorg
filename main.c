@@ -3,6 +3,16 @@ ZTORG
 -----------------------------------------------------
 MAIN FILE.
 -----------------------------------------------------
+# v0.2f
+	- Reworked Map Load/Export Segment (sigh, again)
+	- Linker Broke after moving To 0.2f but now fixed
+	- Added a 'Proper' Screen Renderer this time.
+# v0.2e
+	- Started Fidling with Ncurses Lib
+	- Moved The Project To Ncurses Lib
+	- 8bit Color Support is no longer avaliable ;_;
+# v0.2d
+	- Final Progress w/o Ncurses Lib
 # v0.2c
 	- Reworked the Whole stuff In Ncurses Lib
 # v0.2b
@@ -17,7 +27,7 @@ MAIN FILE.
 #include "map_load.h"
 #include "g_setup.h"
 
-#define VERSION "0.2c"
+#define VERSION "0.2f"
 #define MAX_OPTION 3
 
 int menu () {
@@ -31,7 +41,6 @@ int menu () {
 		{"EDITOR"},
 		{"QUIT"},
 	};
-	//initscr();
 	noecho();
 	clear();
 	printw("ZACK v%s", VERSION);
@@ -61,7 +70,6 @@ int menu () {
 
 	refresh();
 	clear();
-	//endwin();
 
 	return opt;
 }

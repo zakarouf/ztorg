@@ -1,3 +1,8 @@
+/*
+-----------------------------------------------------
+MAIN GAME SEGMENT
+	- Includes Also Editor Profile.
+----------------------------------------------------*/
 #include <ncurses.h>
 #include <stdint.h>
 #include "g_main.h"

@@ -7,7 +7,6 @@ fillup_box - Draws a Box w/ filling
 draw_circle - Draws a Box w/o filling
 fillup_circle - Draws a Box w/ filling
 
-NOTE TO SELF : MAP LINKER NOT WORKING
 -----------------------------------------------------*/
 #include <ncurses.h>
 #include "map.h"
