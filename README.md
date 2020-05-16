@@ -113,10 +113,10 @@ Ohh, I forgot to mention, use "wasd" keys to move around.
 X - 36 Y - 52
 TRAIL - 1:.
 ```
-You can Disable Trail mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if trail is disabled(0).
----
+- You can Disable Trail mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if trail is disabled(0).
 I'll add more Draw funtion Instruction Once I finalize them(they're there, look into g_main.c{g_editor} if ya want to use them.)
 
+---
 #### IF ANYONE READING THIS
 
 IF you wonder upon this repo please send me the ways I can Improve
