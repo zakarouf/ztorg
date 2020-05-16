@@ -40,23 +40,19 @@ void map_export (int link_count) {
 
 	clear();
 	echo();
+    printw("WAT");
+    
     char map_dir[52]="./maps/";                             // Directory
     int i;
-    char map_ne[4][5] = {
-    	{"NORTH"},
-    	{"SOUTH"},
-    	{"EAST"},
-    	{"WEST"}
-    };
     char buffer[MAX_MAP_WIDTH+1];
 
     strcat(map_dir, mapED.name);
 
 
     FILE *map_File;
-    map_File = fopen(map_dir, "w+");
+    map_File = fopen(map_dir, "w");
 
-    
+
 	fputs(MAP_VERSION_SUPPORT_SIG, map_File);
 	sprintf(buffer, "\n%d %d\n", mapED.X, mapED.Y);
     fputs(buffer, map_File);
@@ -65,19 +61,22 @@ void map_export (int link_count) {
     	fputs(mapED.world[i], map_File);
     	fputs("\n", map_File);
     }
-  
+
     fputs(NEIGHBOUR, map_File);
     fputc('\n', map_File);
 
-    printw("\nPLEASE ENTER NEIGHBOUR NAME (if 0 then it wll not be added)\n");
+    clear();
+    printw("PLEASE ENTER NEIGHBOUR NAME (if 0 then it wll not be added)\nN\nS\nE\nW\n");
+
     for (i = 0; i < 4; ++i)
     {
-    	printw("%s -> ", map_ne[i][i]);
+        move(i+1, 1);
+    	printw(" -> ");
     	scanw("%s", buffer);
     	fputs(buffer, map_File);
     	if(i != 3){fputc(' ', map_File);}
     }
-
+    
 
     clear();
     fputc('\n', map_File);
@@ -96,7 +95,7 @@ void map_export (int link_count) {
 
     fclose(map_File);
     
-    printw("MAP SAVED");
+    printw("\nMAP SAVED");
     getch();
 }
 
@@ -140,7 +139,7 @@ int process_map_file (char map_name[54]) {
         return 2;
     }
 
-    char map_dir[52]="./maps/";                             // Directory
+    char map_dir[52]="./maps/";                             // MAP Directory
     char buffer[MAX_MAP_WIDTH];
     map1.crnt = 1;
 
@@ -157,23 +156,22 @@ int process_map_file (char map_name[54]) {
     }
 
     fgets(buffer, MAX_MAP_WIDTH, map_file);
-    printw("%s", buffer);
     fgets(buffer, MAX_MAP_WIDTH, map_file);
     sscanf(buffer, "%d %d", &map1.X, &map1.Y);
-    printw("\n%d %d", map1.X, map1.Y);
 
     for (int i = 0; i < map1.Y; ++i)
     {
         fgets(map1.world[i], MAX_MAP_WIDTH, map_file);
-        printw("%s", map1.world[i]);
     }
 
     fgets(buffer, MAX_MAP_WIDTH, map_file);
     
         fgets(buffer, MAX_MAP_WIDTH, map_file);
-                    //   n  s  e  w
+             //    north south east west
+             //       \     |   /   / 
+             //        \    |  |   /
+             //         \   |  |  /
         sscanf(buffer, "%s %s %s %s", map1.neighbour[0], map1.neighbour[1], map1.neighbour[2], map1.neighbour[3]);
-        printw("%s %s %s %s\n", map1.neighbour[0], map1.neighbour[1], map1.neighbour[2], map1.neighbour[3]);
 
    
     // Linkers
@@ -186,13 +184,10 @@ int process_map_file (char map_name[54]) {
             {
                 //fgets(buffer, MAX_MAP_WIDTH, map_file);                  //player X 	//player Y 	   //goto y 	  //goto y
                 sscanf(buffer, "%s %d %d %d %d", map1.linkname[count], &map1.link[count][0], &map1.link[count][1], &map1.link[count][2], &map1.link[count][3]);
-                printw("%s %d %d %d %d\n", map1.linkname[count], map1.link[count][0], map1.link[count][1], map1.link[count][2], map1.link[count][3]);
             }
             else{break;}
             count++;
         }
-    printw("\n%d", count);
     fclose(map_file);
-    getch();
     return 0;
 }

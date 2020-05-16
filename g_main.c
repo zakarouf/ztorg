@@ -51,6 +51,7 @@ char g_editor () {
 					echo();
 					printw("\nMap Name : ");
 					scanw("%s", name);
+					refresh();
 					p1.SELF = 'X';
 					e1.linkcount = add_map_linker(x, y, name, e1.linkcount);
 					p1.SELF = '@';
@@ -108,6 +109,9 @@ int g_normal (int x, int y, unsigned int emode) {
 	map1.crnt=1;
 	char key=' ', trail=map1.world[y][x];
 
+	if(emode == 1){
+		p1.MODE = 'n';
+	}
 	while (p1.MODE == 'n') {
 
 		
@@ -142,6 +146,7 @@ int g_normal (int x, int y, unsigned int emode) {
 					mapED.link[e1.linkcount][2] = x;
 					mapED.link[e1.linkcount][3] = y;
 					map1.crnt = 0;
+					p1.MODE='e';
 				}return 4;
 			default:
 				break;

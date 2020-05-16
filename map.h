@@ -9,11 +9,11 @@ typedef struct{
 	char name[54];
 	char neighbour[4][54];
 	char linkname[32][54];
-	char world[256][256];
+	char world[512][512];
 
 } MAP;
 
-#define MAX_MAP_WIDTH 256
+#define MAX_MAP_WIDTH 512
 
 MAP mapED;
 MAP map1;

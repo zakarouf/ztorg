@@ -2,8 +2,8 @@
 #include "map.h"
 #include <ncurses.h>
 
-#define SCREEN_X 21
-#define SCREEN_Y 21
+#define SCREEN_X 31
+#define SCREEN_Y 25
 
 void render_scr_ED (int x, int y) {
 	clear();
@@ -39,21 +39,21 @@ void render_scr_fin (int px, int py) {
 	int sc = 0, sv = 0;
 	int i = py - (int)(SCREEN_Y/2) -1, j;
 	//if (j < 0){j = 0;}
-	int ei = py + (int)(SCREEN_Y/2) +1;
-	int ej = px + (int)(SCREEN_X/2) +1;
+	int end_i = py + (int)(SCREEN_Y/2) +1;
+	int end_j = px + (int)(SCREEN_X/2) +1;
 
-	if (i < 0) {i = 0; ei = SCREEN_Y +1;}
-	if (ei >= map1.Y) { ei = map1.Y; i = map1.Y - SCREEN_Y -1; }
+	if (i < 0) {i = 0; end_i = SCREEN_Y +1;}
+	if (end_i >= map1.Y) { end_i = map1.Y; i = map1.Y - SCREEN_Y -1; }
 
-	for (; i < ei; ++i)
+	for (; i < end_i; ++i)
 	{
 
 		j = px - (int)(SCREEN_X/2) -1;
-		if (j < 0)  { j = 0;  ej = SCREEN_X +1;}
-		if (ej >= map1.X) { ej = map1.X; j = map1.X - SCREEN_X -1; }
+		if (j < 0)  { j = 0;  end_j = SCREEN_X +1;}
+		if (end_j >= map1.X) { end_j = map1.X; j = map1.X - SCREEN_X -1; }
 
 		move(sc, sv);
-		for (; j < ej; ++j)
+		for (; j < end_j; ++j)
 		{
 
 			addch(map1.world[i][j]);
@@ -68,25 +68,25 @@ void render_scr_fin_ED (int px, int py) {
 	int sc = 0, sv = 0;
 	int i = py - (int)(SCREEN_Y/2) -1, j;
 	//if (j < 0){j = 0;}
-	int ei = py + (int)(SCREEN_Y/2) +1;
-	int ej = px + (int)(SCREEN_X/2) +1;
+	int end_i = py + (int)(SCREEN_Y/2) +1;
+	int end_j = px + (int)(SCREEN_X/2) +1;
 
-	if (i < 0) {i = 0; ei = SCREEN_Y + 1;}
-	if (ei >= mapED.Y) { ei = mapED.Y; i = mapED.Y - SCREEN_Y -1; }
+	if (i < 0) {i = 0; end_i = SCREEN_Y + 1;}
+	if (end_i >= mapED.Y) { end_i = mapED.Y; i = mapED.Y - SCREEN_Y -1; }
 
-	for (; i < ei; ++i)
+	for (; i < end_i; ++i)
 	{
 
 		j = px - (int)(SCREEN_X/2) -1;
-		if (j < 0)  { j = 0;  ej = SCREEN_X +1;}
-		if (ej >= mapED.X) { ej = mapED.X; j = mapED.X - SCREEN_X -1; }
+		if (j < 0)  { j = 0;  end_j = SCREEN_X +1;}
+		if (end_j >= mapED.X) { end_j = mapED.X; j = mapED.X - SCREEN_X -1; }
 
 		move(sc, sv);
-		for (; j < ej; ++j)
+		for (; j < end_j; ++j)
 		{
 
 			addch(mapED.world[i][j]);
-			addch(' ');
+			//addch(' '); 		//add gaps
 		}
 		printw("\b| %d", i);
 		sc++;

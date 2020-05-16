@@ -28,6 +28,11 @@ int add_map_linker (int x, int y, char name[54], int linkcount) {
 
     clear();
     process_map_file(mapED.linkname[linkcount]);
+    for (int i = 0; i < map1.Y; ++i)
+    {
+        printw("%s", map1.world[i]);
+    }
+    getch();
     g_normal(0, 0, 1);
     link_add_enx (mapED.linkname[linkcount], mapED.link[linkcount][2], mapED.link[linkcount][3], x, y);
 
