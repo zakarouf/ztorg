@@ -7,6 +7,7 @@ MAIN FILE.
 	- Reworked Map Load/Export Segment (sigh, again)
 	- Linker Broke after moving To 0.2f but now fixed
 	- Added a 'Proper' Screen Renderer this time.
+	- Re-added "Open Map In Editor" function
 # v0.2e
 	- Started Fidling with Ncurses Lib
 	- Moved The Project To Ncurses Lib
@@ -28,7 +29,7 @@ MAIN FILE.
 #include "g_setup.h"
 
 #define VERSION "0.2f"
-#define MAX_OPTION 3
+#define MAX_OPTION 4
 
 int menu () {
 	char key;
@@ -36,9 +37,10 @@ int menu () {
 	int csry = 2, csr = 2;
 
 
-	char menu_s[MAX_OPTION][12] = {
+	char menu_s[MAX_OPTION][13] = {
 		{"PLAY"},
-		{"EDITOR"},
+		{"EDITOR(NEW)"},
+		{"EDITOR(OPEN)"},
 		{"QUIT"},
 	};
 	noecho();
@@ -47,7 +49,8 @@ int menu () {
 	printw("\n/// MAIN MENU /// \n"
 			"%s\n"
 			"%s\n"
-			"%s\n", menu_s[0], menu_s[1], menu_s[2]);
+			"%s\n"
+			"%s\n", menu_s[0], menu_s[1], menu_s[2], menu_s[3]);
 	move(csry, 0);
 
 	while(1) {
@@ -80,13 +83,17 @@ int main(int argc, char const *argv[])
 	int option,eror;
 	char map_name[54] ;
 
-
 	initscr();
+	cbreak();raw();
+	start_color();
+	init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
+	use_default_colors();
+
 	while(quit == 0){
 		option = menu();
 		clear();
 
-		if(option == 2){
+		if(option == 3){
 			quit = 1;
 		}
 		else if(option == 0){
@@ -96,12 +103,20 @@ int main(int argc, char const *argv[])
 			eror = process_map_file(map_name);clear();
 			if (eror == 0)
 			{
-				setup_p('n');
+				g_setup_p('n');
 			}
 			
 		}
 		else if(option == 1){
-			map_autogen ();setup_p('e');
+			map_autogen ();g_setup_p('e');
+		}
+		else if (option == 2) {
+			mvprintw(0, 0,"Enter Map Name");
+			mvscanw(1, 0,"%s", map_name);
+			eror = process_map_file_ED(map_name);clear();
+			if(eror == 0){
+				g_setup_p('e');
+			}
 		}
 		refresh();
 	}

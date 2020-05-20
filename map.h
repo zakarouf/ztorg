@@ -1,6 +1,9 @@
 #ifndef MAP_H
 #define MAP_H
 
+#define MAX_MAP_WIDTH 512
+#define MAX_MAP_HEIGHT 512
+
 typedef struct{
 	int X;
 	int Y;
@@ -9,11 +12,11 @@ typedef struct{
 	char name[54];
 	char neighbour[4][54];
 	char linkname[32][54];
-	char world[512][512];
+	char world[MAX_MAP_HEIGHT][MAX_MAP_WIDTH];
 
 } MAP;
 
-#define MAX_MAP_WIDTH 512
+char mask[MAX_MAP_HEIGHT][MAX_MAP_WIDTH];
 
 MAP mapED;
 MAP map1;

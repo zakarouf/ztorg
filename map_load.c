@@ -36,6 +36,8 @@ MAP CONFIG LOADER
 /*---------------------------------------------------------------------*/
 
 
+void make_map_mask ();
+
 void map_export (int link_count) {
 
 	clear();
@@ -73,7 +75,11 @@ void map_export (int link_count) {
         move(i+1, 1);
     	printw(" -> ");
     	scanw("%s", buffer);
-    	fputs(buffer, map_File);
+        if (strcmp("0", buffer) == 0)
+        {
+            fputs(VACANT_MAP, map_File);
+        }
+    	else{fputs(buffer, map_File);}
     	if(i != 3){fputc(' ', map_File);}
     }
     
@@ -130,9 +136,68 @@ void map_autogen ()
         }
     }
     mapED.crnt = 1;
+    make_map_mask ();
 }
 
+int process_map_file_ED (char map_name[54]) {
+    if(strcmp(map_name, VACANT_MAP) == 0) {
+        return 2;
+    }
 
+    char map_dir[52]="./maps/";                             // MAP Directory
+    char buffer[MAX_MAP_WIDTH];
+    mapED.crnt = 1;
+
+    sprintf(mapED.name, "%s", map_name);
+
+
+    strcat(map_dir, mapED.name);
+    FILE *map_file;
+    map_file = fopen(map_dir, "r");
+
+    if (map_file == NULL) {
+        printw("Map Doesnt Exist");
+        return -1;
+    }
+
+    fgets(buffer, MAX_MAP_WIDTH, map_file);
+    fgets(buffer, MAX_MAP_WIDTH, map_file);
+    sscanf(buffer, "%d %d", &mapED.X, &mapED.Y);
+
+    for (int i = 0; i < mapED.Y; ++i)
+    {
+        fgets(mapED.world[i], MAX_MAP_WIDTH, map_file);
+    }
+
+    fgets(buffer, MAX_MAP_WIDTH, map_file);
+    
+        fgets(buffer, MAX_MAP_WIDTH, map_file);
+             //    north south east west
+             //       \     |   /   / 
+             //        \    |  |   /
+             //         \   |  |  /
+        sscanf(buffer, "%s %s %s %s", mapED.neighbour[0], mapED.neighbour[1], mapED.neighbour[2], mapED.neighbour[3]);
+
+   
+    // Linkers
+    fgets(buffer, MAX_MAP_WIDTH, map_file);
+
+        int count=0;
+        while(1){
+            
+            if (fgets (buffer, MAX_MAP_WIDTH, map_file)!=NULL )
+            {
+                //fgets(buffer, MAX_MAP_WIDTH, map_file);                  //player X   //player Y     //goto y       //goto y
+                sscanf(buffer, "%s %d %d %d %d", mapED.linkname[count], &mapED.link[count][0], &mapED.link[count][1], &mapED.link[count][2], &mapED.link[count][3]);
+            }
+            else{break;}
+            count++;
+        }
+    fclose(map_file);
+    make_map_mask ();
+
+    return 0;
+}
 
 int process_map_file (char map_name[54]) {
     if(strcmp(map_name, VACANT_MAP) == 0) {
@@ -189,5 +254,16 @@ int process_map_file (char map_name[54]) {
             count++;
         }
     fclose(map_file);
+    make_map_mask ();
+
     return 0;
+}
+
+void make_map_mask () {
+    for (int i = 0; i < MAX_MAP_HEIGHT; i++) {
+        for (int j = 0; j < MAX_MAP_WIDTH; ++j)
+        {
+            mask[i][j]=' ';
+        }
+    }
 }

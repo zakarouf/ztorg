@@ -3,7 +3,6 @@
 MAIN GAME SEGMENT
 	- Includes Also Editor Profile.
 ----------------------------------------------------*/
-#include <ncurses.h>
 #include <stdint.h>
 #include "g_main.h"
 #include "player.h"
@@ -23,14 +22,14 @@ char g_editor () {
 	if(e1.linkcount > 1){e1.linkcount = 0;}
 	render_scr();
 	//endwin();
+	WINDOW * status = newwin(5, SCREEN_X*2 +1, SCREEN_Y+4, 0);
 
 	while (p1.MODE == 'e') {
 
 		p1.X = x;
 		p1.Y = y;
 
-		mapED.world[y][x]=trail;
-
+		mask[y][x]=' ';
 
 		switch(key)
 		{
@@ -47,32 +46,34 @@ char g_editor () {
 					x++;
 				break;
 			case 'c':
-				//printw("\nChange Trail ");
-				trail = getch();break;
+				mvwprintw(status, 3, 1,"Change Trail ");
+				wrefresh(status);
+				trail = wgetch(status);break;
 			case 'v':
 				trail_enable = trail_enable^1;break;
 			case 'g':
 					e1.X = x; e1.Y = y;
 					echo();
-					printw("\nMap Name : ");
-					scanw("%s", name);
+					mvwprintw(status, 3, 1,"Map Name : ");
+					mvwscanw(status, 3, 11, "%s", name);
 					refresh();
 					p1.SELF = 'X';
 					e1.linkcount = add_map_linker(x, y, name, e1.linkcount);
 					p1.SELF = '@';
 					x = e1.X; y = e1.Y;
 			case 'f':
-				printw("\nDraw\n");
+				mvwprintw(status, 3, 1, "Draw");
+				wrefresh(status);
 				echo();
-				option = getch();
-				if(option == 'a'){e1.X = x; e1.Y = y;}
+				option = wgetch(status);
+				if(option == 'a'){e1.X = x; e1.Y = y;mask[e1.Y][e1.X]='A';}
 				if(option == '['){draw_box (x, y, e1.X, e1.Y ,trail);}
 				if(option == ']'){fillup_box (x, y, e1.X, e1.Y, trail);}
 				if(option == 'o'){fillup_circle(x, y, trail);}
 				if(option == 'c'){draw_circle(x, y, trail);}
 				noecho();
 			case 'e':
-				option = getch();
+				option = wgetch(status);
 				if(option=='q'){p1.MODE = 'y';mapED.crnt=0;return p1.MODE;}
 				if(option== 's'){save_map(e1.linkcount);}break;
 				break;
@@ -86,17 +87,21 @@ char g_editor () {
 		p1.pX = x;
 		p1.pY = y;
 
-		if (!trail_enable)
+		if (trail_enable)
 		{
-			trail=mapED.world[y][x];
+			mapED.world[y][x]=trail;
 		}
-		mapED.world[y][x]=p1.SELF;
-
+		mask[y][x]=p1.SELF;
+		//render_scr_win_ED ();
 		render_scr_fin_ED (x, y);
-		//mvprintw(e1.Y, e1.X*2+1,"X");
-		printw("\nX - %d Y - %d\nTRAIL - %d:%c", x, y, trail_enable, trail);
-
-		key = getch();
+		
+		wclear(status);
+		box(status, 0, 0);
+		mvwprintw(status, 1, 1, "X - %3d Y - %3d", x, y);
+		mvwprintw(status, 2, 1, "TRAIL - %d:%c", trail_enable, trail );
+		refresh();
+		wrefresh(status);
+		key = wgetch(status);
 
 	}
 
@@ -145,7 +150,10 @@ int g_normal (int x, int y, unsigned int emode) {
 					change_map(x, y);x = p1.X; y = p1.Y;
 					break;
 				}
-				
+			case '=':
+					p1.MODE = 'y';
+					return 'y';
+				break;
 			case 'e':
 				if(emode == 1) {
 					mapED.link[e1.linkcount][2] = x;
@@ -175,7 +183,6 @@ int g_normal (int x, int y, unsigned int emode) {
 		map1.world[y][x]=p1.SELF;
 
 		render_scr_fin (x,y);
-		//render_scr();
 		key = getch();
 	}
 	return 0;
