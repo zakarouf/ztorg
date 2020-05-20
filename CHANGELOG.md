@@ -14,26 +14,26 @@ All notable changes to this project will be documented in this file.
 ### Fixed
     - Linker Broke after moving To 0.2f but now fixed
 
-## [v0.2e]
+## [0.2e]
 ### Added
     - Moved The Project To Ncurses Lib
     - 8bit Color Support is no longer avaliable ;_;
 
-## [v0.2d]
+## [0.2d]
 ### Added
     - Final Progress w/o Ncurses Lib
 
-## [v0.2c]
+## [0.2c]
 ### Changed
     - Started Reworking the Whole stuff In Ncurses Lib
 
-## [v0.2b]
+## [0.2b]
 ### Added
     - Added Linker To Maps now you can Link one map 
         with others.
     - Upgraded Color function. Full 8bit color Support
 
-## [v0.2a]
+## [0.2a]
 ### Added
     - EDITOR is now here and fully functional.
 
