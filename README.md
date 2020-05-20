@@ -9,6 +9,8 @@ So I Decided to learn basic programming. This is it.
 
 For Installing it just run
 ```
+git clone https://github.com/zakarouf/ztorg.git
+cd ztorg
 ./compile
 ```
 And it Should Compile the binary in current directory named 'ztorg'
@@ -114,6 +116,7 @@ X - 36 Y - 52
 TRAIL - 1:.
 ```
 - You can Disable Trail mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if trail is disabled(0).
+
 I'll add more Draw funtion Instruction Once I finalize them(they're there, look into g_main.c{g_editor} if ya want to use them.)
 
 ---

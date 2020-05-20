@@ -3,33 +3,20 @@ ZTORG
 -----------------------------------------------------
 MAIN FILE.
 -----------------------------------------------------
-# v0.2f
-	- Reworked Map Load/Export Segment (sigh, again)
-	- Linker Broke after moving To 0.2f but now fixed
-	- Added a 'Proper' Screen Renderer this time.
-	- Re-added "Open Map In Editor" function
-# v0.2e
-	- Started Fidling with Ncurses Lib
-	- Moved The Project To Ncurses Lib
-	- 8bit Color Support is no longer avaliable ;_;
-# v0.2d
-	- Final Progress w/o Ncurses Lib
-# v0.2c
-	- Reworked the Whole stuff In Ncurses Lib
-# v0.2b
-	- Added Linker To Maps now you can Link one map 
-		with others.
-	- Upgraded Color function. Full 8bit color Support
-# v0.2a
-	- Code is Now Clean (To an Extent).
- 	- EDITOR is now here and fully functional.
+NOTES :-
+
 -----------------------------------------------------*/
 #include <ncurses.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
 #include "map_load.h"
 #include "g_setup.h"
 
 #define VERSION "0.2f"
 #define MAX_OPTION 4
+#define REQUIRED_TERM_X 67
+#define REQUIRED_TERM_Y 35
 
 int menu () {
 	char key;
@@ -83,11 +70,36 @@ int main(int argc, char const *argv[])
 	int option,eror;
 	char map_name[54] ;
 
+	struct winsize term_size;
+
 	initscr();
 	cbreak();raw();
 	start_color();
 	init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(2, COLOR_RED, COLOR_BLACK);
 	use_default_colors();
+
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);
+
+	if ((int)term_size.ws_col < REQUIRED_TERM_X || (int)term_size.ws_row < REQUIRED_TERM_Y) {
+
+		clear();
+		attron(COLOR_PAIR(2));
+		printw(" WARNING YOUR TERMINAL WINDOW SIZE IS SET BELOW THE REQUIRED LIMIT \n");
+		attroff(COLOR_PAIR(2));
+
+		printw ("\n- Required Row Size : %d\n", REQUIRED_TERM_X);
+    	printw ("- Required Columns Size : %d\n\n", REQUIRED_TERM_Y);
+    	printw ("- Your Row Size : %d\n", term_size.ws_row);
+    	printw ("- Your Columns Size : %d\n", term_size.ws_col);
+
+    	printw ("\nPress Any Key to Exit");
+    	getch();
+
+    	refresh();
+    	endwin();
+    	return -1;
+	}
 
 	while(quit == 0){
 		option = menu();
