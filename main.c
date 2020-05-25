@@ -81,7 +81,7 @@ int main(int argc, char const *argv[])
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);
 
-	if ((int)term_size.ws_col < REQUIRED_TERM_X || (int)term_size.ws_row < REQUIRED_TERM_Y) {
+	if (term_size.ws_col < REQUIRED_TERM_X || term_size.ws_row < REQUIRED_TERM_Y) {
 
 		clear();
 		attron(COLOR_PAIR(2));
@@ -124,7 +124,9 @@ int main(int argc, char const *argv[])
 		}
 		else if (option == 2) {
 			mvprintw(0, 0,"Enter Map Name");
+			echo();
 			mvscanw(1, 0,"%s", map_name);
+			noecho();
 			eror = process_map_file_ED(map_name);clear();
 			if(eror == 0){
 				g_setup_p('e');

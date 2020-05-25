@@ -61,7 +61,7 @@ void map_export (int link_count) {
 
     for (i = 0; i < mapED.Y; i++) {
     	fputs(mapED.world[i], map_File);
-    	fputs("\n", map_File);
+        fputs("\n", map_File);
     }
 
     fputs(NEIGHBOUR, map_File);
