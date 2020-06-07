@@ -9,8 +9,13 @@ void render_scr_fin (int px, int py);
 void render_scr_fin_ED (int px, int py);
 //void render_scr_win_ED ();
 
-#define SCREEN_X 31
+void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,int scrHEIGHT);
+
+#define SCREEN_X 25
 #define SCREEN_Y 25
 
+#define PI_VAL 3.14159265f
+#define FOV PI_VAL/2.0f
+#define DEPTH 16.0f
 
 #endif

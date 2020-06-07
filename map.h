@@ -20,4 +20,5 @@ char mask[MAX_MAP_HEIGHT][MAX_MAP_WIDTH];
 
 MAP mapED;
 MAP map1;
+
 #endif

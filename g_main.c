@@ -4,12 +4,17 @@ MAIN GAME SEGMENT
 	- Includes Also Editor Profile.
 ----------------------------------------------------*/
 #include <stdint.h>
+#include <math.h>
 #include "g_main.h"
 #include "player.h"
 #include "render.h"
 #include "editor.h"
 #include "map.h"
 #include "map_update.h"
+
+#define MVMT_SPD .5f
+#define FORTY_FIVE_DEGREE PI_VAL/2
+
 
 
 char g_editor () {
@@ -183,6 +188,82 @@ int g_normal (int x, int y, unsigned int emode) {
 		map1.world[y][x]=p1.SELF;
 
 		render_scr_fin (x,y);
+		key = getch();
+	}
+	return 0;
+}
+
+int g_raytest (float x, float y, float A) {
+	map1.crnt=1;
+
+	int screenWidth;                // Console screen size X (columns)
+	int screenHeight;               // Console screen size Y (rows)
+
+	//char trail='A';
+	char key=' ';
+	init_pair(1, COLOR_WHITE, COLOR_WHITE);
+
+	getmaxyx(stdscr, screenHeight, screenWidth);
+
+	while (p1.MODE == 'n') {
+
+		
+		p1.X = x;
+		p1.Y = y;
+
+		//map1.world[y][x]=trail;
+
+		switch(key)
+		{
+			case 'w':
+				x += sinf(A) * MVMT_SPD;
+				y += cosf(A) * MVMT_SPD;
+				break;
+			case 'a':
+				A -= .1f;
+				//if(A < 0.0f ){A = PI_VAL*2;}
+				break;
+			case 'd':
+				A += .1f;
+				//if(A > PI_VAL*2  ){A = 0.0f;}
+				break;
+			case 's':
+				x -= sinf(A) * MVMT_SPD;
+				y -= cosf(A) * MVMT_SPD;
+				break;
+			case 'q':
+				x -= sinf(A) * MVMT_SPD;
+				break;
+			case 'e':
+				x += sinf(A) * MVMT_SPD;
+				break;
+			case '`':
+				p1.MODE='y';
+				return 'y';
+			default:
+				break;
+		}
+
+		if(map1.world[(int)y][(int)x] == '#'){x = p1.X; y = p1.Y;}
+
+		if((x < 0 || y < 0 || x >= map1.X || y >= map1.Y))
+		{	
+			clear();
+			//switch_neighbour(x, y);
+			x = p1.X;
+			y = p1.Y;
+		}
+
+		p1.pX = x;
+		p1.pY = y;
+		//trail=map1.world[y][x];
+
+		// update player
+		//map1.world[y][x]=p1.SELF;
+
+
+		raycasting_test(x, y, A, screenWidth, screenHeight);
+		render_scr_fin(x, y);
 		key = getch();
 	}
 	return 0;

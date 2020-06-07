@@ -3,5 +3,6 @@
 
 char g_editor ();
 int g_normal (int x, int y, unsigned int emode);
+int g_raytest (float x, float y, float A);
 
 #endif

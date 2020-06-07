@@ -73,6 +73,10 @@ void draw_circle (int x, int y, char c) {
     int i, j, r, f;
     scanw("%d", &r);
     f = r-1;
+
+    // NOTE: This is fucking retarded, function is checking all points of the map array.
+	// 		 Make a Cube. Please
+	
     for (i = 0; i < mapED.Y; ++i) {
         for (j = 0; j < mapED.X; ++j) {
 
@@ -90,7 +94,7 @@ void fillup_circle (int x, int y, char c) {
     for (i = 0; i < mapED.Y; ++i) {
         for (j = 0; j < mapED.X; ++j) {
 
-            if( ((j - x) * (j - x) + (i - y) * (i - y)) <= r * r) {
+            if( ((j - x) * (j - x) + (i - y) * (i - y)) <= r * r ) {
                 mapED.world[i][j] = c;
             }
         }

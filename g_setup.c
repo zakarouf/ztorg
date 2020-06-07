@@ -15,7 +15,7 @@ void g_setup_p (char state) {
 		switch(p1.MODE)
 		{
 			case 'n':
-				quit = g_normal(p1.X, p1.Y, 0);
+				quit = g_raytest(3.0f, 3.0f, 0.0f); 	//g_normal(p1.X, p1.Y, 0);
 			case 'e':
 				quit = g_editor();
 			default:break;

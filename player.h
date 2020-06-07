@@ -2,10 +2,10 @@
 #define PLAYER_H
 
 typedef struct{
-	int X;
-	int Y;
-	int pX;
-	int pY;
+	float X;
+	float Y;
+	float pX;
+	float pY;
 	char SELF;
 	char MODE;
 }PLAYER;
