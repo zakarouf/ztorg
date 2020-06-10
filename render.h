@@ -3,18 +3,20 @@
 
 #include <ncurses.h>
 
-void render_scr ();
-void render_scr_ED (int x, int y);
 void render_scr_fin (int px, int py);
 void render_scr_fin_ED (int px, int py);
 //void render_scr_win_ED ();
 
 void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,int scrHEIGHT);
 
-#define SCREEN_X 25
-#define SCREEN_Y 25
+#define SCREEN_X 16
+#define SCREEN_Y 16
 
-#define PI_VAL 3.14159265f
+#define PI_VAL     3.1415926535f   // Also 180 DEGREE
+#define DEGREE_90  PI_VAL/2.0f
+#define DEGREE_270 3.0f*PI_VAL/2.0f
+#define DEGREE_1   0.0174533f
+
 #define FOV PI_VAL/2.0f
 #define DEPTH 16.0f
 

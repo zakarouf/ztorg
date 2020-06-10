@@ -12,9 +12,7 @@ MAIN GAME SEGMENT
 #include "map.h"
 #include "map_update.h"
 
-#define MVMT_SPD .5f
-#define FORTY_FIVE_DEGREE PI_VAL/2
-
+#define MVMT_SPD .1f
 
 
 char g_editor () {
@@ -25,8 +23,8 @@ char g_editor () {
 	char key=' ', option, trail=mapED.world[y][x];
 	char name[54];
 	if(e1.linkcount > 1){e1.linkcount = 0;}
-	render_scr();
-	//endwin();
+
+
 	WINDOW * status = newwin(5, SCREEN_X*2 +1, SCREEN_Y+4, 0);
 
 	while (p1.MODE == 'e') {
@@ -119,7 +117,6 @@ char g_editor () {
 
 
 
-
 int g_normal (int x, int y, unsigned int emode) {
 	map1.crnt=1;
 	char key=' ', trail=map1.world[y][x];
@@ -150,15 +147,6 @@ int g_normal (int x, int y, unsigned int emode) {
 			case 'd':
 					x++;
 				break;
-			case 'g':
-				if(emode == 0){
-					change_map(x, y);x = p1.X; y = p1.Y;
-					break;
-				}
-			case '=':
-					p1.MODE = 'y';
-					return 'y';
-				break;
 			case 'e':
 				if(emode == 1) {
 					mapED.link[e1.linkcount][2] = x;
@@ -170,12 +158,8 @@ int g_normal (int x, int y, unsigned int emode) {
 				break;
 		}
 
-		if(map1.world[y][x] == '#'){x = p1.X; y = p1.Y;}
-
-		if((x < 0 || y < 0 || x >= map1.X || y >= map1.Y) && (emode != 1))
+		if((x < 0 || y < 0 || x >= map1.X || y >= map1.Y))
 		{	
-			clear();
-			switch_neighbour(x, y);
 			x = p1.X;
 			y = p1.Y;
 		}
@@ -194,14 +178,21 @@ int g_normal (int x, int y, unsigned int emode) {
 }
 
 int g_raytest (float x, float y, float A) {
+
+	//const char direction[]="ESWNE";
+	int direction_int = 1;
 	map1.crnt=1;
+
+	float turn_speed = DEGREE_90;
 
 	int screenWidth;                // Console screen size X (columns)
 	int screenHeight;               // Console screen size Y (rows)
 
-	//char trail='A';
 	char key=' ';
+
+	//initialize shade;
 	init_pair(1, COLOR_WHITE, COLOR_WHITE);
+
 
 	getmaxyx(stdscr, screenHeight, screenWidth);
 
@@ -211,7 +202,6 @@ int g_raytest (float x, float y, float A) {
 		p1.X = x;
 		p1.Y = y;
 
-		//map1.world[y][x]=trail;
 
 		switch(key)
 		{
@@ -219,27 +209,32 @@ int g_raytest (float x, float y, float A) {
 				x += sinf(A) * MVMT_SPD;
 				y += cosf(A) * MVMT_SPD;
 				break;
-			case 'a':
-				A -= .1f;
-				//if(A < 0.0f ){A = PI_VAL*2;}
-				break;
-			case 'd':
-				A += .1f;
-				//if(A > PI_VAL*2  ){A = 0.0f;}
-				break;
 			case 's':
 				x -= sinf(A) * MVMT_SPD;
 				y -= cosf(A) * MVMT_SPD;
 				break;
-			case 'q':
-				x -= sinf(A) * MVMT_SPD;
-				break;
 			case 'e':
-				x += sinf(A) * MVMT_SPD;
+				x += cosf(A) * MVMT_SPD;
+				y += sinf(A) * MVMT_SPD;				
+				break;
+			case 'q':
+				x -= cosf(A) * MVMT_SPD;
+				y -= sinf(A) * MVMT_SPD;
+				break;
+			case 'a':
+				A -= turn_speed;
+				direction_int -= 1;
+				if(A <= 0.0f ){A = PI_VAL*2; direction_int = 0;}
+				break;
+			case 'd':
+				A += turn_speed;
+				direction_int += 1;
+				if(A > PI_VAL*2 ){A = 0; direction_int = 1;}
 				break;
 			case '`':
 				p1.MODE='y';
 				return 'y';
+				break;
 			default:
 				break;
 		}
@@ -261,9 +256,10 @@ int g_raytest (float x, float y, float A) {
 		// update player
 		//map1.world[y][x]=p1.SELF;
 
-
 		raycasting_test(x, y, A, screenWidth, screenHeight);
 		render_scr_fin(x, y);
+		//mvaddch(0, screenHeight, direction[(int)direction_int]);printw(" %d", direction_int);
+		refresh();
 		key = getch();
 	}
 	return 0;
