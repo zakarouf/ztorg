@@ -4,6 +4,12 @@
 #define MAX_MAP_WIDTH 512
 #define MAX_MAP_HEIGHT 512
 
+#define DIRECTION_NORTH	0
+#define DIRECTION_SOUTH	1
+#define DIRECTION_EAST	2
+#define DIRECTION_WEST	3
+
+
 typedef struct{
 	int X;
 	int Y;

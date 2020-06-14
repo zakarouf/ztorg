@@ -23,6 +23,9 @@ int menu () {
 	int opt=10;
 	int csry = 2, csr = 2;
 
+	int scrY, scrX;
+	getmaxyx(stdscr, scrY, scrX);
+
 
 	char menu_s[MAX_OPTION][13] = {
 		{"PLAY"},
@@ -32,6 +35,9 @@ int menu () {
 	};
 	noecho();
 	clear();
+
+	mvprintw(scrY-1, 0, "Current Screen Size (%dx%d)", scrX, scrY);
+	move(0, 0);
 	printw("ZACK v%s", VERSION);
 	printw("\n/// MAIN MENU /// \n"
 			"%s\n"
@@ -39,6 +45,7 @@ int menu () {
 			"%s\n"
 			"%s\n", menu_s[0], menu_s[1], menu_s[2], menu_s[3]);
 	move(csry, 0);
+
 
 	while(1) {
 		csr = csry;

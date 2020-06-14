@@ -11,6 +11,10 @@ void g_setup_p (char state) {
 	p1.SELF = '@';
 	p1.MODE = state;
 
+	p1.status.MP = 80;
+	p1.status.HP = 100;
+	p1.status.XP = 1;
+
 	while(quit != 'y') {
 		switch(p1.MODE)
 		{

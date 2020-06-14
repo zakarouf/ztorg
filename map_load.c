@@ -35,7 +35,6 @@ MAP CONFIG LOADER
 #define VACANT_MAP "VACANT_M_1"
 /*---------------------------------------------------------------------*/
 
-
 void make_map_mask ();
 
 void map_export (int link_count) {
@@ -236,7 +235,7 @@ int process_map_file (char map_name[54]) {
              //       \     |   /   / 
              //        \    |  |   /
              //         \   |  |  /
-        sscanf(buffer, "%s %s %s %s", map1.neighbour[0], map1.neighbour[1], map1.neighbour[2], map1.neighbour[3]);
+        sscanf(buffer, "%s %s %s %s", map1.neighbour[DIRECTION_NORTH], map1.neighbour[DIRECTION_SOUTH], map1.neighbour[DIRECTION_EAST], map1.neighbour[DIRECTION_WEST]);
 
    
     // Linkers

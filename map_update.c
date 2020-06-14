@@ -20,22 +20,24 @@ void change_map (int x, int y) {
 
 
 int switch_neighbour (int x,int y) {
+
 	uint8_t map_num;
 	uint8_t check;
+
 	if(y < 0) {
-		map_num = 0;
+		map_num = DIRECTION_NORTH;
 	}
 	else if(y >= map1.Y) {
-		map_num = 1;
+		map_num = DIRECTION_SOUTH;
 	}
 	else if(x < 0) {
-		map_num = 2;
+		map_num = DIRECTION_EAST;
 	}
 	else if(x >= map1.X) {
-		map_num = 3;
+		map_num = DIRECTION_WEST;
 	}
 	else {
-		return -1;
+		return -404;
 	}
 
 	check = process_map_file(map1.neighbour[map_num]);

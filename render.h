@@ -4,13 +4,11 @@
 #include <ncurses.h>
 
 void render_scr_fin (int px, int py);
-void render_scr_fin_ED (int px, int py);
-//void render_scr_win_ED ();
+void render_scr_fin_ED (int px, int py, int scrX, int scrY);
 
+// Raycasting Mode
 void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,int scrHEIGHT);
 
-#define SCREEN_X 16
-#define SCREEN_Y 16
 
 #define PI_VAL     3.1415926535f   // Also 180 DEGREE
 #define DEGREE_90  PI_VAL/2.0f
