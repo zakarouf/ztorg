@@ -2,7 +2,7 @@
 #include "g_main.h"
 #include "player.h"
 
-void g_setup_p (char state) {
+int g_setup_p (char state) {
 
 	char quit='n';
 
@@ -15,14 +15,14 @@ void g_setup_p (char state) {
 	p1.status.HP = 100;
 	p1.status.XP = 1;
 
-	while(quit != 'y') {
-		switch(p1.MODE)
-		{
+	switch(p1.MODE)
+	{
 			case 'n':
 				quit = g_raytest(3.0f, 3.0f, 0.0f); 	//g_normal(p1.X, p1.Y, 0);
 			case 'e':
 				quit = g_editor();
 			default:break;
-		}
 	}
+
+	return 0;
 }

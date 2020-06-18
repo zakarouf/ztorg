@@ -3,7 +3,7 @@
 
 #include <ncurses.h>
 
-void render_scr_fin (int px, int py);
+void render_scr_fin (int px, int py, int render_lim__Y, int render_lim__X);
 void render_scr_fin_ED (int px, int py, int scrX, int scrY);
 
 // Raycasting Mode

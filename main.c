@@ -77,7 +77,7 @@ int main(int argc, char const *argv[])
 	int option,eror;
 	char map_name[54] ;
 
-	struct winsize term_size;
+	//struct winsize term_size;
 
 	initscr();
 	cbreak();raw();
@@ -86,7 +86,7 @@ int main(int argc, char const *argv[])
 	init_pair(2, COLOR_RED, COLOR_BLACK);
 	use_default_colors();
 
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);
+/*	ioctl(STDOUT_FILENO, TIOCGWINSZ, &term_size);
 
 	if (term_size.ws_col < REQUIRED_TERM_X || term_size.ws_row < REQUIRED_TERM_Y) {
 
@@ -107,7 +107,7 @@ int main(int argc, char const *argv[])
     	endwin();
     	return -1;
 	}
-
+*/
 	while(quit == 0){
 		option = menu();
 		clear();

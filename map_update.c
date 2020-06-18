@@ -3,13 +3,19 @@
 #include "map_load.h"
 #include "player.h"
 #include <stdint.h>
+#include "render.h"
 
 
 void change_map (int x, int y) {
-	int i;
+	int i, duplicate = 0;
 	for (i = 0; i < 10; ++i)
 	{
 		if(x == map1.link[i][0] && y == map1.link[i][1]) {
+			duplicate++;
+		}
+		
+		if (duplicate == 1)
+		{
 			p1.X = map1.link[i][2];
 			p1.Y = map1.link[i][3];
 			process_map_file(map1.linkname[i]);

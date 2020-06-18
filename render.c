@@ -14,8 +14,8 @@ TODO: Fix error while rendering map with smaller scale
 #include "map.h"
 #include "stdlibra.h"
 
-#define MINI_MAP_X DEPTH+2
-#define MINI_MAP_Y DEPTH+2
+#define MINI_MAP_X 7
+#define MINI_MAP_Y 7
 
 void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 
@@ -93,25 +93,25 @@ void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 	}
 }
 
-void render_scr_fin (int px, int py) {
+void render_scr_fin (int px, int py, int render_lim_X, int render_lim_Y) {
 	
 	int sc = 1, sv = 0;
 
 
-	int j, i = py - (int)(MINI_MAP_Y/2) -1;
+	int j, i = py - (int)(render_lim_Y/2) -1;
 
-	int end_i = py + (int)(MINI_MAP_Y/2) +1;
-	int end_j = px + (int)(MINI_MAP_X/2) +1;
+	int end_i = py + (int)(render_lim_Y/2) +1;
+	int end_j = px + (int)(render_lim_X/2) +1;
 
-	if (end_i >= map1.Y) { end_i = map1.Y; i = map1.Y - MINI_MAP_Y -1; }
-	if (end_j >= map1.X) { end_j = map1.X; j = map1.X - MINI_MAP_X -1; }
+	if (end_i >= map1.Y) { end_i = map1.Y; i = map1.Y - render_lim_Y -1; }
+	if (end_j >= map1.X) { end_j = map1.X; j = map1.X - render_lim_X -1; }
 	
 	if (i < 0) {i = 0;}
 
 	for (; i < end_i; ++i)
 	{
 
-		j = px - (int)(MINI_MAP_X/2) -1;
+		j = px - (int)(render_lim_X/2) -1;
 		if (j < 0)  { j = 0;}
 		
 
@@ -131,7 +131,7 @@ void render_scr_fin (int px, int py) {
 }
 
 void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,int scrHEIGHT) {
-	clear();
+	wclear(stdscr);
 
 	move(0, 0);
 
@@ -142,7 +142,7 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 		float ray_distance = 0;
 		int chech_if_hitwall = 0;
 
-		int out_of_bounds = 0;
+		bool out_of_bounds = 0;
 
 		float p_eyeX = sinf(ray_angle);
 		float p_eyeY = cosf(ray_angle);
@@ -156,8 +156,7 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 
 			if(testX < 0 || testX >= map1.X || testY < 0 || testY >= map1.Y){
 
-				chech_if_hitwall = 1;
-				//out_of_bounds = 1;
+				out_of_bounds = true;
 				ray_distance = DEPTH;
 			}
 			else {
@@ -169,19 +168,23 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 		int ceiling = (scrHEIGHT / 2) - scrHEIGHT / (ray_distance);
 		int floor = scrHEIGHT - ceiling;
 
-		int shade;
+		int shade = 0;
 
-		if(chech_if_hitwall == 1){
-			shade = COLOR_WHITE;
-		}
-		else {shade = COLOR_YELLOW;}
+		if 		(chech_if_hitwall == 1)	{shade = COLOR_WHITE;}
+		else if (chech_if_hitwall == 2)	{shade = COLOR_YELLOW;}
 
 		for (int y = 0; y < scrHEIGHT; y++)
 		{
 			if(y > ceiling && y <= floor){
-				attron(COLOR_PAIR(shade));
+				if(!out_of_bounds){
+					attron(COLOR_PAIR(shade));
+				}
+				
 				mvaddch(y, x, ' ');
-				attroff(COLOR_PAIR(shade));
+
+				if(!out_of_bounds){
+					attroff(COLOR_PAIR(shade));
+				}
 
 			}
 		}
@@ -189,6 +192,6 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 	}
 
 
-	render_scr_fin(playerX, playerY);
-	mvprintw(0, 0, "X %2f Y %f A %2f", playerX, playerY, playerA);
+	render_scr_fin(playerX, playerY-.25f, MINI_MAP_X, MINI_MAP_Y);
+	mvprintw(0, 0, "X %2f Y %f A %2f", playerX, playerY-.25f, playerA);
 }

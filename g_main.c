@@ -12,7 +12,7 @@ MAIN GAME SEGMENT
 #include "map.h"
 #include "map_update.h"
 
-#define MVMT_SPD .25f
+#define MVMT_SPD 1.f
 
 enum{
 	HP,
@@ -185,7 +185,7 @@ int g_normal (int x, int y, unsigned int emode) {
 		// update player
 		map1.world[y][x]=p1.SELF;
 
-		render_scr_fin (x,y);
+		render_scr_fin (x,y, 16, 16);
 		key = getch();
 	}
 	return 0;
@@ -209,7 +209,7 @@ int g_raytest (float x, float y, float A) {
 
 	//stats WINDOW
 	WINDOW *hud[3]; 
-	hud[HP] = newwin(3, 5, screenY-4, 0);
+	hud[HP] = newwin(3, 10, screenY-4, 0);
 
 	//initialize shade;
 	init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_WHITE);
@@ -225,6 +225,8 @@ int g_raytest (float x, float y, float A) {
 
 		switch(key)
 		{
+
+			// Movement
 			case 'w':
 				x += sinf(A) * MVMT_SPD;
 				y += cosf(A) * MVMT_SPD;
@@ -251,6 +253,15 @@ int g_raytest (float x, float y, float A) {
 				direction_int += 1;
 				if(A > PI_VAL*2 ){A = 0; direction_int = 1;}
 				break;
+			// Movement END
+
+			case 'g':
+				change_map(x, y);
+				x = p1.X;
+				y = p1.Y;
+				break;
+
+			// QUIT GAME
 			case '`':
 				p1.MODE='y';
 				return 'y';
@@ -272,12 +283,12 @@ int g_raytest (float x, float y, float A) {
 		p1.pX = x;
 		p1.pY = y;	
 
-		raycasting_test(x, y, A, screenX, screenY);
+		raycasting_test(x, y+.25f, A, screenX, screenY);
 		refresh();
 
 		box(hud[HP] , 0 , 0);
 		mvwaddstr(hud[HP], 0, 1, "HP");
-		mvwprintw(hud[HP], 1, 1, "%3d", p1.status.HP);
+		mvwprintw(hud[HP], 1, 1, "%4d", p1.status.HP);
 		wrefresh(hud[HP]);
 
 		if(p1.status.HP == 0)
