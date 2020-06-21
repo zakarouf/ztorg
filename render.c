@@ -14,22 +14,39 @@ TODO: Fix error while rendering map with smaller scale
 #include "map.h"
 #include "stdlibra.h"
 
+
+/*
+-----------------------------------------------------
+DEFAULT SIZE OF MINI MAP
+----------------------------------------------------*/
 #define MINI_MAP_X 7
 #define MINI_MAP_Y 7
+//-------------------------------------------------//
+
+/*
+-----------------------------------------------------
+Value That'll be incremented in ray with each step
+until wall is hit or depth limit is reached  
+lower value = better precision but slower performence
+----------------------------------------------------*/
+#define RAY_DISTANCE_INCREMENT 0.1f
+//-------------------------------------------------//
+
+
 
 void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 
 	clear();
 
-	scrY = scrY * 3/4;
-	scrX = (scrX/2) - (scrX/10);
+	scrY -= 10;
+	scrX = (scrX>>1) - 4;
 
 	int sc_y = 0, sc_x = 0;
 
-	int i = py - (int)(scrY/2) -1, j;
+	int i = py - (int)(scrY>>1) -1, j;
 
-	int end_i = py + (int)(scrY/2) +1;
-	int end_j = px + (int)(scrX/2) +1;
+	int end_i = py + (int)(scrY>>1) +1;
+	int end_j = px + (int)(scrX>>1) +1;
 
 	if (end_i >= mapED.Y) {end_i = mapED.Y; i = mapED.Y - scrY -1;}
 	if (i < 0) {i = 0;
@@ -43,7 +60,7 @@ void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 	for (; i < end_i; ++i)
 	{
 
-		j = px - (int)(scrX/2) -1;
+		j = px - (int)(scrX>>1) -1;
 		if (end_j >= mapED.X) {end_j = mapED.X; j = mapED.X - scrX -1;}
 		if (j < 0) {j = 0;
 			if(scrX <= mapED.X){
@@ -68,7 +85,7 @@ void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 	}
 	addch('\n');
 
-	j = px - (int)(scrX/2) -1;
+	j = px - (int)(scrX>>1) -1;
 	if (end_j >= mapED.X) {end_j = mapED.X; j = mapED.X - scrX -1;}
 	if (j < 0)  { j = 0;}
 	for (; j < end_j; ++j)
@@ -77,7 +94,7 @@ void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 	}
 	addch('\n');
 
-	j = px - (int)(scrX/2) -1;
+	j = px - (int)(scrX>>1) -1;
 	if (end_j >= mapED.X) {end_j = mapED.X; j = mapED.X - scrX -1;}
 	if (j < 0)  { j = 0;}
 	addch(' ');
@@ -93,15 +110,12 @@ void render_scr_fin_ED (int px, int py, int scrX, int scrY) {
 	}
 }
 
-void render_scr_fin (int px, int py, int render_lim_X, int render_lim_Y) {
+void render_scr_fin (int sc ,int sv ,int px, int py, int render_lim_X, int render_lim_Y) {
 	
-	int sc = 1, sv = 0;
+	int j, i = py - (int)(render_lim_Y>>1) -1;
 
-
-	int j, i = py - (int)(render_lim_Y/2) -1;
-
-	int end_i = py + (int)(render_lim_Y/2) +1;
-	int end_j = px + (int)(render_lim_X/2) +1;
+	int end_i = py + (int)(render_lim_Y>>1) +1;
+	int end_j = px + (int)(render_lim_X>>1) +1;
 
 	if (end_i >= map1.Y) { end_i = map1.Y; i = map1.Y - render_lim_Y -1; }
 	if (end_j >= map1.X) { end_j = map1.X; j = map1.X - render_lim_X -1; }
@@ -111,7 +125,7 @@ void render_scr_fin (int px, int py, int render_lim_X, int render_lim_Y) {
 	for (; i < end_i; ++i)
 	{
 
-		j = px - (int)(render_lim_X/2) -1;
+		j = px - (int)(render_lim_X>>1) -1;
 		if (j < 0)  { j = 0;}
 		
 
@@ -147,12 +161,12 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 		float p_eyeX = sinf(ray_angle);
 		float p_eyeY = cosf(ray_angle);
 
-		while (!chech_if_hitwall && ray_distance < DEPTH && !out_of_bounds)
+		while (!chech_if_hitwall && ray_distance <= DEPTH && !out_of_bounds)
 		{
-			ray_distance += 0.1f;
+			ray_distance += RAY_DISTANCE_INCREMENT;
 
-			int testX = (int)(playerX + p_eyeX * ray_distance);
-			int testY = (int)(playerY + p_eyeY * ray_distance);
+			int testX = (int)(playerX+.5f + p_eyeX * ray_distance);
+			int testY = (int)(playerY+.5f + p_eyeY * ray_distance);
 
 			if(testX < 0 || testX >= map1.X || testY < 0 || testY >= map1.Y){
 
@@ -168,30 +182,39 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 		int ceiling = (scrHEIGHT / 2) - scrHEIGHT / (ray_distance);
 		int floor = scrHEIGHT - ceiling;
 
-		int shade = 0;
+		int color_txt = 0;
+		int shade = ' ';
 
-		if 		(chech_if_hitwall == 1)	{shade = COLOR_WHITE;}
-		else if (chech_if_hitwall == 2)	{shade = COLOR_YELLOW;}
+		if 		(chech_if_hitwall == 1)	{color_txt = COLOR_WHITE;}
+		else if (chech_if_hitwall == 2)	{color_txt = COLOR_YELLOW;}
+
+		if(ray_distance >= DEPTH-4 ) {shade = '.';}
+		if(ray_distance >= DEPTH-2)  {shade = ';';}
+		if(ray_distance >= DEPTH-1 ) {shade = '#';}
+		if(ray_distance == DEPTH)	 {shade = ' ';}
+
+
+
 
 		for (int y = 0; y < scrHEIGHT; y++)
 		{
 			if(y > ceiling && y <= floor){
-				if(!out_of_bounds){
-					attron(COLOR_PAIR(shade));
+				if(!out_of_bounds && shade == ' '){
+					attron(COLOR_PAIR(color_txt));
 				}
 				
-				mvaddch(y, x, ' ');
+				mvaddch(y, x, shade);
 
-				if(!out_of_bounds){
-					attroff(COLOR_PAIR(shade));
+				if(!out_of_bounds && shade == ' '){
+					attroff(COLOR_PAIR(color_txt));
 				}
-
 			}
+
 		}
 
 	}
 
 
-	render_scr_fin(playerX, playerY-.25f, MINI_MAP_X, MINI_MAP_Y);
-	mvprintw(0, 0, "X %2f Y %f A %2f", playerX, playerY-.25f, playerA);
+	render_scr_fin(1 ,0 ,playerX, playerY , MINI_MAP_X, MINI_MAP_Y);
+	mvprintw(0, 0, "X %2f Y %f A %2f", playerX, playerY, playerA);
 }

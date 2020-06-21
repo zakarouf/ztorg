@@ -3,7 +3,7 @@
 
 #include <ncurses.h>
 
-void render_scr_fin (int px, int py, int render_lim__Y, int render_lim__X);
+void render_scr_fin (int sc ,int sv ,int px, int py, int render_lim_X, int render_lim_Y);
 void render_scr_fin_ED (int px, int py, int scrX, int scrY);
 
 // Raycasting Mode
@@ -17,5 +17,7 @@ void raycasting_test (float playerX, float playerY, float playerA, int scrWIDTH,
 
 #define FOV PI_VAL/2.0f
 #define DEPTH 16.0f
+
+
 
 #endif

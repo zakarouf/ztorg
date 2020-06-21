@@ -1,18 +1,27 @@
 /*
 -----------------------------------------------------
 MAIN GAME SEGMENT
-	- Includes Also Editor Profile.
+	- Also Includes Editor Profile.
 ----------------------------------------------------*/
 #include <stdint.h>
 #include <math.h>
+
 #include "g_main.h"
-#include "player.h"
-#include "render.h"
-#include "editor.h"
+
 #include "map.h"
 #include "map_update.h"
 
-#define MVMT_SPD 1.f
+#include "player.h"
+#include "editor.h"
+
+#include "it_common.h"
+
+#include "render.h"
+
+//---------------------------------------------------//
+#define MVMT_SPD 1.0f
+#define TURN_SPEED DEGREE_90
+//---------------------------------------------------//
 
 enum{
 	HP,
@@ -22,10 +31,13 @@ enum{
 
 char g_editor () {
 
+	const char on_off[2][4] = {"OFF", "ON"};
+
 	mapED.crnt=1;
-	int x = mapED.X/2, y = mapED.Y/2;
-	uint8_t trail_enable=0;
-	int brush_size = 0;
+	int x = mapED.X>>1, y = mapED.Y>>1;
+
+	uint8_t brush_enable=0;
+	uint8_t brush_size = 0;
 
 	int scrX, scrY;
 	getmaxyx(stdscr, scrY, scrX);
@@ -36,8 +48,6 @@ char g_editor () {
 	if(e1.linkcount > 1){e1.linkcount = 0;}
 
 	WINDOW * status = newwin(5, scrX, scrY - 5, 0);
-
-
 
 
 	while (p1.MODE == 'e') {
@@ -66,7 +76,7 @@ char g_editor () {
 				wrefresh(status);
 				trail = wgetch(status);break;
 			case 'v':
-				trail_enable = trail_enable^1;break;
+				brush_enable = brush_enable^1;break;
 			case 'g':
 					e1.X = x; e1.Y = y;
 					echo();
@@ -82,17 +92,25 @@ char g_editor () {
 				wrefresh(status);
 				echo();
 				option = wgetch(status);
-				if(option == 'a'){e1.X = x; e1.Y = y;mask[e1.Y][e1.X]='A';}
-				if(option == '['){draw_box (x, y, e1.X, e1.Y ,trail);}
-				if(option == ']'){fillup_box (x, y, e1.X, e1.Y, trail);}
-				if(option == 'o'){fillup_circle(x, y, brush_size, trail);}
-				if(option == 'c'){draw_circle(x, y, trail);}
-				if(option == 'v'){scanw("%d", &brush_size);}
+				if(option == 'a') { 
+									e1.X = x;
+									e1.Y = y;
+									mask[e1.Y][e1.X]='A'; 
+								  }
+				if(option == '[') { draw_box (x, y, e1.X, e1.Y ,trail);		 }
+				if(option == ']') { fillup_box (x, y, e1.X, e1.Y, trail);	 }
+				if(option == 'o') { fillup_circle(x, y, brush_size, trail);	 }
+				if(option == 'c') { draw_circle(x, y, trail);				 }
+				if(option == 'v') { scanw("%d", &brush_size);				 }
 				noecho();
 			case 'e':
 				option = wgetch(status);
-				if(option=='q'){p1.MODE = 'y';mapED.crnt=0;return p1.MODE;}
-				if(option== 's'){save_map(e1.linkcount);}break;
+				if(option =='q'){
+									p1.MODE = 'y';
+									mapED.crnt=0;
+									return p1.MODE;
+								}
+				if(option == 's'){ save_map(e1.linkcount); }
 				break;
 			default:
 				break;
@@ -104,7 +122,7 @@ char g_editor () {
 		p1.pX = x;
 		p1.pY = y;
 
-		if (trail_enable)
+		if (brush_enable)
 		{
 			fillup_circle(x, y, brush_size, trail);
 		}
@@ -115,7 +133,8 @@ char g_editor () {
 		wclear(status);
 		box(status, 0, 0);
 		mvwprintw(status, 1, 1, "X - %3d Y - %3d", x, y);
-		mvwprintw(status, 2, 1, "TRAIL - %d:%c", trail_enable, trail);
+		mvwprintw(status, 2, 1, "BRUSH[%s] >> %c || SIZE >> %d", on_off[brush_enable], trail, brush_size);
+
 		refresh();
 		wrefresh(status);
 		key = wgetch(status);
@@ -185,7 +204,7 @@ int g_normal (int x, int y, unsigned int emode) {
 		// update player
 		map1.world[y][x]=p1.SELF;
 
-		render_scr_fin (x,y, 16, 16);
+		render_scr_fin (0, 0, x, y, 16, 16);
 		key = getch();
 	}
 	return 0;
@@ -193,16 +212,18 @@ int g_normal (int x, int y, unsigned int emode) {
 
 int g_raytest (float x, float y, float A) {
 
-	//const char direction[]="ESWNE";
+	const char direction[5][6]={"West","South","East","North","West"};
+	const char weapons[TOTAL_WEAPONS][12]= {"Melee", "Gun", "Orb", "Slasher", "Wand", "Mist", "Spell Book", "Gun Mod", "Summon"};
 	int direction_int = 1;
 	map1.crnt=1;
 
-	float turn_speed = DEGREE_90;
+	float turn_speed = TURN_SPEED;
 
 	int screenX;                // Console screen size X (columns)
 	int screenY;               // Console screen size Y (rows)
 
-	char key=' ';
+	char key = ' ';
+	uint8_t weapon_wield = 0;
 
 	//Get current screen Size
 	getmaxyx(stdscr, screenY, screenX);
@@ -214,7 +235,7 @@ int g_raytest (float x, float y, float A) {
 	//initialize shade;
 	init_pair(COLOR_WHITE, COLOR_WHITE, COLOR_WHITE);
 	init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-
+	init_pair(COLOR_RED, COLOR_RED, COLOR_RED);
 
 	while (p1.MODE == 'n') {
 
@@ -227,34 +248,47 @@ int g_raytest (float x, float y, float A) {
 		{
 
 			// Movement
+			// FORWARD / BACKWARD
 			case 'w':
-				x += sinf(A) * MVMT_SPD;
-				y += cosf(A) * MVMT_SPD;
+				x += (int)sinf(A) * MVMT_SPD;
+				y += (int)cosf(A) * MVMT_SPD;
 				break;
 			case 's':
-				x -= sinf(A) * MVMT_SPD;
-				y -= cosf(A) * MVMT_SPD;
+				x -= (int)sinf(A) * MVMT_SPD;
+				y -= (int)cosf(A) * MVMT_SPD;
 				break;
+			// STRAFE LEFT / RIGHT
 			case 'e':
-				x += cosf(A) * MVMT_SPD;
-				y += sinf(A) * MVMT_SPD;				
+				x += (int)cosf(A) * MVMT_SPD;
+				y += (int)sinf(A) * MVMT_SPD;				
 				break;
 			case 'q':
-				x -= cosf(A) * MVMT_SPD;
-				y -= sinf(A) * MVMT_SPD;
+				x -= (int)cosf(A) * MVMT_SPD;
+				y -= (int)sinf(A) * MVMT_SPD;
 				break;
+			// TURN LEFT / RIGHT
 			case 'a':
 				A -= turn_speed;
 				direction_int -= 1;
-				if(A <= 0.0f ){A = PI_VAL*2; direction_int = 0;}
+				if(A <= 0.0f ){A = PI_VAL*2; direction_int = 5;}
 				break;
 			case 'd':
 				A += turn_speed;
 				direction_int += 1;
-				if(A > PI_VAL*2 ){A = 0; direction_int = 1;}
+				if(A >= PI_VAL*2-1 ){A = 0; direction_int = 1;}
 				break;
 			// Movement END
 
+			case 'x':
+				mvprintw(screenY-1, screenX>>1, "DAMAGED >%d<", w_hitdamage_check(x, y, A, weapon_wield));
+				getch();
+				wrefresh(stdscr);
+			case 'z':
+				weapon_wield++;
+				if(weapon_wield >= TOTAL_WEAPONS)
+				{
+					weapon_wield = 0;
+				}
 			case 'g':
 				change_map(x, y);
 				x = p1.X;
@@ -272,6 +306,28 @@ int g_raytest (float x, float y, float A) {
 
 		if(map1.world[(int)y][(int)x] == '#'){x = p1.X; y = p1.Y; p1.status.HP--;}
 
+		// MOVABLE OBJECTS '*'
+		if(map1.world[(int)y][(int)x] == '*'){
+			if(key == 'w')
+			{
+				if(map1.world[(int)(y+cosf(A)*MVMT_SPD)][(int)(x+sinf(A)*MVMT_SPD)] == ' ')
+				{
+					map1.world[(int)y][(int)x] = ' ';
+					map1.world[(int)(y+(int)cosf(A)*MVMT_SPD)][(int)(x+(int)sinf(A)*MVMT_SPD)] = '*';
+				}
+				else 
+				{
+					x = p1.X; 
+					y = p1.Y;
+				}
+			}
+			else if (key == 's') 
+			{
+				x = p1.X; 
+				y = p1.Y;
+			}
+		}
+
 		if((x < 0 || y < 0 || x >= map1.X || y >= map1.Y))
 		{	
 			clear();
@@ -283,9 +339,13 @@ int g_raytest (float x, float y, float A) {
 		p1.pX = x;
 		p1.pY = y;	
 
-		raycasting_test(x, y+.25f, A, screenX, screenY);
+		// MAIN SCREEN
+		raycasting_test(x, y , A, screenX, screenY);
+		mvprintw(1, (screenX>>1) - 6, "[%s]" ,direction[direction_int]);
+		mvprintw(9, 0,"[%s]", weapons[weapon_wield]);
 		refresh();
 
+		// HUD STUFF
 		box(hud[HP] , 0 , 0);
 		mvwaddstr(hud[HP], 0, 1, "HP");
 		mvwprintw(hud[HP], 1, 1, "%4d", p1.status.HP);

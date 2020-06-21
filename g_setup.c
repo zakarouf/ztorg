@@ -4,8 +4,6 @@
 
 int g_setup_p (char state) {
 
-	char quit='n';
-
 	p1.pX = p1.X = e1.X = 0;
 	p1.pY = p1.Y = e1.Y = 0;
 	p1.SELF = '@';
@@ -18,9 +16,9 @@ int g_setup_p (char state) {
 	switch(p1.MODE)
 	{
 			case 'n':
-				quit = g_raytest(3.0f, 3.0f, 0.0f); 	//g_normal(p1.X, p1.Y, 0);
+				p1.MODE = g_raytest(3.0f, 3.0f, 0.0f); 	//g_normal(p1.X, p1.Y, 0);
 			case 'e':
-				quit = g_editor();
+				p1.MODE = g_editor();
 			default:break;
 	}
 
