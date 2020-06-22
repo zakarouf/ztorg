@@ -4,7 +4,6 @@
 #include "player.h"
 #include <stdint.h>
 #include <string.h>
-#include "render.h"
 
 
 void change_map (int x, int y) {
@@ -36,6 +35,7 @@ int switch_neighbour (int x,int y) {
 	else if(x < 0) 			{map_num = DIRECTION_EAST;}
 	else if(x >= map1.X) 	{map_num = DIRECTION_WEST;}
 	else 					{return -4;}
+
 
 	if(strcmp(map1.neighbour[map_num], map1.name) != 0) 
 	{

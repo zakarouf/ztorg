@@ -76,7 +76,8 @@ char g_editor () {
 				wrefresh(status);
 				trail = wgetch(status);break;
 			case 'v':
-				brush_enable = brush_enable^1;break;
+				brush_enable ^= 1;
+				break;
 			case 'g':
 					e1.X = x; e1.Y = y;
 					echo();
@@ -132,7 +133,7 @@ char g_editor () {
 		
 		wclear(status);
 		box(status, 0, 0);
-		mvwprintw(status, 1, 1, "X - %3d Y - %3d", x, y);
+		mvwprintw(status, 1, 1, "X - %d Y - %d", x, y);
 		mvwprintw(status, 2, 1, "BRUSH[%s] >> %c || SIZE >> %d", on_off[brush_enable], trail, brush_size);
 
 		refresh();
@@ -290,9 +291,9 @@ int g_raytest (float x, float y, float A) {
 					weapon_wield = 0;
 				}
 			case 'g':
-				change_map(x, y);
 				x = p1.X;
 				y = p1.Y;
+				change_map(x, y);
 				break;
 
 			// QUIT GAME

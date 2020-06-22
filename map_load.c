@@ -41,7 +41,6 @@ void map_export (int link_count) {
 
 	clear();
 	echo();
-    printw("WAT");
     
     char map_dir[52]="./maps/";                             // Directory
     int i;
@@ -246,7 +245,7 @@ int process_map_file (char map_name[54]) {
             
             if (fgets (buffer, MAX_MAP_WIDTH, map_file)!=NULL )
             {
-                //fgets(buffer, MAX_MAP_WIDTH, map_file);                  //player X 	//player Y 	   //goto y 	  //goto y
+                //fgets(buffer, MAX_MAP_WIDTH, map_file);                  //player X 	             //player Y 	        //goto x 	      //goto y
                 sscanf(buffer, "%s %d %d %d %d", map1.linkname[count], &map1.link[count][0], &map1.link[count][1], &map1.link[count][2], &map1.link[count][3]);
             }
             else{break;}
