@@ -22,100 +22,103 @@ It can be executed by
 
 After execting the game, it should look like this
 ```
-ZACK v0.2c
-/// MAIN MENU ///
-PLAY
-EDITOR
-QUIT  
+ZTORG
+----------------------
+0. PLAY
+1. EDITOR (NEW)
+2. EDITOR (OPEN)
+3. QUIT
+>> PLAY
 ```
-Three options are self Explanatory 
+- Press Num keys to traverse Menu.
+- To Countinue w/ Selected option Press 'e'.
+- Three options are self Explanatory.
 - Select Play to Start At a map.
 - Editor to make a Map. 
 - Quit to quit.
 
 ### PLAY 
-This mode as of current is just a free roam in a selected map
-- NO NPCs
-- NO ENEMIES
-- NO TERRAIN FEATURES
-I would however, would like to add those features in future.
+This mode as of current is just a free roam in a selected map.
+I would however, would like to add RPG features in future.
 ### EDITOR
 As of now Editor is my Main Focus, It is a tool to make Maps for the game.
-Starting the Editor will prompt the player to Enter Map X/Y Dimention (Map is always a Rectangle) & Map Name
 ```
-Enter Map Size
-X : 70
-Y : 100
-Map Name : maptest
+ZTORG
+----------------------
+0. PLAY
+1. EDITOR (NEW)
+2. EDITOR (OPEN)
+3. QUIT
+>> EDITOR (NEW)
+```
+In Main Menu Press '1' to select Editor w/ A clean slate.
+Starting the Editor will prompt the player to Enter Map X/Y Dimention (Map is always a Rectangle) & Map Name.
+```
+Enter Map Dimention
+13 41
+Enter Map Name
+mymap
 ```
 This will auto genarate a Blank Map where you can draw n' stuff.
 ```
-                               | 37
-                               | 38
-                               | 39
-                               | 40
-                               | 41
-                               | 42
-                               | 43
-                               | 44
-                               | 45
-                               | 46
-                               | 47
-                               | 48
-                               | 49
-                @              | 50
-                               | 51
-                               | 52
-                               | 53
-                               | 54
-                               | 55
-                               | 56
-                               | 57
-                               | 58
-                               | 59
-                               | 60
-                               | 61
-                               | 62
-X - 35 Y - 50
-TRAIL - 0: 
+
+             | 2
+             | 3
+             | 4
+             | 5
+             | 6
+             | 7
+             | 8
+             | 9
+        @    | 10
+             | 11
+             | 12
+             | 13
+             | 14
+             | 15
+             | 16
+             | 17
+
+
+Brush[OFF] -> Floor/Space || 0
+
+
+
+X - 8 || Y - 10
 ```
-Now you can Draw by pressing 'v', This will enable trail mode
+Now you can Draw by pressing 'v', This will enable Brush mode
 ```
-TRAIL - 1:
+Brush - 1:
 ```
 ...and then press 'c' followed by ascii char in your keyboard which you want to draw.
 Ohh, I forgot to mention, use "wasd" keys to move around.
 ```
-                               | 39
-                               | 40
-                               | 41
-                               | 42
-                               | 43
-                               | 44
-                               | 45
-                               | 46
-              .....            | 47
-            ...   .            | 48
-           ..     .            | 49
-           .   ....            | 50
-           .                   | 51
-           .....@              | 52
-                               | 53
-                               | 54
-                               | 55
-                               | 56
-                               | 57
-                               | 58
-                               | 59
-                               | 60
-                               | 61
-                               | 62
-                               | 63
-                               | 64
-X - 36 Y - 52
-TRAIL - 1:.
+
+             | 4
+             | 5
+             | 6
+             | 7
+             | 8                                                        0 - Floor/Space
+             | 9                                                        1 - WALL
+     ##..    | 10                                                       2 - WALL_MOVEABLE
+     #       | 11                                                       3 - WALL_BREAKABLE
+     @       | 12                                                       4 - WALL_INVISIBLE
+             | 13                                                       5 - FLOOR_TOXIC
+             | 14                                                       6 - FLOOR_WATER
+             | 15                                                       7 - FLOOR_NULL
+             | 16
+             | 17
+             | 18
+             | 19
+
+
+Brush[ON] -> WALL || 0
+
+
+
+X - 5 || Y - 12
 ```
-- You can Disable Trail mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if trail is disabled(0).
+- You can Disable Brush mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if Brush is disabled(0).
 
 I'll add more Draw funtion Instruction Once I finalize them(they're there, look into g_main.c{g_editor} if ya want to use them.)
 
