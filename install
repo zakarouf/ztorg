@@ -1,0 +1,23 @@
+#!/bin/bash
+
+CCF=gcc-7
+CFLAGS='-Wall'
+LDFLAGS='-lncurses -L. -Iinclude'
+
+OUTEX_FILE='z'
+
+# Covert C files to .o files
+$CCF $CFLAGS $LDFLAGS -c *.c
+
+# Compile programme
+$CCF $CFLAGS $LDFLAGS -o $OUTEX_FILE *.o
+
+# Move exectable to its rightful place.
+mv $OUTEX_FILE ztorg_g/
+# Remove .o files
+rm *.o
+
+
+if [[ $1 == "-run" ]]; then
+	./ztorg_g/$OUTEX_FILE
+fi
