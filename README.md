@@ -11,12 +11,13 @@ For Installing it just run
 ```
 git clone https://github.com/zakarouf/ztorg.git
 cd ztorg
-./compile
+./install
 ```
-And it Should Compile the binary in current directory named 'ztorg'
+And it Should Compile the binary in current directory named 'z' in directory 'data'.
 It can be executed by
 ```
-./ztorg
+cd data
+./z
 ```
 ## Game
 
