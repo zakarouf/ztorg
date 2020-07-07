@@ -19,9 +19,9 @@ int t_apply_tileattr (TILEATTR *tile, int attr_int)
 		{	0	, true	, true	, false	,	false	, false	, false }, // 002 WALL_MOVEABLE
 		{	0	, true	, false	, true 	,	false	, false	, false }, // 003 WALL_BREAKABLE
 		{	0	, true	, false	, true	,	false	, false	, false }, // 004 WALL_INVISIBLE
-		{	0	, true	, false	, true	,	true	, true	, true 	}, // 005 FLOOR_TOXIC
-		{	0	, true	, false	, true	,	true	, false	, true 	}, // 006 FLOOL_WATER
-		{	0	, true	, false	, true	,	true	, false	, true 	}, // 007 FLOOR_NULL
+		{	0	, false	, false	, true	,	true	, true	, true 	}, // 005 FLOOR_TOXIC
+		{	0	, false	, false	, true	,	true	, false	, true 	}, // 006 FLOOL_WATER
+		{	0	, false	, false	, true	,	true	, false	, true 	}, // 007 FLOOR_NULL
 	};
 
 
