@@ -1,6 +1,4 @@
-compile
+install
 save
-o/*
-test/*
-maps/*
-ztorg
+data/*
+a.out
