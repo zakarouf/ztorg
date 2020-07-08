@@ -34,27 +34,27 @@ After execting the game, it should look like this
 This mode as of current is just a free roam in a selected map.
 I would however, would like to add RPG features in future.
 Well for Reffernce It looks like This
-[play](https://github.com/zakarouf/ztorg/blob/master/doc/scr/play.png)
+![play](https://github.com/zakarouf/ztorg/blob/master/doc/scr/play.png?raw=true)
 ### EDITOR
 As of now Editor is my Main Focus, It is a tool to make Maps for the game.
-[editor_select](https://github.com/zakarouf/ztorg/blob/master/doc/scr/editor_select.png)
+![editor_select](https://github.com/zakarouf/ztorg/blob/master/doc/scr/editor_select.png?raw=true)
 In Main Menu Press '1' to select Editor w/ A clean slate.
 Starting the Editor will prompt the player to Enter Map X/Y Dimention (Map is always a Rectangle) & Map Name.
 
-[editor_setup](https://github.com/zakarouf/ztorg/blob/master/doc/scr/editor_setup.png)
+![editor_setup](https://github.com/zakarouf/ztorg/blob/master/doc/scr/editor_setup.png?raw=true)
 
 This will auto genarate a Blank Map where you can draw n' stuff.
 
-[e_intro](https://github.com/zakarouf/ztorg/blob/master/doc/scr/e_intro.png)
+![e_intro](https://github.com/zakarouf/ztorg/blob/master/doc/scr/e_intro.png?raw=true)
 
 Press 'c' followed by ascii char in your keyboard which you want to draw.
 Ohh, I forgot to mention, use "wasd" keys to move around.
 
-[e_c](https://github.com/zakarouf/ztorg/blob/master/doc/scr/change_tile_0.png)
+![e_c](https://github.com/zakarouf/ztorg/blob/master/doc/scr/change_tile_0.png?raw=true)
 
 Now you can Draw by pressing 'v', This will enable Brush mode
 
-[move](https://github.com/zakarouf/ztorg/blob/master/doc/scr/move_brush_on.png)
+![move](https://github.com/zakarouf/ztorg/blob/master/doc/scr/move_brush_on.png?raw=true)
 
 - You can Disable Brush mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if Brush is disabled(0).
 
