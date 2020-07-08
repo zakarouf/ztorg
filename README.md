@@ -33,7 +33,7 @@ After execting the game, it should look like this
 ### PLAY 
 This mode as of current is just a free roam in a selected map.
 I would however, would like to add RPG features in future.
-Well for Reffernce It looks like This
+Well for Reffernce It looks like This. In 3D raycasting mode.
 ![play](https://github.com/zakarouf/ztorg/blob/master/doc/scr/play.png?raw=true)
 ### EDITOR
 As of now Editor is my Main Focus, It is a tool to make Maps for the game.
