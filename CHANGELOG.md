@@ -3,6 +3,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3] -2020-07-08
+### Added
+    - NPC units 
+    - Tiles and Terrain for map
+    - 3d raycasting mode
+
+### Changed
+    - Linker Removed Indefinately
+    - Neighbour Removed
+### Fixed
+    - Better Code Workflow. Nearly no globals. Most of function use Pointers now
+
 ## [0.2f] - 2020-05-05
 ### Added
     - Added a 'Proper' Screen Renderer this time.

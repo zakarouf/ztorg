@@ -3,5 +3,5 @@
 
 void save_map (MAP *map)
 {
-	map_write_world (map, "test", 1);
+	map_write_world (map, map->name, true);
 }

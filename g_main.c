@@ -10,7 +10,6 @@ MAIN GAME SEGMENT
 #include "map_def.h"
 
 //---------------------------------------------------//
-#define mvmt_speed 1.0f
 #define TURN_SPEED DEGREE_90
 //---------------------------------------------------//
 
@@ -26,7 +25,7 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 	bool quit = 0;
 
 	float px, py;
-	float mvmt_spd = 0.1f, turn_angle = DEGREE_1*12;
+	float mvmt_spd = 1.0f, turn_angle = TURN_SPEED;
 	uint8_t key = ' ';
 
 	WINDOW *hud[3];
@@ -43,21 +42,21 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 			// Movement
 			// FORWARD / BACKWARD
 			case 'w':
-				p1->X += sinf(p1->A) * mvmt_spd;
-				p1->Y += cosf(p1->A) * mvmt_spd;
+				p1->X += (int)sinf(p1->A) * mvmt_spd;
+				p1->Y += (int)cosf(p1->A) * mvmt_spd;
 				break;
 			case 's':
-				p1->X -= sinf(p1->A) * mvmt_spd;
-				p1->Y -= cosf(p1->A) * mvmt_spd;
+				p1->X -= (int)sinf(p1->A) * mvmt_spd;
+				p1->Y -= (int)cosf(p1->A) * mvmt_spd;
 				break;
 			// STRAFE LEFT / RIGHT
 			case 'e':
-				p1->X += cosf(p1->A) * mvmt_spd;
-				p1->Y += sinf(p1->A) * mvmt_spd;				
+				p1->X += (int)cosf(p1->A) * mvmt_spd;
+				p1->Y += (int)sinf(p1->A) * mvmt_spd;				
 				break;
 			case 'q':
-				p1->X -= cosf(p1->A) * mvmt_spd;
-				p1->Y -= sinf(p1->A) * mvmt_spd;
+				p1->X -= (int)cosf(p1->A) * mvmt_spd;
+				p1->Y -= (int)sinf(p1->A) * mvmt_spd;
 				break;
 			// TURN LEFT / RIGHT
 			case 'a':

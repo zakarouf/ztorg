@@ -47,7 +47,7 @@ void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile) {
 		{
 
 			waddch(mini_map, tile[m->world[i][j]].symb);
-			if(j == p->X && i == p->Y ){
+			if(j == (int)p->X && i == (int)p->Y ){
 				waddch(mini_map,'\b');
 				waddch(mini_map,'@');
 			}

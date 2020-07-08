@@ -1,4 +1,5 @@
 #include "npc_lib.h"
+#include "calc.h"
 
 bool npc_find_player_pos (NPC *npc, int px, int py, int *dist)
 {
@@ -21,9 +22,10 @@ void npc_hostile_update (NPC *npc, MAP *map, PLAYER *p1, int npc_count)
 		int dist;
 		if(npc_find_player_pos(&npc[i], p1->X, p1->Y, &dist))
 		{
-			if (1)
+			int ifhit = calc_hit_chance_range(npc->sight, npc->stat.IN, sqrt(dist), 5, p1->stat.IN);
+			if (ifhit)
 			{
-				//p_hurt_player(npc[i].stat.ATT, p1, dist);
+				p1->stat.HP--;
 			}
 		}
 		else

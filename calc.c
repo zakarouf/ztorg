@@ -8,6 +8,21 @@ int calc_calculate_damage ()
 	return dmg;
 }
 
+int calc_hit_chance_range
+(	int sight,
+	int intelligence,
+	int distance,
+	int wp_precision,
+	int p_intelligence
+)
+{
+
+	int s_val = (100*(sight - distance))/sight;
+	int r_val = s_val;
+
+	return r_val;
+}
+
 
 float calc_carmack_sqrt (float number)
 {

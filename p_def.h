@@ -10,6 +10,7 @@ struct STATUS_ATTR
 	int ATT;
 	int DEF;
 	int IN;
+	int XP;
 	
 };
 
@@ -19,7 +20,7 @@ typedef struct
 	float X;
 	float Y;
 	float A;
-	int stat[3];
+	struct STATUS_ATTR stat;
 }
 PLAYER;
 

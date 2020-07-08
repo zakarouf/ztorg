@@ -13,11 +13,13 @@ $CCF $CFLAGS $LDFLAGS -c *.c
 $CCF $CFLAGS $LDFLAGS -o $OUTEX_FILE *.o
 
 # Move exectable to its rightful place.
-mv $OUTEX_FILE ztorg_g/
+mv $OUTEX_FILE data/
 # Remove .o files
 rm *.o
 
 
 if [[ $1 == "-run" ]]; then
-	./ztorg_g/$OUTEX_FILE
+	cd data
+	./$OUTEX_FILE
+	cd ..
 fi
