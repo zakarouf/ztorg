@@ -22,7 +22,7 @@ cd data
 ## Game
 
 After execting the game, it should look like this
-[main_menu](https://github.com/zakarouf/ztorg/blob/master/doc/scr/main_menu.png)
+[main_menu](https://github.com/zakarouf/ztorg/blob/master/doc/scr/main_menu.png?raw=true)
 - Press Num keys to traverse Menu.
 - To Countinue w/ Selected option Press 'e'.
 - Three options are self Explanatory.
