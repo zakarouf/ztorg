@@ -38,7 +38,7 @@ int map_write_world (MAP *map, char map_name[], bool new_map)
     // INIT FILE POINTER
     FILE *fileP;
 
-    if((fileP = fopen("maps/test/world", "w+")) == NULL)
+    if((fileP = fopen(map_ent_buff_dir, "w+")) == NULL)
     {
     	fclose(fileP);
     	printw("%s", map_ent_buff_dir);
