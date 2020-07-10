@@ -1,4 +1,4 @@
-#include "npc_lib.h"
+#include "p_npc.h"
 #include "calc.h"
 
 bool npc_find_player_pos (NPC *npc, int px, int py, int *dist)

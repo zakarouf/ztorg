@@ -1,6 +1,6 @@
 /*
 -----------------------------------------------------
-This a Map Loading Segment
+This is Map Exporting Segment
 ----------------------------------------------------*/
 
 #include <string.h>

@@ -85,5 +85,14 @@ void z_init_main(int mode)
 
 		free(map.world);
 	}
+
+	else if (mode == 0)
+	{
+		clear();
+		TILE *A = init_TILESET("zak");
+		refresh();
+		free(A);
+		getch();
+	}
 	free(tile);
 }

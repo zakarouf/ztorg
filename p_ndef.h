@@ -4,6 +4,10 @@
 #include "p_def.h"
 #include "map_def.h"
 
+/*
+	Make NPC Structure
+*/
+
 enum
 {
 	GUARD,

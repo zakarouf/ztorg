@@ -1,13 +1,12 @@
 /*
 -----------------------------------------------------
-This a Map Loading Segment
+This is Map Loading Segment
 ----------------------------------------------------*/
 
 #include <string.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 
 #include "alloc.h"
 #include "map_lib.h"

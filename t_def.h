@@ -16,9 +16,9 @@ typedef struct TILEATTR
 }TILEATTR;
 
 
-typedef struct
+typedef struct Tileset
 {
-	char name_id[16];
+	char name_id[32];
 	uint8_t tex_id;
 	uint8_t symb;
 	uint8_t coloc;

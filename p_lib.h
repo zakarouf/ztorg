@@ -2,7 +2,7 @@
 #define PLAYER_LIBRARY
 
 #include "p_def.h"
-#include "npc_lib.h"
+#include "p_npc.h"
 
 PLAYER *init_player (PLAYER *p);
 

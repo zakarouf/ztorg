@@ -61,7 +61,7 @@ int main_menu (void) {
 	}
 
 	clear();
-	return option;
+	return 9;
 }
 
 
@@ -94,6 +94,8 @@ int main (int argc, char const *argv[])
 			case 3:
 				quit = 1;
 				break;
+			case 9:
+				z_init_main(0); //DEBUG
 			default:
 				break;
 		}

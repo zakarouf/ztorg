@@ -1,4 +1,4 @@
-#include "npc_lib.h"
+#include "p_npc.h"
 
 int npc_set_stat (NPC* npc, int member, int tier)
 {
