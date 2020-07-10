@@ -5,7 +5,7 @@
 
 #define TILESET_DEFAULT "DEFAULT"
 
-int t_apply_tileattr (TILEATTR *tile, int attr_int);
+int t_apply_tileattr (attribute_bit_t *tile, int attr_int);
 TILE *init_TILESET (char tileset_name[]);
 
 #endif

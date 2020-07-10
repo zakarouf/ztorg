@@ -14,7 +14,7 @@ This is Map Loading Segment
 
 /*---------*/
 
-uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, uint8_t *error_n)
+uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, char *tilename, uint8_t *error_n)
 {
     
     if(strcmp(map_name, VACANT_MAP) == 0) {
@@ -48,6 +48,10 @@ uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, uint8_t *e
 
     sscanf(buffer, "%hi %hi", X, Y); // Apply XY cord
 
+    fscanf(fileP, "%s", tilename);
+
+
+
     /// MAP WORLD
 
     uint8_t **world = malloc_2D_array_uint8 (X[0], Y[0], 0, 0);
@@ -57,8 +61,11 @@ uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, uint8_t *e
         for (int j = 0; j < X[0]; ++j)
         {
             fscanf(fileP, "%hhd", &world[i][j]);
+            printw("%d ", world[i][j]);
         }
+        addch('\n');
     }
+
 
     // ALL OK
     error_n[0] = 0;

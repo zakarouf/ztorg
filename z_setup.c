@@ -10,11 +10,8 @@
 #include "alloc.h"
 
 
-void z_init_main(int mode)
+int z_init_main(int mode)
 {
-
-	// Init Tile Properties
-	TILE *tile = init_TILESET(TILESET_DEFAULT);
 	
 	// Declare map
 	MAP map;
@@ -30,10 +27,15 @@ void z_init_main(int mode)
 
 		// Load Map
 		printw("Enter Map Name\n");
+
+		char *tilename = malloc(sizeof(char) * 64);
+
 		while (key != 0)
 		{
 			scanw("%s", map.name);
-			map.world = map_read_world (map.name, &map.X, &map.Y, &key);
+			
+			map.world = map_read_world (map.name, &map.X, &map.Y, tilename, &key);
+
 			if(!key)
 			{
 				printw("ERROR");
@@ -41,6 +43,12 @@ void z_init_main(int mode)
 		}
 		clear();
 		//printw("MAP LOADED");getch();
+
+		// Init Tile Properties
+		TILE *tile;
+		if((tile = init_TILESET(tilename)) == NULL)
+			return 6;
+		free(tilename);
 
 		// Init Player Stuff
 		PLAYER pp;
@@ -56,12 +64,14 @@ void z_init_main(int mode)
 
 		g_main_loop(&pp, &map, tile);
 
-
+		free(tile);
 		free(map.world);
 	}
 
 	else if (mode == 2)
 	{
+		// Init Tile Properties
+		TILE *tile = init_TILESET(TILESET_DEFAULT);
 
 		clear();
 		echo();
@@ -83,16 +93,19 @@ void z_init_main(int mode)
 		noecho();
 		e_main_loop(&ee, &map, tile);
 
+		free(tile);
 		free(map.world);
 	}
 
 	else if (mode == 0)
 	{
 		clear();
-		TILE *A = init_TILESET("zak");
+		TILE *A = init_TILESET("DEFAULT_EXT");
 		refresh();
 		free(A);
 		getch();
 	}
-	free(tile);
+
+	return 0;
+	
 }

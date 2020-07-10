@@ -61,7 +61,7 @@ int main_menu (void) {
 	}
 
 	clear();
-	return 9;
+	return option;
 }
 
 

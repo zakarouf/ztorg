@@ -9,7 +9,9 @@
 #include "p_def.h"
 #include "e_def.h"
 
-#define PI_VAL     3.1415926535f   // Also 180 DEGREE
+#include "config.h"
+
+// PI VAL is Also 180 DEGREE
 #define DEGREE_90  PI_VAL/2.0f
 #define DEGREE_270 3.0f*PI_VAL/2.0f
 #define DEGREE_1   0.0174533f

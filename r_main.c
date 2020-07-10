@@ -12,7 +12,7 @@ TODO: Fix error while rendering map with smaller scale
 	  ADD Windows
 ----------------------------------------------------*/
 
-#define RAY_DISTANCE_INCREMENT 0.1f
+
 
 void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile) {
 
@@ -176,7 +176,7 @@ void r_render_world_raycast (PLAYER *player, MAP *map, TILE *tile)
 				ray_distance = DEPTH;
 			}
 			else {
-				if(tile[map->world[testY][testX]].attr.iswall == true && tile[map->world[testY][testX]].attr.isinvi == false) 
+				if((tile[map->world[testY][testX]].attr & TILE_ISWALL) && !(tile[map->world[testY][testX]].attr & TILE_ISINVI)) 
 				{
 					chech_if_hitwall = 1;
 					color_txt = tile[map->world[testY][testX]].coloc;

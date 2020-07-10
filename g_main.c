@@ -82,7 +82,7 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 			p1->Y = py;
 		}
 
-		if(tile[map->world[(int)p1->Y][(int)p1->X]].attr.ismove == true)
+		if(tile[map->world[(int)p1->Y][(int)p1->X]].attr &TILE_ISMOVE)
 		{
 			if(key == 'w')
 			{
@@ -100,7 +100,7 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 		}
 
 
-		if(tile[map->world[(int)p1->Y][(int)p1->X]].attr.iswall == true)
+		if(tile[map->world[(int)p1->Y][(int)p1->X]].attr &TILE_ISWALL)
 		{
 			p1->X = px; 
 			p1->Y = py;

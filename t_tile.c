@@ -9,18 +9,19 @@ This is Tile Loading Segment
 #include "r_lib.h"
 #include "t_lib.h"
 #include "alloc.h"
+#include "calc.h"
 
-int t_apply_tileattr (TILEATTR *tile, int attr_int)
+int t_apply_tileattr (attribute_bit_t *tile, int attr_int)
 {
 
 	if(attr_int > 8)
 	{
 		return -1;
 	}
-
-	TILEATTR default_t[8] = {
+/*
+	TILEATTR default_tile_attr_a[8] = {
 	//	 ISINVI	  ISWALL  ISMOVE ISBREAK   ISLIQUID	 ISTOXIC ISWALK
-		{ false , false	, false	, false	,	false	, false	, true	}, // 000 SPACE/FLOOR 
+		{ false , false	, false	, false	,	false	, false	, true	}, // 000 SPACE/FLOOR
 		{ false , true	, false	, false	,	false	, false	, false }, // 001 WALL 
 		{ false , true	, true	, false	,	false	, false	, false }, // 002 WALL_MOVEABLE
 		{ false , true	, false	, true 	,	false	, false	, false }, // 003 WALL_BREAKABLE
@@ -29,22 +30,33 @@ int t_apply_tileattr (TILEATTR *tile, int attr_int)
 		{ false , false	, false	, true	,	true	, false	, true 	}, // 006 FLOOL_WATER
 		{ false , false	, false	, true	,	true	, false	, true 	}, // 007 FLOOR_NULL
 	};
+*/
+
+	attribute_bit_t attr[64] = {
+
+		TILE_ISWALK,	// 000 SPACE/FLOOR
+		TILE_ISWALL,	// 001 WALL 
+		TILE_ISWALL | TILE_ISMOVE,	// 002 WALL_MOVEABLE
+		TILE_ISWALL | TILE_ISDEST,	// 003 WALL_BREAKABLE
+		TILE_ISWALL | TILE_ISINVI,	// 004 WALL_INVISIBLE
+		TILE_ISWALK | TILE_ISTOXI,	// 005 FLOOR_TOXIC
+		TILE_ISWALK | TILE_ISFLUD,	// 006 FLOOL_WATER
+		TILE_ISWALK,	// 007 FLOOR_NULL
+	};
 
 
+	for (int i = 0; i < 8; ++i)
+	{
+			tile[0] |= attr[attr_int];
+	}
 
-		tile[0].isinvi = default_t[attr_int].isinvi;
-		tile[0].iswall = default_t[attr_int].iswall;
-		tile[0].ismove = default_t[attr_int].ismove;
-		tile[0].isbreak = default_t[attr_int].isbreak;
-		tile[0].isliquid = default_t[attr_int].isliquid;
-		tile[0].istoxic = default_t[attr_int].istoxic;
-		tile[0].iswalk = default_t[attr_int].iswalk;
+
 
 	return 0;
 
 }
 
-TILE *load_custom_tile (char tile_name[], uint8_t *maxtile)
+TILE *load_custom_tile (char *tile_name, uint8_t *maxtile)
 {
 	char tile_dir[64] = "tiles/";
 	char tile_file_name_buff[72];
@@ -58,6 +70,9 @@ TILE *load_custom_tile (char tile_name[], uint8_t *maxtile)
 
 	if(fp == NULL)
 	{
+		printw("NO SUCH TILESET EXIST");
+		refresh();
+		getch();
 		return NULL;
 	}
 
@@ -67,7 +82,11 @@ TILE *load_custom_tile (char tile_name[], uint8_t *maxtile)
     fgets(buffer, 128, fp); // get XY
     sscanf(buffer, "%hhd", &maxtile[0]);
 
-    if((r_tile = malloc(sizeof(TILE) * maxtile[0])) == NULL){
+    if((r_tile = malloc(sizeof(TILE) * maxtile[0])) == NULL)
+    {
+    	printw("NO UNABLE TO ALLOCATE REQUIRED MEMORY");
+    	refresh();
+		getch();
     	return NULL;
     }
 
@@ -80,59 +99,15 @@ TILE *load_custom_tile (char tile_name[], uint8_t *maxtile)
     fgets(buffer, 128, fp);
     fgets(buffer, 128, fp);
 
+
+
     for(int i = 0; i < maxtile[0]; i++)
     {
     	fscanf(fp, "%hhd", &r_tile[i].symb);
-    }
-
-    fgets(buffer, 128, fp);
-    fgets(buffer, 128, fp);
-
-    for(int i = 0; i < maxtile[0]; i++)
-    {
     	fscanf(fp, "%hhd", &r_tile[i].coloc);
+    	fscanf(fp, "%hd", &r_tile[i].attr);
+
     }
-
-    fgets(buffer, 128, fp);
-    fgets(buffer, 128, fp);
-
-
-    for(int i = 0; i < maxtile[0]; i++)
-    {
-
-    	fscanf(fp, "%hhd", &r_tile[i].attr.isinvi);
-		fscanf(fp, "%hhd", &r_tile[i].attr.iswall);
-		fscanf(fp, "%hhd", &r_tile[i].attr.ismove);
-		fscanf(fp, "%hhd", &r_tile[i].attr.isbreak); 
-		fscanf(fp, "%hhd", &r_tile[i].attr.isliquid);
-		fscanf(fp, "%hhd", &r_tile[i].attr.istoxic );
-		fscanf(fp, "%hhd", &r_tile[i].attr.iswalk);
-    }
-
-
-
-
-
-
-
-
-    for(int i = 0; i < maxtile[0]; i++)
-    {
-    	printw("%s | %c | %d\n", r_tile[i].name_id, r_tile[i].symb, r_tile[i].coloc);
-    }
-    for(int i = 0; i < maxtile[0]; i++)
-    {
-
-    	printw("%hhd ", r_tile[i].attr.isinvi);
-		printw("%hhd ", r_tile[i].attr.iswall);
-		printw("%hhd ", r_tile[i].attr.ismove);
-		printw("%hhd ", r_tile[i].attr.isbreak); 
-		printw("%hhd ", r_tile[i].attr.isliquid);
-		printw("%hhd ", r_tile[i].attr.istoxic );
-		printw("%hhd\n", r_tile[i].attr.iswalk);
-    }
-
-
 
     fclose(fp);
     return r_tile;
@@ -175,10 +150,15 @@ TILE *init_TILESET (char tileset_name[])
 		}
 
 		return tileset;
+
+
+
+
 	}
 	else
 	{
 		uint8_t maxtile;
+		//printw("%s", tileset_name);
 		TILE  *r_v = load_custom_tile(tileset_name, &maxtile);
 		return r_v;
 	}

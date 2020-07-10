@@ -31,7 +31,7 @@ Map Directory Structure
 /*-------------*/
 
 
-uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, uint8_t *error_n);
+uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, char tilename[] ,uint8_t *error_n);
 
 /*
 -------------------------------------------------------------
