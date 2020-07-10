@@ -196,8 +196,6 @@ void r_render_world_raycast (PLAYER *player, MAP *map, TILE *tile)
 		if(ray_distance == DEPTH)	 {shade = ' ';}
 
 
-
-
 		for (int y = 0; y < scrHEIGHT; y++)
 		{
 			if(y > ceiling && y <= floor){

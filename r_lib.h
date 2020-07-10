@@ -32,4 +32,7 @@ void r_render_world_raycast (PLAYER *player, MAP *map, TILE *tile);
 // ---EDITOR---
 //void r_editor_status_hud (WINDOW *status, uint8_t stat[3], char tile_desc[][16]);
 
+//---TMAKER---
+void r_t_show_all_tile (TILE *tile, int t_size);
+
 #endif

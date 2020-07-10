@@ -11,6 +11,22 @@ This is Tile Loading Segment
 #include "alloc.h"
 #include "calc.h"
 
+TILE* t_calloc_tile (int t_size)
+{
+	TILE *tile = malloc(sizeof(TILE) * t_size);
+
+	for (int i = 0; i < t_size ; i++)
+	{
+		sprintf(tile[i].name_id, "NULL");
+		tile[i].tex_id = 0;
+		tile[i].symb = 32;
+		tile[i].coloc = 0;
+		tile[i].attr = 0;
+	}
+	
+	return tile;
+}
+
 int t_apply_tileattr (attribute_bit_t *tile, int attr_int)
 {
 
