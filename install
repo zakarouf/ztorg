@@ -2,9 +2,11 @@
 
 CCF=gcc-7
 CFLAGS='-Wall'
-LDFLAGS='-lncurses -L. -Iinclude'
+LDFLAGS='-lncurses -lm -L. -Iinclude'
 
 OUTEX_FILE='z'
+
+tar -xf data.tar
 
 # Covert C files to .o files
 $CCF $CFLAGS $LDFLAGS -c *.c
@@ -22,4 +24,8 @@ if [[ $1 == "-run" ]]; then
 	cd data
 	./$OUTEX_FILE
 	cd ..
+fi
+
+if [[ $1 == "-uinstall" ]]; then
+	rm -rf data
 fi
