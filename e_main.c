@@ -4,11 +4,8 @@
 #include "r_lib.h"
 #include "p_lib.h"
 
-#define B_TOG 0
-#define B_INK 1
-#define B_SIZ 2
 
-void e_main_loop (EDITOR *e1, MAP *map, TILE *tile)
+int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size)
 {
 	char key = 0, Toggle[2][4] = {"OFF", "ON"};
 	int ex, ey;
@@ -57,7 +54,10 @@ void e_main_loop (EDITOR *e1, MAP *map, TILE *tile)
 					wprintw(h_log, "%d - %s\n", i, tile[i].name_id);
 				}
 				wrefresh(h_log);
+
 				wscanw(h_log ,"%hhd", &brush_ink);
+
+
 				wclear(h_log);
 				break;
 			case 'v':
@@ -101,5 +101,7 @@ void e_main_loop (EDITOR *e1, MAP *map, TILE *tile)
 
 		key = getch();
 	}
+
+	return 0;
 
 }

@@ -19,36 +19,44 @@ int main_menu (void) {
 	char confirm = 0;
 	bool execute = 0;
 
-	enum {MAX_MENU_ITEMS = 4};
+	enum {MAX_MENU_ITEMS = 5};
 
 	char menu_txt[MAX_MENU_ITEMS][16] = 
 	{
-		"PLAY",
-		"EDITOR (NEW)",
-		"EDITOR (OPEN)",
-		"QUIT"
+		"Quit",
+		"Play",
+		"Editor -> New",
+		"Editor -> Open",
+		"TileEd -> New"
 	};
 
 	clear();
 	printw("ZTORG\n----------------------\n");
-	for (int i = 0; i < MAX_MENU_ITEMS; ++i)
+	for (int i = 1; i < MAX_MENU_ITEMS; ++i)
 	{
-		printw("%d. %s\n", i, menu_txt[i]);
+		if (i == 2)
+		{
+			printw("\n////Maker////\n");
+		}
+		printw("\n%d. %s", i, menu_txt[i]);
+
 	}
 
+
+	mvprintw(getmaxy(stdscr) - 1, 0, "%s(0)", menu_txt[0]);
 	refresh();
 	
 	while(!execute)
 	{
-		mvprintw(MAX_MENU_ITEMS + 2, 0, ">>                    ");
+		mvprintw(MAX_MENU_ITEMS + 2 +3, 0, ">>                    ");
 
 		option = confirm;
 		option -= 48;
 
 		if(option < MAX_MENU_ITEMS && option >= 0)
 		{
-			mvprintw(MAX_MENU_ITEMS + 2, 3, "%s\nPress 'e' to Confirm", menu_txt[option]);
-			mvprintw(MAX_MENU_ITEMS + 3, 0, "                    ");
+			mvprintw(MAX_MENU_ITEMS + 2 +3, 3, "%s\nPress 'e' to Confirm", menu_txt[option]);
+			mvprintw(MAX_MENU_ITEMS + 3 +3, 0, "                    ");
 		}
 
 		refresh();
@@ -85,13 +93,33 @@ int main (int argc, char const *argv[])
 
 		switch(option)
 		{
-			case 0:
-				z_init_main(1);
-				break;
 			case 1:
-				z_init_main(2);
+				z_init_main(1); //Main Game
+				break;
+			case 2:
+				z_init_main(2); // Editor
 				break;
 			case 3:
+
+				break;
+			case 4:
+				z_init_main(4);
+				break;
+			case 5:
+
+				break;
+			case 6:
+
+				break;
+			case 7:
+
+				break;
+			case 8:
+
+				break;
+
+		///////////////////////
+			case 0:
 				quit = 1;
 				break;
 			case 9:

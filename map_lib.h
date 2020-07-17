@@ -14,7 +14,7 @@ to load legacy map files in which case A new Version Will be set
 corresponding to the Map Version last supported.
 
 ---------------------------------------------------------------------*/
-#define MAP_VERSION_CURRENT_SIG "0.3"
+#define MAP_VERSION_CURRENT_SIG ZTORG_VERSION
 #define MAP_VERSION_SUPPORT_SIG "0.3"
 /*-------------------------------------------------------------------*/
 

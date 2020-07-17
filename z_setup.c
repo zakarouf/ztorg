@@ -13,11 +13,12 @@
 int z_init_main(int mode)
 {
 	
-	// Declare map
-	MAP map;
 
-	if (mode == 1) 
+
+	if (mode == 1) //MAIN GAME
 	{
+		// Declare map
+		MAP map;
 
 		uint8_t key = 1; // Keyboard Var
 		// Initialize map stuff
@@ -46,7 +47,7 @@ int z_init_main(int mode)
 
 		// Init Tile Properties
 		TILE *tile;
-		if((tile = init_TILESET(tilename)) == NULL)
+		if((tile = init_TILESET(tilename, NULL)) == NULL)
 			return 6;
 		free(tilename);
 
@@ -68,39 +69,68 @@ int z_init_main(int mode)
 		free(map.world);
 	}
 
-	else if (mode == 2)
+	else if (mode == 2) // MAP EDITOR
 	{
-		// Init Tile Properties
-		TILE *tile = init_TILESET(TILESET_DEFAULT);
 
 		clear();
 		echo();
 
+		char tilename[32];
 
-		printw("Enter Map Dimention\n");
-		scanw("%d %d", &map.X, &map.Y);
-		printw("Enter Map Name\n");
-		scanw("%s", map.name);
+		// Declare map & Tile
+		MAP map;
+		TILE *tile;
 
+
+		// Input Stuff
+		mvprintw(1, 1,"Enter Map Name <_________________>");
+		mvprintw(2, 1,"Enter Map Dimention X :");
+		mvprintw(3, 1,"Enter Map Dimention Y :");
+		mvprintw(5, 1,"Enter Tile Set Name <________________>");
+
+		mvscanw(1, 18, "%s", map.name);
+		mvscanw(2, 25, "%d", &map.X);
+		mvscanw(3, 25, "%d", &map.Y);
+		mvscanw(5, 22, "%s", tilename);
+		
+		
+
+		// Init Tile Properties & Making Map
+		int maxtile;
+		tile = init_TILESET(tilename, &maxtile);
 		map.world = malloc_2D_array_uint8(map.X, map.Y, 1, 7);
 
 
+		// Creating Player
 		EDITOR ee;
 		ee.X = map.X>>1;
 		ee.Y = map.Y>>2;
 		ee.linkcount = 0;
 
+
+		// Initializing Main Loop
 		noecho();
-		e_main_loop(&ee, &map, tile);
+		e_main_loop(&ee, &map, tile, maxtile);
 
 		free(tile);
 		free(map.world);
 	}
 
+	else if (mode == 4) // TILE MAKE
+	{
+		t_maker_main ();
+	}
+
+	else if (mode == 5)
+	{
+
+	}
+
 	else if (mode == 0)
 	{
 		clear();
-		TILE *A = init_TILESET("DEFAULT_EXT");
+		int a;
+		TILE *A = init_TILESET("DEFAULT_EXT", &a);
 		refresh();
 		free(A);
 		getch();

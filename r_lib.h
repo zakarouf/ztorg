@@ -9,7 +9,7 @@
 #include "p_def.h"
 #include "e_def.h"
 
-#include "config.h"
+#include "z_config.h"
 
 // PI VAL is Also 180 DEGREE
 #define DEGREE_90  PI_VAL/2.0f
@@ -33,6 +33,5 @@ void r_render_world_raycast (PLAYER *player, MAP *map, TILE *tile);
 //void r_editor_status_hud (WINDOW *status, uint8_t stat[3], char tile_desc[][16]);
 
 //---TMAKER---
-void r_t_show_all_tile (TILE *tile, int t_size);
 
 #endif

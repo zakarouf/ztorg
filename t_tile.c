@@ -4,21 +4,37 @@ This is Tile Loading Segment
 ----------------------------------------------------*/
 
 #include <string.h>
-#include <stdio.h>
 
 #include "r_lib.h"
 #include "t_lib.h"
+#include "t_io.h"
 #include "alloc.h"
 #include "calc.h"
 
-TILE* t_calloc_tile (int t_size)
+TILE* t_malloc_initempty_tile (int t_size)
 {
 	TILE *tile = malloc(sizeof(TILE) * t_size);
 
 	for (int i = 0; i < t_size ; i++)
 	{
 		sprintf(tile[i].name_id, "NULL");
-		tile[i].tex_id = 0;
+		//tile[i].tex_id = 0;
+		tile[i].symb = 32;
+		tile[i].coloc = 0;
+		tile[i].attr = 0;
+	}
+	
+	return tile;
+}
+
+TILE* t_realloc_initempty_tile (int old_size, int new_size, TILE *tile)
+{
+	tile = realloc (tile, sizeof(TILE) * new_size);
+
+	for (int i = old_size; i < new_size ; i++)
+	{
+		sprintf(tile[i].name_id, "NULL");
+		//tile[i].tex_id = 0;
 		tile[i].symb = 32;
 		tile[i].coloc = 0;
 		tile[i].attr = 0;
@@ -72,65 +88,8 @@ int t_apply_tileattr (attribute_bit_t *tile, int attr_int)
 
 }
 
-TILE *load_custom_tile (char *tile_name, uint8_t *maxtile)
-{
-	char tile_dir[64] = "tiles/";
-	char tile_file_name_buff[72];
-	char buffer[128];
 
-	strncat(tile_dir, tile_name, 64);
-	sprintf(tile_file_name_buff, "%s/%s", tile_dir, "tload");
-
-	FILE *fp;
-	fp = fopen(tile_file_name_buff, "r");
-
-	if(fp == NULL)
-	{
-		printw("NO SUCH TILESET EXIST");
-		refresh();
-		getch();
-		return NULL;
-	}
-
-	TILE *r_tile;
-
-	fgets(buffer, 128, fp); // get version
-    fgets(buffer, 128, fp); // get XY
-    sscanf(buffer, "%hhd", &maxtile[0]);
-
-    if((r_tile = malloc(sizeof(TILE) * maxtile[0])) == NULL)
-    {
-    	printw("NO UNABLE TO ALLOCATE REQUIRED MEMORY");
-    	refresh();
-		getch();
-    	return NULL;
-    }
-
-
-    for(int i = 0; i < maxtile[0]; i++)
-    {
-    	fscanf(fp, "%s", r_tile[i].name_id);
-    }
-
-    fgets(buffer, 128, fp);
-    fgets(buffer, 128, fp);
-
-
-
-    for(int i = 0; i < maxtile[0]; i++)
-    {
-    	fscanf(fp, "%hhd", &r_tile[i].symb);
-    	fscanf(fp, "%hhd", &r_tile[i].coloc);
-    	fscanf(fp, "%hd", &r_tile[i].attr);
-
-    }
-
-    fclose(fp);
-    return r_tile;
-}
-
-
-TILE *init_TILESET (char tileset_name[])
+TILE *init_TILESET (char tileset_name[], int *maxtile)
 {
 
 
@@ -162,7 +121,7 @@ TILE *init_TILESET (char tileset_name[])
 			sprintf(tileset[i].name_id,"%s", tile_desc[i]);
 			tileset[i].coloc = colo[i];
 			tileset[i].symb = symb[i];
-			tileset[i].tex_id = 0;
+			//tileset[i].tex_id = 0;
 		}
 
 		return tileset;
@@ -173,9 +132,8 @@ TILE *init_TILESET (char tileset_name[])
 	}
 	else
 	{
-		uint8_t maxtile;
 		//printw("%s", tileset_name);
-		TILE  *r_v = load_custom_tile(tileset_name, &maxtile);
+		TILE  *r_v = load_custom_tile(tileset_name, maxtile);
 		return r_v;
 	}
 

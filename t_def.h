@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "z_config.h"
+
 #define TILE_ISINVI 0x1
 #define TILE_ISWALL 0x2
 #define TILE_ISMOVE 0x4
@@ -85,12 +87,13 @@
 #define TILE_ISFUNC_SHIFT 8
 
 
+
 typedef uint16_t attribute_bit_t;
+#define MAX_ATTRIBUTE 16
 
 typedef struct Tileset
 {
 	char name_id[32];
-	uint8_t tex_id;
 	uint8_t symb;
 	uint8_t coloc;
 	attribute_bit_t attr;
@@ -110,5 +113,8 @@ enum
 	FLOOR_NULL,
 };
 
+
+// DEF
+#define TILESET_DEFAULT "DEFAULT"
 
 #endif

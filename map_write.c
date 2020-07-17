@@ -11,6 +11,7 @@ This is Map Exporting Segment
 #include "alloc.h"
 #include "map_lib.h"
 #include "r_lib.h"
+#include "t_def.h"
 
 /*---------*/
 
@@ -49,6 +50,7 @@ int map_write_world (MAP *map, char map_name[], bool new_map)
 
     fprintf(fileP, "%s\n", MAP_VERSION_CURRENT_SIG);
     fprintf(fileP, "%hi %hi", map->X, map->Y);
+    fprintf(fileP, "\n%s", TILESET_DEFAULT);
 
     for (int i = 0; i < map->Y; ++i)
     {
