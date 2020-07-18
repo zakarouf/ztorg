@@ -9,7 +9,6 @@ This is Tile Loading Segment
 #include "t_lib.h"
 #include "t_io.h"
 #include "alloc.h"
-#include "calc.h"
 
 TILE* t_malloc_initempty_tile (int t_size)
 {

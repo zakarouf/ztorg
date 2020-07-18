@@ -1,5 +1,4 @@
-#include "calc.h"
-
+#include "c_lib.h"
 
 int calc_calculate_damage ()
 {

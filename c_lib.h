@@ -17,4 +17,8 @@ int calc_hit_chance_range
 );
 
 
+// Perlind stuff
+double c_perlin2d_get_solo(double x, double y, double freq, int depth);
+void c_set_perlin_seed(int seed);
+
 #endif
