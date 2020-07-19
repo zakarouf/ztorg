@@ -2,7 +2,8 @@
 #define CALC_H
 
 #include <math.h>
-#include <stdint.h>
+
+#include "z_include.h"
 
 float calc_carmack_sqrt (float number);
 uint64_t shift1_uint64 (int upto);

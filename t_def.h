@@ -1,9 +1,7 @@
 #ifndef TERRAIN_DEFINE_H
 #define TERRAIN_DEFINE_H
 
-#include <stdbool.h>
-#include <stdint.h>
-
+#include "z_include.h"
 #include "z_config.h"
 
 #define TILE_ISINVI 0x1
