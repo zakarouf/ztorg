@@ -6,9 +6,8 @@
 #define TILESET_DEFAULT "DEFAULT"
 
 TILE* t_malloc_initempty_tile (int t_size);
-TILE* t_realloc_initempty_tile (int old_size, int new_size, TILE *tile);
+TILE* t_realloc_initempty_tile (int *old_size, int new_size, TILE *tile);
 
-int t_apply_tileattr (attribute_bit_t *tile, int attr_int);
 TILE *init_TILESET (char tileset_name[], int *maxtile);
 
 

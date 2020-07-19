@@ -8,8 +8,7 @@
 #define ATTR_TXT_RAW "//////Attributes//////\n\n INVI\n WALL\n MOVE\n DEST\n FLUD\n TOXI\n WALK\n FUNC\n"
 
 
-
-int t_selectile_raw (TILE *tile, int t_size, int *t_select)
+static int t_selectile_raw (TILE *tile, int t_size, int *t_select)
 {
 	clear();
 	int y = getmaxy(stdscr), pagestart = 0, exit = 0;
@@ -36,9 +35,10 @@ int t_selectile_raw (TILE *tile, int t_size, int *t_select)
 				break;
 			case 'e':
 				echo();
-				mvprintw(y-1, 0, ">> ");refresh();
+				mvprintw(y-1, 0, ">>                    ");refresh();
 				mvscanw(y-1, 3, "%d", &t_select[0]);
 				noecho();
+				break;
 			case 'q':
 				return 0;
 				break;
@@ -50,10 +50,12 @@ int t_selectile_raw (TILE *tile, int t_size, int *t_select)
 		{
 			if (i < t_size)
 			{
-				mvprintw(i - pagestart, 0, "[%d] %32s|", i , tile[i].name_id);	
+				mvprintw(i - pagestart, 0, "[%5d] %32s|", i , tile[i].name_id);	
 			}
 
 		}
+
+		mvprintw(y-2, 0, "[e]Enter TileNum | [q]Confirm || Current : <%d> |%s|", tile[*t_select].name_id);
 
 		refresh();
 		key = getch();
@@ -62,27 +64,7 @@ int t_selectile_raw (TILE *tile, int t_size, int *t_select)
 	return 0;
 }
 
-
-void t_main_scr (TILE *tile, int c_tile)
-{
-	clear();
-	char tf[2][6] = {"False", "True"};
-	mvprintw(1, 1, "Current Tile -- %s\n   |-- ID.%3d", tile[c_tile].name_id, c_tile);
-	mvprintw(4, 1, 	"%s", ATTR_TXT_RAW);
-
-	int cur = 6;
-	for (int i = 0; i < 8; ++i)
-	{
-		mvprintw(cur, 7, "%s", tf[  (tile[c_tile].attr &(0x0000000000000001<< i)) ? 1:0  ]);
-		cur++;
-	}
-
-	mvprintw(getmaxy(stdscr) -2, 0, "[e]Expand MaxTiles | [s]Change TileName | [x]Edit Attribute | [c]Select Tile");
-
-}
-
-
-int t_edit_attribute (TILE *tile, int current_tile)
+static int t_edit_attribute (TILE *tile, int current_tile)
 {
 	clear();
 	int y = getmaxy(stdscr);
@@ -160,6 +142,23 @@ int t_edit_attribute (TILE *tile, int current_tile)
 	return 0;
 }
 
+static void t_main_scr (TILE *tile, int c_tile, int tile_size)
+{
+	clear();
+	static char tf[2][6] = {"False", "True"};
+	mvprintw(1, 1, "Current Tile -- %s\n   |-- ID.%3d", tile[c_tile].name_id, c_tile);
+	mvprintw(4, 1, ATTR_TXT_RAW);
+
+	int cur = 6;
+	for (int i = 0; i < 8; ++i)
+	{
+		mvprintw(cur, 7, "%s", tf[  (tile[c_tile].attr &(0x0000000000000001<< i)) ? 1:0  ]);
+		cur++;
+	}
+
+	mvprintw(getmaxy(stdscr) -2, 0, "[x]Expand MaxTiles | [n]Change TileName | [e]Edit Attribute | [c]Change Tile || MaxT %d", tile_size);
+
+}
 
 int t_maker_main ()
 {
@@ -182,7 +181,7 @@ int t_maker_main ()
 				t_selectile_raw(tile, tile_size, &current_tile);
 				refresh();
 				break;
-			case 'x':
+			case 'e':
 				t_edit_attribute (tile, current_tile);
 				refresh();
 				break;
@@ -192,20 +191,21 @@ int t_maker_main ()
 				mvscanw(y-1, 17, "%s", tile[current_tile].name_id);
 				noecho();
 				break;
-			case 'e':
+			case 'x':
 				echo();
 				mvprintw(y-1, 0, "Expand Tile : Enter New size >> ");
 				unsigned int newsize;
 				mvscanw(y-1, 32, "%d", &newsize);
-				tile = t_realloc_initempty_tile(tile_size, newsize, tile);
-				tile_size = newsize;
+				tile = t_realloc_initempty_tile(&tile_size, newsize, tile);
 				noecho();
 				break;
 			case 'q':
 				echo();
 				clear();
+
 				mvaddstr(y/2, x/2 - 9, "Really Quit? (Y/n)");
 				refresh();
+
 				uint8_t cuit = getch();
 				if(cuit == 'Y')
 				{	
@@ -213,7 +213,9 @@ int t_maker_main ()
 					quit |= 1;
 					return 0;
 				}
+
 				noecho();
+				break;
 			case '0':
 				echo();
 				clear();
@@ -235,7 +237,7 @@ int t_maker_main ()
 
 		
 
-		t_main_scr (tile, current_tile);
+		t_main_scr (tile, current_tile, tile_size);
 		refresh();
 		key = getch();
 

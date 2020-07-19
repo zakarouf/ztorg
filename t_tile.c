@@ -26,29 +26,35 @@ TILE* t_malloc_initempty_tile (int t_size)
 	return tile;
 }
 
-TILE* t_realloc_initempty_tile (int old_size, int new_size, TILE *tile)
+TILE* t_realloc_initempty_tile (int *old_size, int new_size, TILE *tile)
 {
 	TILE *tmp = tile;
 	tmp = realloc (tile, sizeof(TILE) * new_size);
 
 	if(tmp == NULL)
 	{
+		// Reallocation Fails Do Nothing. Return As Is
 		return tile;
 	}
 
-	for (int i = old_size; i < new_size ; i++)
-	{
-		sprintf(tile[i].name_id, "NULL");
-		//tile[i].tex_id = 0;
-		tile[i].symb = 32;
-		tile[i].coloc = 0;
-		tile[i].attr = 0;
+	else {
+
+		// Realloction Success. Initilize new formed tiles.
+		for (int i = *old_size; i < new_size ; i++)
+		{
+			sprintf(tmp[i].name_id, "NULL");
+			//tile[i].tex_id = 0;
+			tmp[i].symb = 32;
+			tmp[i].coloc = 0;
+			tmp[i].attr = 0;
+		}
+		
+		*old_size = new_size;
+		return tmp;
 	}
-	
-	return tmp;
 }
 
-int t_apply_tileattr (attribute_bit_t *tile, int attr_int)
+static int t_apply_default_tileattr (attribute_bit_t *tile, int attr_int)
 {
 
 	if(attr_int > 8)
@@ -71,14 +77,14 @@ int t_apply_tileattr (attribute_bit_t *tile, int attr_int)
 
 	attribute_bit_t attr[64] = {
 
-		TILE_ISWALK,	// 000 SPACE/FLOOR
-		TILE_ISWALL,	// 001 WALL 
+		TILE_ISWALK,				// 000 SPACE/FLOOR
+		TILE_ISWALL,				// 001 WALL 
 		TILE_ISWALL | TILE_ISMOVE,	// 002 WALL_MOVEABLE
 		TILE_ISWALL | TILE_ISDEST,	// 003 WALL_BREAKABLE
 		TILE_ISWALL | TILE_ISINVI,	// 004 WALL_INVISIBLE
 		TILE_ISWALK | TILE_ISTOXI,	// 005 FLOOR_TOXIC
 		TILE_ISWALK | TILE_ISFLUD,	// 006 FLOOL_WATER
-		TILE_ISWALK,	// 007 FLOOR_NULL
+		TILE_ISWALK,				// 007 FLOOR_NULL
 	};
 
 
@@ -122,7 +128,7 @@ TILE *init_TILESET (char tileset_name[], int *maxtile)
 
 		for(int i = 0; i < 8; i++)
 		{
-			t_apply_tileattr (&tileset[i].attr, i);
+			t_apply_default_tileattr (&tileset[i].attr, i);
 			sprintf(tileset[i].name_id,"%s", tile_desc[i]);
 			tileset[i].coloc = colo[i];
 			tileset[i].symb = symb[i];
