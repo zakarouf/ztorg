@@ -1,3 +1,15 @@
+/*-----------------------------------------------
+    Generate Perlin Noise.
+/-----------------------------------------------/
+    - Courtesy of nowl (https://gist.github.com/nowl/828013)
+
+    - Code updated by deeemmell 
+        (https://gist.github.com/deeemmell)
+        to support negetive x,y coordinate
+    
+-----------------------------------------------*/
+//---------------------------------------------//
+
 #include "c_lib.h"
 
 static int SEED;
@@ -55,6 +67,16 @@ static double noise2d(double x, double y)
     return result;
 }
 
+
+
+void set_perlin_seed(int seed)
+{
+    SEED = seed;
+}
+
+//----------------------------------------------------------
+// Returns single double val according to x,y cord
+// Example : foo_array[y][x] = c_perlin2d_get_solo(x, y, 0.1, 4)
 double c_perlin2d_get_solo(double x, double y, double freq, int depth)
 {
     double  xa = x*freq;
@@ -71,9 +93,4 @@ double c_perlin2d_get_solo(double x, double y, double freq, int depth)
         ya *= 2;
     }
     return fin/div;
-}
-
-void set_perlin_seed(int seed)
-{
-    SEED = seed;
 }
