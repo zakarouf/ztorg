@@ -28,7 +28,13 @@ TILE* t_malloc_initempty_tile (int t_size)
 
 TILE* t_realloc_initempty_tile (int old_size, int new_size, TILE *tile)
 {
-	tile = realloc (tile, sizeof(TILE) * new_size);
+	TILE *tmp = tile;
+	tmp = realloc (tile, sizeof(TILE) * new_size);
+
+	if(tmp == NULL)
+	{
+		return tile;
+	}
 
 	for (int i = old_size; i < new_size ; i++)
 	{
@@ -39,7 +45,7 @@ TILE* t_realloc_initempty_tile (int old_size, int new_size, TILE *tile)
 		tile[i].attr = 0;
 	}
 	
-	return tile;
+	return tmp;
 }
 
 int t_apply_tileattr (attribute_bit_t *tile, int attr_int)

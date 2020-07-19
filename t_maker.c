@@ -195,8 +195,8 @@ int t_maker_main ()
 			case 'e':
 				echo();
 				mvprintw(y-1, 0, "Expand Tile : Enter New size >> ");
-				uint8_t newsize;
-				mvscanw(y-1, 32, "%hhd", &newsize);
+				unsigned int newsize;
+				mvscanw(y-1, 32, "%d", &newsize);
 				tile = t_realloc_initempty_tile(tile_size, newsize, tile);
 				tile_size = newsize;
 				noecho();
