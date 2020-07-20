@@ -13,11 +13,11 @@ MAIN GAME SEGMENT
 #define TURN_SPEED DEGREE_90
 //---------------------------------------------------//
 
-enum 
+enum STAT_SHOW
 {
-	MINI_MAP,
-	HEALTH,
-	MAGE,
+	ST_SHOW_MINI_MAP,
+	ST_SHOW_HEALTH,
+	ST_SHOW_MAGE,
 };
 
 void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
@@ -29,7 +29,7 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 	uint8_t key = ' ';
 
 	WINDOW *hud[3];
-	hud[MINI_MAP] = newwin(10, 15, 2, 0);
+	hud[ST_SHOW_MINI_MAP] = newwin(10, 15, 2, 0);
 
 	while (!quit)
 	{
@@ -111,7 +111,7 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 
 
 		r_render_world_raycast(p1, map, tile);
-		r_map_2D_win(hud[MINI_MAP], p1, map, tile);
+		r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile);
 		key = getch();
 	}
 

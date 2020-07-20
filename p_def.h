@@ -3,6 +3,17 @@
 
 enum {HP, MP, XP};
 
+typedef enum ENITY_CLASS_STATS
+{
+	GUNFIEND,
+	MONK,
+	ROUGE,
+	KNIGHT,
+	MAGE,
+	CLERIC,
+	JACK
+}ENTCLASS;
+
 struct STATUS_ATTR 
 {
 	int HP;

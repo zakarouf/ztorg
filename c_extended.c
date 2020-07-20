@@ -23,7 +23,7 @@ int calc_hit_chance_range
 }
 
 
-float calc_carmack_sqrt (float number)
+float calc_sqrt (float number)
 {
 	float 
 	x = number * 0.5f,

@@ -2,13 +2,17 @@
 #define CALC_H
 
 #include <math.h>
-
 #include "z_include.h"
 
-float calc_carmack_sqrt (float number);
+
+// Quality of life stuff
+#define swap2num(x, y) x ^= y; y ^= x; x ^= y
+
+// ----Mafs----
+float cal_sqrt (float number);
 uint64_t shift1_uint64 (int upto);
 
-
+// ----RNG_Calc--------
 int calc_hit_chance_range
 (	int sight,
 	int intelligence,

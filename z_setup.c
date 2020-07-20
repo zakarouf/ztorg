@@ -52,8 +52,8 @@ int z_init_main(int mode)
 		free(tilename);
 
 		// Init Player Stuff
-		PLAYER pp;
-		init_player(&pp);
+		PLAYER *pp;
+		pp = init_player(JACK);
 
 
 		// Init Color Stuff
@@ -63,7 +63,7 @@ int z_init_main(int mode)
 
 
 
-		g_main_loop(&pp, &map, tile);
+		g_main_loop(pp, &map, tile);
 
 		free(tile);
 		free(map.world);
@@ -83,14 +83,21 @@ int z_init_main(int mode)
 
 
 		// Input Stuff
-		mvprintw(1, 1,"Enter Map Name <_________________>");
-		mvprintw(2, 1,"Enter Map Dimention X :");
-		mvprintw(3, 1,"Enter Map Dimention Y :");
-		mvprintw(5, 1,"Enter Tile Set Name <________________>");
+		mvaddstr(1, 1,"Enter Map Name ");
+		mvaddstr(2, 1,"Enter Map Dimention X :");
+		mvaddstr(3, 1,"Enter Map Dimention Y :");
+		mvaddstr(5, 1,"Enter Tile Set Name ");
 
+		mvaddstr(1, 17, "<_________________>");
 		mvscanw(1, 18, "%s", map.name);
-		mvscanw(2, 25, "%d", &map.X);
+
+		mvaddstr(2, 25, ">>");
+		mvscanw(2, 27, "%d", &map.X);
+
+		mvaddstr(3, 23, ">>");
 		mvscanw(3, 25, "%d", &map.Y);
+
+		mvaddstr(5, 21, "<________________>");
 		mvscanw(5, 22, "%s", tilename);
 		
 		

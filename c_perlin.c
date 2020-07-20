@@ -58,9 +58,9 @@ static double noise2d(double x, double y)
     const double  x_frac = x - x_int;
     const double  y_frac = y - y_int;
     const int  s = noise2( x_int, y_int );
-    const int  t = noise2( x_int+1, y_int );
-    const int  u = noise2( x_int, y_int+1 );
-    const int  v = noise2( x_int+1, y_int+1 );
+    const int  t = noise2( x_int+1.0f, y_int );
+    const int  u = noise2( x_int, y_int+1.0f );
+    const int  v = noise2( x_int+1.0f, y_int+1.0f );
     const double  low = smooth_inter( s, t, x_frac );
     const double  high = smooth_inter( u, v, x_frac );
     const double  result = smooth_inter( low, high, y_frac );
