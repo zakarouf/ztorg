@@ -6,6 +6,6 @@
 #include "map_def.h"
 
 
-int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size);
+int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size, char tilename[]);
 
 #endif

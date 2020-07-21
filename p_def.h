@@ -1,7 +1,7 @@
 #ifndef PLAYER_DEF_H
 #define PLAYER_DEF_H
 
-enum {HP, MP, XP};
+#include <stdint.h>
 
 typedef enum ENITY_CLASS_STATS
 {
@@ -13,6 +13,7 @@ typedef enum ENITY_CLASS_STATS
 	CLERIC,
 	JACK
 }ENTCLASS;
+
 
 struct STATUS_ATTR 
 {
@@ -32,6 +33,8 @@ typedef struct
 	float Y;
 	float A;
 	struct STATUS_ATTR stat;
+	uint8_t wpn_holding;
+	uint16_t wpn_carry;
 }
 PLAYER;
 

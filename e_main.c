@@ -5,7 +5,7 @@
 #include "p_lib.h"
 
 
-int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size)
+int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size, char tilename[])
 {
 	char key = 0, Toggle[2][4] = {"OFF", "ON"};
 	int ex, ey;
@@ -69,7 +69,7 @@ int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size)
 			case 'e':
 				option = getch();
 				if (option == 'q') {quit = 1;}
-				if (option == 's') {save_map(map);}
+				if (option == 's') {save_map(map, tilename);}
 				break;
 			default:break;
 		}
@@ -84,8 +84,6 @@ int e_main_loop (EDITOR *e1, MAP *map, TILE *tile, const int tile_size)
 		{
 			fillup_circle (map, e1->X, e1->Y, brush_size, brush_ink);
 		}
-
-
 
 		r_editor_main (e1, map, tile, scrX, scrY);
 		

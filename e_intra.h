@@ -5,7 +5,7 @@
 #include "e_def.h"
 
 
-void save_map (MAP *map);
+void save_map (MAP *map, char tile[]);
 
 
 void fillup_circle (MAP *map, int x, int y, int r , uint8_t tile);

@@ -20,7 +20,7 @@ int map_write_link ()
     return 0;
 }
 
-int map_write_world (MAP *map, char map_name[], bool new_map)
+int map_write_world (MAP *map, char map_name[], char tilename[], bool new_map)
 {
 
 	char map_dir[64] = "maps/";
@@ -50,7 +50,7 @@ int map_write_world (MAP *map, char map_name[], bool new_map)
 
     fprintf(fileP, "%s\n", MAP_VERSION_CURRENT_SIG);
     fprintf(fileP, "%hi %hi", map->X, map->Y);
-    fprintf(fileP, "\n%s", TILESET_DEFAULT);
+    fprintf(fileP, "\n%s", tilename);
 
     for (int i = 0; i < map->Y; ++i)
     {

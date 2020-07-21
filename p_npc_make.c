@@ -1,9 +1,9 @@
 #include "p_npc.h"
 #include "alloc.h"
 
-static int npc_set_stat (NPC* npc, int member, int tier)
+static int npc_set_stat (NPC* npc, int member, char tier)
 {
-	if (tier == 1)	{
+	if (tier == '1')	{
 
 		struct STATUS_ATTR status[8] = {
 		//	  HP  MP   ATT	 DEF   IN
@@ -35,8 +35,17 @@ static int npc_set_stat (NPC* npc, int member, int tier)
 
 }
 
-NPC *npc_load (int npc_count, int zak[], char npc_template[])
+NPC *npc_load (int npc_count, int allmem[], char npc_template[])
 {
 	NPC *npc = malloc(sizeof(NPC) * npc_count);
+
+	if(npc_template[0] == 'D')
+	{
+		for (int i = 0; i < npc_count; ++i)
+		{
+			npc_set_stat(npc, allmem[i], npc_template[2]);
+		}
+	}
+
 	return npc;
 }

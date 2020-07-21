@@ -36,7 +36,7 @@ static int t_selectile_raw (TILE *tile, int t_size, int *t_select)
 			case 'e':
 				echo();
 				mvprintw(y-1, 0, ">>                    ");refresh();
-				mvscanw(y-1, 3, "%d", &t_select[0]);
+				mvscanw(y-1, 3, "%d", t_select);
 				noecho();
 				break;
 			case 'q':
@@ -46,16 +46,16 @@ static int t_selectile_raw (TILE *tile, int t_size, int *t_select)
 
 
 		clear();
-		for (int i = pagestart; i < y + pagestart; ++i)
+		for (int i = pagestart; i < y + pagestart -2; ++i)
 		{
 			if (i < t_size)
 			{
-				mvprintw(i - pagestart, 0, "[%5d] %32s|", i , tile[i].name_id);	
+				mvprintw(i - pagestart+1, 0, "[%d] %32s|", i , tile[i].name_id);	
 			}
 
 		}
 
-		mvprintw(y-2, 0, "[e]Enter TileNum | [q]Confirm || Current : <%d> |%s|", tile[*t_select].name_id);
+		mvprintw(y-2, 0, "[e]Enter TileNum | [q]Confirm || Current : <%d> |%s|", *t_select, tile[t_select[0]].name_id);
 
 		refresh();
 		key = getch();
@@ -146,7 +146,7 @@ static void t_main_scr (TILE *tile, int c_tile, int tile_size)
 {
 	clear();
 	static char tf[2][6] = {"False", "True"};
-	mvprintw(1, 1, "Current Tile -- %s\n   |-- ID.%3d", tile[c_tile].name_id, c_tile);
+	mvprintw(1, 1, "Current Tile -- %s\n   |-- ID.%3d \\\\ Symb. %c", tile[c_tile].name_id, c_tile, tile[c_tile].symb);
 	mvprintw(4, 1, ATTR_TXT_RAW);
 
 	int cur = 6;
@@ -185,7 +185,7 @@ int t_maker_main ()
 				t_edit_attribute (tile, current_tile);
 				refresh();
 				break;
-			case 's':
+			case 'n':
 				echo();
 				mvprintw(y-1, 0, "New Tile Name >> ");
 				mvscanw(y-1, 17, "%s", tile[current_tile].name_id);
@@ -199,6 +199,11 @@ int t_maker_main ()
 				tile = t_realloc_initempty_tile(&tile_size, newsize, tile);
 				noecho();
 				break;
+			case 'w':
+				echo();
+				mvprintw(y-1, 0, "Change Map Symb >> ");
+				mvscanw(y-1, 19, "%c", &tile[current_tile].symb);
+				break;
 			case 'q':
 				echo();
 				clear();
@@ -206,8 +211,7 @@ int t_maker_main ()
 				mvaddstr(y/2, x/2 - 9, "Really Quit? (Y/n)");
 				refresh();
 
-				uint8_t cuit = getch();
-				if(cuit == 'Y')
+				if(getch() == 'Y')
 				{	
 					free(tile);
 					quit |= 1;
@@ -231,6 +235,8 @@ int t_maker_main ()
 				}
 				
 				noecho();
+				break;
+			default:
 				break;
 
 		}

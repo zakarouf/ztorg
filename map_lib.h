@@ -49,7 +49,7 @@ ___ERROR_CODE___
 /*-------------*/
 // 	  WRITE    //
 /*-------------*/
-int map_write_world (MAP *map, char map_name[], bool new_map);
+int map_write_world (MAP *map, char map_name[], char tilename[], bool new_map);
 
 
 

@@ -13,9 +13,8 @@ TODO: Fix error while rendering map with smaller scale
 ----------------------------------------------------*/
 
 
-
-void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile) {
-
+void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP *m, TILE *tile, int lookdir[])
+{
 	wclear(mini_map);
 	box(mini_map, 0, 0);
 	int render_lim_X, render_lim_Y;
@@ -43,6 +42,7 @@ void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile) {
 		
 
 		wmove(mini_map ,y, x);
+		
 		for (; j < end_j; ++j)
 		{
 
@@ -50,7 +50,10 @@ void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile) {
 			if(j == (int)p->X && i == (int)p->Y ){
 				waddch(mini_map,'\b');
 				waddch(mini_map,'@');
+				mvaddch(y + lookdir[0], x + lookdir[1], 'o');
+				x++;
 			}
+			x = 1;
 		}
 		y++;
 	}

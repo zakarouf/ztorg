@@ -26,7 +26,17 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 
 	float px, py;
 	float mvmt_spd = 1.0f, turn_angle = TURN_SPEED;
-	uint8_t key = ' ';
+
+	uint8_t key = ' ', dir[5]={'N', 'W', 'S', 'E'};
+
+	int8_t lkdst = 2,
+		lookdir[4][2] = {
+		LOOK_DIRECTION_N,
+		LOOK_DIRECTION_W,
+		LOOK_DIRECTION_S,
+		LOOK_DIRECTION_E,
+	};
+
 
 	WINDOW *hud[3];
 	hud[ST_SHOW_MINI_MAP] = newwin(10, 15, 2, 0);
@@ -61,11 +71,21 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 			// TURN LEFT / RIGHT
 			case 'a':
 				p1->A -= turn_angle;
+				lkdst--;
+				if(lkdst < 0)
+				{
+					lkdst = 3;
+				}
 				//direction_int -= 1;
 				//if(A <= 0.0f ){A = PI_VAL*2; direction_int = 5;}
 				break;
 			case 'd':
 				p1->A += turn_angle;
+				lkdst++;
+				if(lkdst > 3)
+				{
+					lkdst = 0;
+				}
 				//direction_int += 1;
 				//if(A >= PI_VAL*2-1 ){A = 0; direction_int = 1;}
 				break;
@@ -84,12 +104,13 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 
 		if(tile[map->world[(int)p1->Y][(int)p1->X]].attr &TILE_ISMOVE)
 		{
+			int tmptile = map->world[(int)p1->Y][(int)p1->X];
 			if(key == 'w')
 			{
 				if(map->world[(int)(p1->Y+cosf(p1->A)*mvmt_spd)][(int)(p1->X+sinf(p1->A)*mvmt_spd)] == 0)
 				{
 					map->world[(int)p1->Y][(int)p1->X] = 0;
-					map->world[(int)(p1->Y+(int)cosf(p1->A)*mvmt_spd)][(int)(p1->X+(int)sinf(p1->A)*mvmt_spd)] = WALL_MOVEABLE;
+					map->world[(int)(p1->Y+(int)cosf(p1->A)*mvmt_spd)][(int)(p1->X+(int)sinf(p1->A)*mvmt_spd)] = tmptile;
 				}
 				else 
 				{
@@ -111,7 +132,8 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 
 
 		r_render_world_raycast(p1, map, tile);
-		r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile);
+		r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile, (int*)lookdir[lkdst]);
+		mvaddch(10, 10, dir[lkdst]);
 		key = getch();
 	}
 

@@ -48,7 +48,12 @@ int z_init_main(int mode)
 		// Init Tile Properties
 		TILE *tile;
 		if((tile = init_TILESET(tilename, NULL)) == NULL)
+		{
+			printw("Could Not Create Tileset");
+			refresh();
+			getch();
 			return 6;
+		}
 		free(tilename);
 
 		// Init Player Stuff
@@ -84,18 +89,18 @@ int z_init_main(int mode)
 
 		// Input Stuff
 		mvaddstr(1, 1,"Enter Map Name ");
-		mvaddstr(2, 1,"Enter Map Dimention X :");
-		mvaddstr(3, 1,"Enter Map Dimention Y :");
+		mvaddstr(2, 1,"Enter Map Dimention X ");
+		mvaddstr(3, 1,"Enter Map Dimention Y ");
 		mvaddstr(5, 1,"Enter Tile Set Name ");
 
 		mvaddstr(1, 17, "<_________________>");
 		mvscanw(1, 18, "%s", map.name);
 
-		mvaddstr(2, 25, ">>");
+		mvaddstr(2, 24, ">>");
 		mvscanw(2, 27, "%d", &map.X);
 
-		mvaddstr(3, 23, ">>");
-		mvscanw(3, 25, "%d", &map.Y);
+		mvaddstr(3, 24, ">>");
+		mvscanw(3, 27, "%d", &map.Y);
 
 		mvaddstr(5, 21, "<________________>");
 		mvscanw(5, 22, "%s", tilename);
@@ -117,7 +122,7 @@ int z_init_main(int mode)
 
 		// Initializing Main Loop
 		noecho();
-		e_main_loop(&ee, &map, tile, maxtile);
+		e_main_loop(&ee, &map, tile, maxtile, tilename);
 
 		free(tile);
 		free(map.world);

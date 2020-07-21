@@ -1,6 +1,6 @@
 #include "c_lib.h"
 
-int calc_calculate_damage ()
+int calc_calculate_damage (void)
 {
 	int dmg = 0;
 

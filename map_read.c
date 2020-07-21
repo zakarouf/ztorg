@@ -51,7 +51,6 @@ uint8_t **map_read_world (char map_name [], uint16_t *X, uint16_t *Y, char *tile
     fscanf(fileP, "%s", tilename);
 
 
-
     /// MAP WORLD
 
     uint8_t **world = malloc_2D_array_uint8 (X[0], Y[0], 0, 0);

@@ -7,6 +7,9 @@
 
 // Quality of life stuff
 #define swap2num(x, y) x ^= y; y ^= x; x ^= y
+#define shift1by_LL(x) (long long)(1ULL << x)
+#define shift1by_i(x) (int)(1 << x)
+
 
 // ----Mafs----
 float cal_sqrt (float number);

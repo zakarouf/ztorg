@@ -21,7 +21,7 @@
 
 
 
-void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile);
+void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile, int lookdir[]);
 
 
 void r_editor_main (EDITOR *editor, MAP *map, TILE *tile,int scrX, int scrY);
