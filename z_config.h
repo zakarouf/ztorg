@@ -4,6 +4,8 @@
 
 // General
 #define ZTORG_VERSION "0.3"
+/*Toggle Free Rotation*/
+//#define Z_FREE_ROTATION
 
 
 // Render

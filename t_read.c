@@ -32,10 +32,6 @@ TILE *load_custom_tile (char *tile_name, int *maxtile)
 	fgets(buffer, 128, fp); // get version
     fscanf(fp, "%d", maxtile);
 
-        printw("TESTTTTT\n %s \n %s", tile_file_name_buff, buffer);
-        refresh();
-        getch();
-
     if((r_tile = malloc(sizeof(TILE) * maxtile[0])) == NULL)
     {
     	printw("NO UNABLE TO ALLOCATE REQUIRED MEMORY");
@@ -62,17 +58,6 @@ TILE *load_custom_tile (char *tile_name, int *maxtile)
     	fscanf(fp, "%hd", &r_tile[i].attr);
 
     }
-
-    for(int i = 0; i < maxtile[0]; i++)
-    {
-        printw("%hhd", r_tile[i].symb);
-        printw("%hhd", r_tile[i].coloc);
-        printw("%hd", r_tile[i].attr);
-    }
-
-    refresh();
-    getch();
-
 
 
     fclose(fp);

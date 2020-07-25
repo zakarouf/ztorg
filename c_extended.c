@@ -38,23 +38,3 @@ float calc_sqrt (float number)
 
 	return number * y;
 }
-
-uint64_t shift1_uint64 (int upto)
-{
-	if(upto < 63)
-	{
-		uint64_t num = 1;
-		for (int i = 0; i < upto; ++i)
-		{
-			num <<= 1;
-		}
-		return num;
-	}
-
-	else
-	{
-		return -1;
-	}
-
-	return 0;
-}

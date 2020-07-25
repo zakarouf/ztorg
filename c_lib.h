@@ -6,14 +6,13 @@
 
 
 // Quality of life stuff
-#define swap2num(x, y) x ^= y; y ^= x; x ^= y
-#define shift1by_LL(x) (long long)(1ULL << x)
-#define shift1by_i(x) (int)(1 << x)
+#define swap2int(x, y) x ^= y; y ^= x; x ^= y
+#define shift1by_u64(x) (unsigned long long)(1ULL << x)
+#define shift1by_uint(x) (unsigned int)(1 << x)
 
 
 // ----Mafs----
-float cal_sqrt (float number);
-uint64_t shift1_uint64 (int upto);
+float calc_sqrt (float number);
 
 // ----RNG_Calc--------
 int calc_hit_chance_range

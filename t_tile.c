@@ -138,14 +138,16 @@ TILE *init_TILESET (char tileset_name[], int *maxtile)
 		return tileset;
 
 
-
-
 	}
 	else
 	{
+		if(maxtile == NULL)
+		{
+			int tmp;
+			return load_custom_tile(tileset_name, &tmp);
+		}
 		//printw("%s", tileset_name);
-		TILE  *r_v = load_custom_tile(tileset_name, maxtile);
-		return r_v;
+		return load_custom_tile(tileset_name, maxtile);
 	}
 
 	return NULL;

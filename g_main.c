@@ -20,6 +20,12 @@ enum STAT_SHOW
 	ST_SHOW_MAGE,
 };
 
+#ifdef Z_FREE_ROTATION
+#define shootweapon 1
+#else
+#define shootweapon 0
+#endif 
+
 void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 {
 	bool quit = 0;
@@ -27,7 +33,13 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 	float px, py;
 	float mvmt_spd = 1.0f, turn_angle = TURN_SPEED;
 
-	uint8_t key = ' ', dir[5]={'N', 'W', 'S', 'E'};
+	uint8_t key = ' ';
+	char dire[5][7]={
+		{"North"},
+		{"West"},
+		{"South"},
+		{"East"}
+	};
 
 	int8_t lkdst = 2,
 		lookdir[4][2] = {
@@ -90,8 +102,14 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 				//if(A >= PI_VAL*2-1 ){A = 0; direction_int = 1;}
 				break;
 			// Movement END
+			case 'x':
+				//Shoot Wpn
+				break;
 			case '`':
 				quit ^= 1;
+				break;
+			default:
+				break;
 		}
 
 		if((p1->X < 0 || p1->Y < 0 || p1->X >= map->X || p1->Y >= map->Y))
@@ -133,7 +151,7 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 
 		r_render_world_raycast(p1, map, tile);
 		r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile, (int*)lookdir[lkdst]);
-		mvaddch(10, 10, dir[lkdst]);
+		mvaddstr(1, 1, dire[lkdst]);
 		key = getch();
 	}
 
