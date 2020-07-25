@@ -41,8 +41,9 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 		{"East"}
 	};
 
-	int8_t lkdst = 2,
-		lookdir[4][2] = {
+	int8_t lkdst = 2;
+		
+	const int lookdir[4][2] = {
 		LOOK_DIRECTION_N,
 		LOOK_DIRECTION_W,
 		LOOK_DIRECTION_S,
@@ -150,8 +151,9 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 
 
 		r_render_world_raycast(p1, map, tile);
-		r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile, (int*)lookdir[lkdst]);
+		r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile, lookdir[lkdst][0], lookdir[lkdst][1]);
 		mvaddstr(1, 1, dire[lkdst]);
+		//printw(" %d %d", lookdir[lkdst][0], lookdir[lkdst][1]);
 		key = getch();
 	}
 
