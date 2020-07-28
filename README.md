@@ -1,11 +1,15 @@
 # Zak's Ztorg
 
-This is My First Attempt to have something remotely big Project
-And As of Uploading this Repo to Github (5th May 2020), I have only
-been coding for few months. I just wanted to do something in Quarentine
-So I Decided to learn basic programming. This is it.
+This is My First Attempt to have something remotely big Project.
+
+- Its a tile-based terminal game.
+- The Source Code is Made to be Independent. I'll release a more Refined Library which is not tied w/ ztorg In Future. But if You are fairly competent in programming. You can use my source and modify however you like.
+- Its more of a tech Demo rather than a game.
 
 ### Installation & Execution
+
+#### Dependencies
+Ztrog, as of curent only need ```ncurses``` and standerd C library.
 
 For Installing it just run
 ```
@@ -13,7 +17,7 @@ git clone https://github.com/zakarouf/ztorg.git
 cd ztorg
 ./install
 ```
-And it Should Compile the binary in current directory named 'z' in directory 'data'.
+And it Should Compile the binary named 'z' in newly created directory 'data'.
 It can be executed by
 ```
 cd data
@@ -56,14 +60,16 @@ Now you can Draw by pressing 'v', This will enable Brush mode
 
 ![move](https://github.com/zakarouf/ztorg/blob/master/doc/scr/move_brush_on.png?raw=true)
 
-- You can Disable Brush mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with. NOTE 'c' will Not work if Brush is disabled(0).
+- You can Disable Brush mode by pressing 'v', and change ascii char to draw by pressing key 'c' followed by Character you want draw with.
 
 I'll add more Draw funtion Instruction Once I finalize them(they're there, look into e_main.c{e_mainloop} if ya want to use them.)
 
+
+NOTE: The Project is everchanging so if the program conflicts w/ any of documentation. Open a issue and I'll fix it up.
 ---
 #### IF ANYONE READING THIS
 
-IF you wonder upon this repo please send me the ways I can Improve
-I'm not a CS student and I'm self learning most of my stuff.
+If you wonder upon this repo and think my coding bollocks.
+I'm Still a Novice so if you have ways for me to improve. By all regards hit me up.
 
 Cheers !!!
