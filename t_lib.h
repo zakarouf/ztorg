@@ -13,4 +13,7 @@ TILE *init_TILESET (char tileset_name[], int *maxtile);
 
 int t_maker_main ();
 
+
+void t_deltile (TILE *);
+
 #endif

@@ -6,7 +6,7 @@
 
 PLAYER *init_player (ENTCLASS class);
 
-
+void p_delplayer (PLAYER *player);
 //void p_hurt_player (int damage, PLAYER *p, int dist);
 
 #endif

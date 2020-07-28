@@ -18,3 +18,8 @@ PLAYER *init_player (ENTCLASS class)
 
 	return pp;
 }
+
+void p_delplayer (PLAYER *player)
+{
+	free(player);
+}

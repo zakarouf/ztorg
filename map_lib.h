@@ -53,4 +53,9 @@ int map_write_world (MAP *map, char map_name[], char tilename[], bool new_map);
 
 
 
+/*---------------------------------------------------------------------------------------*/
+// Common_func
+void map_delmap(MAP *);
+MAP *map_initmap(size_t size);
+
 #endif

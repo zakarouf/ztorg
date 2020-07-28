@@ -1,8 +1,8 @@
 #!/bin/bash
 
-CCF=gcc-7
+CCF=clang
 CFLAGS='-Wall'
-LDFLAGS='-lncurses -lm -L. -Iinclude'
+LDFLAGS='-lncurses -lm'
 
 OUTEX_FILE='z'
 

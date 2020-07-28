@@ -1,3 +1,10 @@
+/*
+------------------------------------------
+Main Initalizer
+------------------------------------------
+*/
+#include "z_setup.h"
+
 #include "g_lib.h"
 
 #include "r_lib.h"
@@ -15,10 +22,10 @@ int z_init_main(int mode)
 	
 
 
-	if (mode == 1) //MAIN GAME
+	if (mode == Ztg_PLAY_NORMAL) //MAIN GAME
 	{
 		// Declare map
-		MAP map;
+		MAP *map = map_initmap(1);
 
 		uint8_t key = 1; // Keyboard Var
 		// Initialize map stuff
@@ -33,9 +40,9 @@ int z_init_main(int mode)
 
 		while (key != 0)
 		{
-			scanw("%s", map.name);
+			scanw("%s", map->name);
 			
-			map.world = map_read_world (map.name, &map.X, &map.Y, tilename, &key);
+			map->world = map_read_world (map->name, &map->X, &map->Y, tilename, &key);
 
 			if(!key)
 			{
@@ -66,15 +73,16 @@ int z_init_main(int mode)
 		init_pair(2, COLOR_YELLOW, COLOR_YELLOW);
 		init_pair(3, COLOR_RED, COLOR_RED);
 
+		g_main_loop(pp, map, tile);
 
 
-		g_main_loop(pp, &map, tile);
 
-		free(tile);
-		free(map.world);
+		p_delplayer(pp);
+		t_deltile(tile);
+		map_delmap(map);
 	}
 
-	else if (mode == 2) // MAP EDITOR
+	else if (mode == Ztg_EDITOR_NEW) // MAP EDITOR
 	{
 
 		clear();
@@ -83,7 +91,7 @@ int z_init_main(int mode)
 		char tilename[32];
 
 		// Declare map & Tile
-		MAP map;
+		MAP *map = map_initmap(1);
 		TILE *tile;
 
 
@@ -94,13 +102,13 @@ int z_init_main(int mode)
 		mvaddstr(5, 1,"Enter Tile Set Name ");
 
 		mvaddstr(1, 17, "<_________________>");
-		mvscanw(1, 18, "%s", map.name);
+		mvscanw(1, 18, "%s", map->name);
 
 		mvaddstr(2, 24, ">>");
-		mvscanw(2, 27, "%d", &map.X);
+		mvscanw(2, 27, "%d", &map->X);
 
 		mvaddstr(3, 24, ">>");
-		mvscanw(3, 27, "%d", &map.Y);
+		mvscanw(3, 27, "%d", &map->Y);
 
 		mvaddstr(5, 21, "<________________>");
 		mvscanw(5, 22, "%s", tilename);
@@ -110,35 +118,35 @@ int z_init_main(int mode)
 		// Init Tile Properties & Making Map
 		int maxtile;
 		tile = init_TILESET(tilename, &maxtile);
-		map.world = malloc_2D_array_uint8(map.X, map.Y, 1, 7);
+		map->world = malloc_2D_array_uint8(map->X, map->Y, 1, 7);
 
 
 		// Creating Player
 		EDITOR ee;
-		ee.X = map.X>>1;
-		ee.Y = map.Y>>2;
+		ee.X = map->X>>1;
+		ee.Y = map->Y>>2;
 		ee.linkcount = 0;
 
 
 		// Initializing Main Loop
 		noecho();
-		e_main_loop(&ee, &map, tile, maxtile, tilename);
+		e_main_loop(&ee, map, tile, maxtile, tilename);
 
-		free(tile);
-		free(map.world);
+		t_deltile(tile);
+		map_delmap(map);
 	}
 
-	else if (mode == 4) // TILE MAKE
+	else if (mode == Ztg_TEDITOR_NEW) // TILE MAKE
 	{
 		t_maker_main ();
 	}
 
-	else if (mode == 5)
+	else if (mode == Ztg_TEDITOR_OPEN)
 	{
 
 	}
 
-	else if (mode == 0)
+	else if (mode == Ztg_DEBUGMODE)
 	{
 		clear();
 		int a;

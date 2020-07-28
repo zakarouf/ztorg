@@ -152,3 +152,8 @@ TILE *init_TILESET (char tileset_name[], int *maxtile)
 
 	return NULL;
 }
+
+void t_deltile (TILE *tile)
+{
+	free(tile);
+}

@@ -32,16 +32,16 @@ int main (int argc, char const *argv[])
 		switch(option)
 		{
 			case 1:
-				z_init_main(1); //Main Game
+				z_init_main(Ztg_PLAY_NORMAL); //Main Game
 				break;
 			case 2:
-				z_init_main(2); // Editor
+				z_init_main(Ztg_EDITOR_NEW); // Editor
 				break;
 			case 3:
 
 				break;
 			case 4:
-				z_init_main(4);
+				z_init_main(Ztg_TEDITOR_NEW);
 				break;
 			case 5:
 
@@ -61,7 +61,7 @@ int main (int argc, char const *argv[])
 				quit = 1;
 				break;
 			case 9:
-				z_init_main(0); //DEBUG
+				z_init_main(Ztg_DEBUGMODE); //DEBUG
 			default:
 				break;
 		}
