@@ -7,11 +7,26 @@ MAIN GAME SEGMENT
 #include "p_lib.h"
 #include "g_lib.h"
 
+#include "z_config.h"
+
 #include "map_def.h"
 
 //---------------------------------------------------//
-#define TURN_SPEED DEGREE_90
+
 //---------------------------------------------------//
+
+#ifdef Z_FREE_ROTATION
+#define TURN_SPEED Z_TURN_FREELOOK
+#define playermoveX(angle, spd) sinf(angle) * spd
+#define playermoveY(angle, spd) cosf(angle) * spd
+
+
+#else
+#define TURN_SPEED Z_TURN_NORMAL
+#define playermoveX(angle, spd) (int)sinf(angle) * spd
+#define playermoveY(angle, spd) (int)cosf(angle) * spd
+
+#endif 
 
 enum STAT_SHOW
 {
@@ -19,12 +34,6 @@ enum STAT_SHOW
 	ST_SHOW_HEALTH,
 	ST_SHOW_MAGE,
 };
-
-#ifdef Z_FREE_ROTATION
-#define shootweapon 1
-#else
-#define shootweapon 0
-#endif 
 
 void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 {
@@ -65,12 +74,12 @@ void g_main_loop (PLAYER *p1, MAP *map, TILE *tile)
 			// Movement
 			// FORWARD / BACKWARD
 			case 'w':
-				p1->X += (int)sinf(p1->A) * mvmt_spd;
-				p1->Y += (int)cosf(p1->A) * mvmt_spd;
+				p1->X += playermoveX(p1->A, mvmt_spd);
+				p1->Y += playermoveY(p1->A, mvmt_spd);
 				break;
 			case 's':
-				p1->X -= (int)sinf(p1->A) * mvmt_spd;
-				p1->Y -= (int)cosf(p1->A) * mvmt_spd;
+				p1->X -= playermoveX(p1->A, mvmt_spd);
+				p1->Y -= playermoveY(p1->A, mvmt_spd);
 				break;
 			// STRAFE LEFT / RIGHT
 			case 'e':
