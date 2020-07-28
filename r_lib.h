@@ -11,15 +11,8 @@
 
 #include "z_config.h"
 
-// PI VAL is Also 180 DEGREE
-#define DEGREE_90  PI_VAL/2.0f
-#define DEGREE_270 3.0f*PI_VAL/2.0f
-#define DEGREE_1   0.0174533f
-
 #define FOV PI_VAL/2.0f
 #define DEPTH 16.0f
-
-
 
 void r_map_2D_win (WINDOW *mini_map, PLAYER *p, MAP* m, TILE *tile, int lookdirY, int lookdirX);
 
