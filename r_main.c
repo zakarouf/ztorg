@@ -180,7 +180,7 @@ void r_render_world_raycast (PLAYER *player, MAP *map, TILE *tile)
 				ray_distance = DEPTH;
 			}
 			else {
-				if((tile[map->world[testY][testX]].attr & TILE_ISWALL) && !(tile[map->world[testY][testX]].attr & TILE_ISINVI)) 
+				if((tile[map->world[testY][testX]].attr & TILE_ISBLOC) && !(tile[map->world[testY][testX]].attr & TILE_ISINVI)) 
 				{
 					chech_if_hitwall = 1;
 					color_txt = tile[map->world[testY][testX]].coloc;

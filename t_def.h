@@ -5,12 +5,12 @@
 #include "z_config.h"
 
 #define TILE_ISINVI 0x1
-#define TILE_ISWALL 0x2
+#define TILE_ISBLOC 0x2
 #define TILE_ISMOVE 0x4
 #define TILE_ISDEST 0x8
 #define TILE_ISFLUD 0x10
 #define TILE_ISTOXI 0x20
-#define TILE_ISWALK 0x40
+#define TILE_ISPASS 0x40
 #define TILE_ISFUNC 0x80
 
 

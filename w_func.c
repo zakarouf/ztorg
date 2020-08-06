@@ -9,7 +9,7 @@ void w_check_if_hit_4dir(WEAPONperk_t *wpn, int dirlook_xy[2], int playerpos[2],
 	{
 		int y = (dirlook_xy[0] * i) + playerpos[0];
 		int x = (dirlook_xy[1] * i) + playerpos[1];
-		if (!(tile[map[y][x]].attr &TILE_ISWALK))
+		if (!(tile[map[y][x]].attr &TILE_ISPASS))
 		{
 			return;
 		}
