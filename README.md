@@ -1,6 +1,6 @@
 # Zak's Ztorg
 
-![licence](https://img.shields.io/badge/licence-GPL3-red)
+![licence](https://img.shields.io/badge/licence-GPL--3.0-important)
 
 This is My First Attempt to have something remotely big Project.
 
