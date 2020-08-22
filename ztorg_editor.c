@@ -33,7 +33,7 @@ static void editor_help_st (WINDOW *win)
 
 }
 
-static int ztorg_editworld_st(ST_WORLD_t* map, char name[])
+static int zse_editworld_st(ST_WORLD_t* map, char name[])
 {
 	char key;
 	char Toggle[2][4] = {"Off", "On"};
@@ -123,10 +123,10 @@ int zse_editor_st_main()
 
 		char returntilesetname[ZSE_MAX_FILENAME_SIZE];
 
-		addstr("Map Name");
+		addstr("Map Name : ");
 		getstr(returntilesetname);
 
-		ztorg_editworld_st(map, returntilesetname);
+		zse_editworld_st(map, returntilesetname);
 
 		map_delete_st(map);
 	}
@@ -145,7 +145,7 @@ int zse_editor_st_main()
 
 		
 
-		ztorg_editworld_st(map, returntilesetname);
+		zse_editworld_st(map, returntilesetname);
 		map_delete_st(map);
 	}
 

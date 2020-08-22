@@ -67,12 +67,16 @@ void r_render_show2dworld
 				}
 			}
 
+			if(j == x && i == y)
+			{
+				addstr("\b@");
+			}
+
 		}
 		printw("| %d", i);
 		cursor_y++;
 	}
 
 	// Add Cursor
-	mvaddch(y, x, '@');
 	wrefresh(win);
 }
