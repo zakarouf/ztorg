@@ -1,15 +1,16 @@
 #!/bin/bash
 
 CCF=clang
-CFLAGS='-Wall'
+CFLAGS='-Wall -std=c99 -O2 -static'
 LDFLAGS='-lncurses -lm'
+ZENGINE='./zse/*.c'
 
 OUTEX_FILE='z'
 
 tar -xf data.tar
 
 # Covert C files to .o files
-$CCF $CFLAGS $LDFLAGS -c *.c
+$CCF $CFLAGS $LDFLAGS -c $ZENGINE *.c
 
 # Compile programme
 $CCF $CFLAGS $LDFLAGS -o $OUTEX_FILE *.o
@@ -26,6 +27,7 @@ if [[ $1 == "-run" ]]; then
 	cd ..
 fi
 
-if [[ $1 == "-uinstall" ]]; then
+
+if [[ $1 == "-test" ]]; then
 	rm -rf data
 fi

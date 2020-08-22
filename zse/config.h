@@ -1,5 +1,12 @@
-#ifndef ZTORG_CONFIG_H
-#define ZTORG_CONFIG_H
+#ifndef Z_CONFIG_H
+#define Z_CONFIG_H
+
+
+// ZSE HARDCONFIG (EDIT IT ONLY IF YOU KNOW WHAT YOU ARE DOING)
+
+#define ZSE_MAX_FILENAME_SIZE 32
+#define ZSE_ENGINE_VERSION "0.3"
+
 
 
 // PI VAL
@@ -7,10 +14,6 @@
 #define DEGREE_90  PI_VAL/2.0f
 #define DEGREE_270 3.0f*PI_VAL/2.0f
 #define DEGREE_1   0.0174533f
-
-
-// General
-#define ZTORG_VERSION "0.3"
 
 /*Toggle Free Rotation*/
 // #define Z_FREE_ROTATION
@@ -26,8 +29,8 @@
 // Key Config
 #define KEY_MOVE_UP_FOR 	'w'
 #define KEY_MOVE_DOWN_BACK 	's'
-#define KEY_MOVE_SIDE_LEFT 	'a'
-#define KEY_MOVE_SIDE_RIGHT 'd'
+#define KEY_MOVE_TURN_LEFT 	'a'
+#define KEY_MOVE_TURN_RIGHT 'd'
 
 
 
@@ -39,5 +42,6 @@
 #define LOOK_DIRECTION_S	{1, 0}
 #define LOOK_DIRECTION_E	{0, 1}
 #define LOOK_DIRECTION_W	{0, -1}
+
 
 #endif
