@@ -1,5 +1,7 @@
 # Zak's Ztorg
 
+![licence](https://img.shields.io/badge/licence-GPL3-red)
+
 This is My First Attempt to have something remotely big Project.
 
 - Its a tile-based terminal game.
