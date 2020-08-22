@@ -6,7 +6,7 @@ This is My First Attempt to have something remotely big Project.
 
 - Its a tile-based terminal game.
 - The Source Code is Made to be Independent. I'll release a more Refined Library which is not tied w/ ztorg In Future. But if You are fairly competent in programming. You can use my source and modify however you like.
-- Its more of a tech Demo rather than a game.
+- Its more of a Demo rather than a game.
 
 ### Installation & Execution
 
