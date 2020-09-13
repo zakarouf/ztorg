@@ -1,7 +1,7 @@
 #include "map_lib.h"
 
 
-void map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile)
+void zse_map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile)
 {
 
 	int i = y - r;

@@ -69,7 +69,7 @@ static double noise2d(double x, double y)
 
 
 
-void set_perlin_seed(int seed)
+void zse_map_set_perlin_seed(int seed)
 {
     SEED = seed;
 }
@@ -77,7 +77,7 @@ void set_perlin_seed(int seed)
 //----------------------------------------------------------
 // Returns single double val according to x,y cord
 // Example : foo_array[y][x] = c_perlin2d_get_solo(x, y, 0.1, 4)
-double c_perlin2d_get_solo(double x, double y, double freq, int depth)
+double zse_map_perlin2d_get_solo(double x, double y, double freq, int depth)
 {
     double  xa = x*freq;
     double  ya = y*freq;

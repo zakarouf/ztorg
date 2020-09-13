@@ -10,10 +10,11 @@ All notable changes to this project will be documented in this file.
     - 3d raycasting mode
 
 ### Changed
+    - Moved Common code base and Created a Game Engine
     - Linker Removed Indefinately
     - Neighbour Removed
 ### Fixed
-    - Better Code Workflow. Nearly no globals. Most of function use Pointers now
+    - Better Code Workflow. Nearly no globals. Most of function use Pointers instead of handling heavy chunks of data now
 
 ## [0.2f] - 2020-05-05
 ### Added

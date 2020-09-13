@@ -53,29 +53,6 @@ static int _map_export_commondata_st(ST_WORLD_t *map, char tilesetname[],char di
     return 0;
 }
 
-int map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool newmap)
-{
-	char mapdir[48] = MAP_DIR_NAME;
-	char dirpos[74] = "";
-	strcat(mapdir, name);
-
-	if (newmap)
-	{
-		mkdir(mapdir, 0777);
-	}
-
-	sprintf(dirpos, "%s/%s", mapdir, MAP_DATAFILE_COMMON);
-	_map_export_commondata_st(map, tilesetname, dirpos);
-
-
-	sprintf(dirpos, "%s/%s", mapdir, MAP_DATAFILE_WORLD);
-	_map_export_plotdatadata_st(map->chunk, map->Xsize, map->Ysize, map->Zsize, dirpos);
-
-	
-	return 0;
-
-}
-
 
 
 //----------------------------------------------//
@@ -110,8 +87,33 @@ static int _map_load_commondata_st (ST_WORLD_t *map, char *returntilesetname, ch
     return 0;
 }
 
+//------------------Map_load_ex-------------------//
 
-ST_WORLD_t* map_load_st (char name[], char *returntilesetname)
+int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool newmap)
+{
+	char mapdir[48] = MAP_DIR_NAME;
+	char dirpos[74] = "";
+	strcat(mapdir, name);
+
+	if (newmap)
+	{
+		mkdir(mapdir, 0777);
+	}
+
+	sprintf(dirpos, "%s/%s", mapdir, MAP_DATAFILE_COMMON);
+	_map_export_commondata_st(map, tilesetname, dirpos);
+
+
+	sprintf(dirpos, "%s/%s", mapdir, MAP_DATAFILE_WORLD);
+	_map_export_plotdatadata_st(map->chunk, map->Xsize, map->Ysize, map->Zsize, dirpos);
+
+	
+	return 0;
+
+}
+
+
+ST_WORLD_t* zse_map_load_st (char name[], char *returntilesetname)
 {
 	ST_WORLD_t *map = malloc(sizeof(ST_WORLD_t));
 

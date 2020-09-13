@@ -1,6 +1,10 @@
-#include "ztorg.h"
+/*-----------------------------------------------------
+		Bare Bones Editor For ZSE
+//---------------------------------------------------//
 
+-----------------------------------------------------*/
 
+#include "zse.h"
 
 typedef struct _map_editor_brush_t
 {
@@ -14,7 +18,10 @@ typedef struct _map_editor_brush_t
 
 }BRUSH_t;
 
-#define EDITOR_LOG_X_START(stdscrXsize) stdscrXsize - 48
+
+#define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
+
+// 
 
 static void editor_help_st (WINDOW *win)
 {
@@ -77,7 +84,7 @@ static int zse_editworld_st(ST_WORLD_t* map, char name[])
 				mvwscanw(status , 4, 0, "%hhd", &brush.ink);
 				break;
 			case 'e':
-				map_export_st(map, name, "NONE", true);
+				zse_map_export_st(map, name, "NONE", true);
 				break;
 
 			case 'h':
@@ -90,7 +97,7 @@ static int zse_editworld_st(ST_WORLD_t* map, char name[])
 
 		if(brush.toggle)
 		{
-			map_draw_circle (map, brush.x, brush.y, brush.z , brush.size , brush.ink);
+			zse_map_draw_circle (map, brush.x, brush.y, brush.z , brush.size , brush.ink);
 		}
 
 		r_render_show2dworld(stdscr, map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6);
@@ -119,7 +126,7 @@ int zse_editor_st_main()
 	if (op == 'n')
 	{
 
-		ST_WORLD_t *map = map_init_empty_st(zse_getint_printw_option("X - "), zse_getint_printw_option("Y - "), zse_getint_printw_option("Z - "));
+		ST_WORLD_t *map = zse_map_init_empty_st(zse_getint_printw_option("X - "), zse_getint_printw_option("Y - "), zse_getint_printw_option("Z - "));
 
 		char returntilesetname[ZSE_MAX_FILENAME_SIZE];
 
@@ -128,25 +135,27 @@ int zse_editor_st_main()
 
 		zse_editworld_st(map, returntilesetname);
 
-		map_delete_st(map);
+		zse_map_delete_st(map);
 	}
 
 	if (op == 'o')
 	{
 		char returntilesetname[ZSE_MAX_FILENAME_SIZE];
+		char mapname[ZSE_MAX_FILENAME_SIZE];
 
 		clear();
 
 		printw("Name : ");
-		getstr(returntilesetname);
+		getstr(mapname);
 
-		ST_WORLD_t *map = map_load_st(returntilesetname, returntilesetname);
+		//ST_WORLD_t *map = map_load_st(returntilesetname, returntilesetname);
+		ST_WORLD_t *map = zse_map_load_st(mapname, returntilesetname);
 
 
 		
 
 		zse_editworld_st(map, returntilesetname);
-		map_delete_st(map);
+		zse_map_delete_st(map);
 	}
 
 	if(op == 'q')

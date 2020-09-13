@@ -56,22 +56,22 @@ MAP FILE FORMAT
 
 //-------------------------Functions--------------------------------------------------------
 //Perlin Noise
-double c_perlin2d_get_solo(double x, double y, double freq, int depth);
-
+double zse_map_perlin2d_get_solo(double x, double y, double freq, int depth);
+void zse_map_set_perlin_seed(int seed);
 
 
 //MAP_In && MAP_Out
 
-ST_WORLD_t* map_load_st (char name[], char *returntilesetname);
-int map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool newmap);
+ST_WORLD_t* zse_map_load_st (char name[], char *returntilesetname);
+int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool newmap);
 
 //MAP Draw
-void map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile);
+void zse_map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile);
 
 
 //MAP misc
-void map_delete_st(ST_WORLD_t *map);
-ST_WORLD_t* map_init_empty_st(int x, int y, int z);
+void zse_map_delete_st(ST_WORLD_t *map);
+ST_WORLD_t* zse_map_init_empty_st(int x, int y, int z);
 
 
 #endif

@@ -1,7 +1,7 @@
 #include "map_lib.h"
 
 
-ST_WORLD_t* map_init_empty_st(int x, int y, int z)
+ST_WORLD_t* zse_map_init_empty_st(int x, int y, int z)
 {
 
 	ST_WORLD_t *map = malloc(sizeof(ST_WORLD_t));
@@ -21,7 +21,7 @@ ST_WORLD_t* map_init_empty_st(int x, int y, int z)
 
 
 
-void map_delete_st(ST_WORLD_t *map)
+void zse_map_delete_st(ST_WORLD_t *map)
 {
 	free(map->chunk);
 	free(map);
