@@ -1,4 +1,5 @@
 #include "zse.h"
+#include "zse_com.h"
 
 #include <string.h>
 

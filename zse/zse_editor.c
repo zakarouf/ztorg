@@ -5,6 +5,7 @@
 -----------------------------------------------------*/
 
 #include "zse.h"
+#include "zse_com.h"
 
 typedef struct _map_editor_brush_t
 {
