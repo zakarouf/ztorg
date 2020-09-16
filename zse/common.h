@@ -15,6 +15,18 @@
 
 #define getindex3d(x, y, z, X, Y) x + ((y)*X) + ((z)*X*Y)
 
+typedef struct _map_editor_brush_t
+{
+
+	int x;
+	int y;
+	int z;
+	int ink;
+	unsigned char size;
+	bool toggle;
+
+}BRUSH_t;
+
 
 int zse_getint();
 int zse_getint_printw_option(char str[]);

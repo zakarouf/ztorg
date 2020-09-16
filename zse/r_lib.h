@@ -4,10 +4,10 @@
 #include "map_lib.h"
 #include <ncurses.h>
 
+//#include "r_colors.h"
 
-
-void r_init();
-void r_exit();
+int zse_r_init();
+void zse_r_exit();
 
 void r_render_show2dworld
 (

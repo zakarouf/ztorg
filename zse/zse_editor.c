@@ -7,18 +7,6 @@
 #include "zse.h"
 #include "zse_com.h"
 
-typedef struct _map_editor_brush_t
-{
-
-	int x;
-	int y;
-	int z;
-	int ink;
-	unsigned char size;
-	bool toggle;
-
-}BRUSH_t;
-
 
 #define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
 
@@ -68,7 +56,7 @@ static int zse_editworld_st(ST_WORLD_t* map, char name[])
 				break;
 			case 'a':if(brush.x -1 >= 0)brush.x--;
 				break;
-			case 'd':if(brush.x +1 < map->Ysize)brush.x++;
+			case 'd':if(brush.x +1 < map->Xsize)brush.x++;
 				break;
 			case 'z':
 				if(brush.z +1 < map->Zsize){brush.z++;}

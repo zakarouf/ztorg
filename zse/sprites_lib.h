@@ -4,23 +4,38 @@
 #include "common.h"
 
 
+#include "r_colors.h"
+
 typedef uint8_t sdata;
 
 typedef struct SPRITES_DEF_
 {
     uint16_t X;
     uint16_t Y;
-    int frames;
+    unsigned int frames;
     float fps;
+    unsigned short colorused;
+    COLORrgb_p *colorP;
     sdata* plot;
 
 }SPRITES_t;
 
+typedef struct COLORLESS_SPRITES_DEF_
+{
+    uint16_t X;
+    uint16_t Y;
+    unsigned int frames;
+    float fps;
+    sdata* plot;
+}COLORLESS_SPRITES_t;
+
 typedef struct SPRITES_BLOC_DEF_
 {
-    int num;
-    char *names;
-    SPRITES_t* sprites;
+    int blocsize;
+    unsigned short colorused;
+    COLORrgb_p *colorP;
+    COLORLESS_SPRITES_t* sprites;
+
 }SPRITES_BLOC_t;
 
 #define SPRITES_PARENTDIR "sprites/"
@@ -33,8 +48,10 @@ typedef struct SPRITES_BLOC_DEF_
     [version] 8byte
     [X] uint16
     [Y] uint16
-    [frames] int 
+    [frames] int
     [fps] float 
+    [colorused] short
+    [colordata] COLORrgb_p * colorused
     [sdata] X * Y * frames
    
 */
@@ -46,6 +63,9 @@ typedef struct SPRITES_BLOC_DEF_
     [name] char * MAX_FILENAME_SIZE * num
     [sprites]
 */
+
+// Funcs
+// Funcs
 
 
 #endif

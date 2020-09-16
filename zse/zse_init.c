@@ -4,13 +4,16 @@
 int main(int argc, char const *argv[])
 {
 
-	r_init();
+	if(zse_r_init())
+	{
+		return 1;
+	}
 
 
 	// Set the Main game Func
-	zse_tile_maker_main ();
+	zse_sprites_setup();
 
-	r_exit();
+	zse_r_exit();
 
 	return 0;
 }
