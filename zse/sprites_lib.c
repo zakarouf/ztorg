@@ -1,5 +1,6 @@
 #include "sprites_lib.h"
 
+#define ZSE_ENABLE_COLOR
 
 SPRITES_t zse_sprites_sin_load(char name[])
 {
@@ -20,15 +21,16 @@ SPRITES_t zse_sprites_sin_load(char name[])
 	// Read Stuff
 	char version[8];
 	fread(version, sizeof(char) *8, 1, fp);
-	fread(&sprite, sizeof(SPRITES_t) - (sizeof(sdata*) - sizeof(COLORrgb_p*)), 1, fp);
+	fread(&sprite, sizeof(SPRITES_t), 1, fp);
+	
+	sprite.plot = malloc(sizeof(sprite_data_t) * sprite.X * sprite.Y * sprite.frames);
+	fread(sprite.plot, sizeof(sprite_data_t), sprite.X * sprite.Y * sprite.frames, fp);
+
 
 	sprite.colorP = malloc(sizeof(COLORrgb_p) * sprite.colorused);
 	fread(sprite.colorP, sizeof(COLORrgb_p)*sprite.colorused, 1, fp);
-
-	sprite.plot = malloc(sizeof(sdata) * sprite.X * sprite.Y * sprite.frames);
-	fread(sprite.plot, sizeof(sdata) * sprite.X * sprite.Y * sprite.frames, 1, fp);
 	
-
+	fclose(fp);
 
 	return sprite;
 
@@ -41,7 +43,8 @@ int zse_sprites_sin_export(SPRITES_t *sprite ,char name[])
 	sprintf(dirpos, "%s%s%s", SPRITES_PARENTDIR, name, SPRITES_SINGLE_EXT);
 
 	FILE *fp;
-	if((fp = fopen(dirpos, "w")) == NULL)
+	fp = fopen(dirpos, "w+");
+	if(fp == NULL)
 	{
 		printw("%s",dirpos);
 		printw("UNABLE To Creat Tile File\n");
@@ -50,12 +53,24 @@ int zse_sprites_sin_export(SPRITES_t *sprite ,char name[])
 	}
 
 	// Write Stuff
-	fwrite("0.300000", sizeof(char) *8, 1, fp);
-	fwrite(&sprite[0], sizeof(SPRITES_t) - sizeof(sdata*) - sizeof(COLORrgb_p*), 1, fp);
+	// Version
+	fwrite(ZSE_ENGINE_VERSION, sizeof(char) *8, 1, fp);
+	// Attribute
+/*
+    uint16_t X;
+    uint16_t Y;
+    unsigned int frames;
+    float dt;
+    unsigned short colorused;
+*/
 
+	fwrite(&sprite[0], sizeof(SPRITES_t), 1, fp);
+
+	fwrite(sprite->plot, sizeof(sprite_data_t) * sprite->X * sprite->Y * sprite->frames, 1, fp);
 	fwrite(sprite->colorP, sizeof(COLORrgb_p)*sprite->colorused, 1, fp);
-	fwrite(sprite->plot, sizeof(sdata) * sprite->X * sprite->Y * sprite->frames, 1, fp);
 
+
+	fclose(fp);
 
 	return 0;
 
@@ -82,6 +97,8 @@ void zse_delete_sprites_blocCont(SPRITES_BLOC_t spr_bloc)
 	free(spr_bloc.colorP);
 	free(spr_bloc.sprites);
 }
+
+
 
 /*
 SPRITES_t *zse_sprites_migrate_BlocToSpr(SPRITES_BLOC_t spr_bloc, int *return_size)

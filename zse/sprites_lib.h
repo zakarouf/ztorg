@@ -6,17 +6,17 @@
 
 #include "r_colors.h"
 
-typedef uint8_t sdata;
+typedef uint16_t sprite_data_t;
 
 typedef struct SPRITES_DEF_
 {
     uint16_t X;
     uint16_t Y;
     unsigned int frames;
-    float fps;
+    float dt;
     unsigned short colorused;
+    sprite_data_t* plot;
     COLORrgb_p *colorP;
-    sdata* plot;
 
 }SPRITES_t;
 
@@ -25,8 +25,8 @@ typedef struct COLORLESS_SPRITES_DEF_
     uint16_t X;
     uint16_t Y;
     unsigned int frames;
-    float fps;
-    sdata* plot;
+    float dt;
+    sprite_data_t* plot;
 }COLORLESS_SPRITES_t;
 
 typedef struct SPRITES_BLOC_DEF_
@@ -65,7 +65,9 @@ typedef struct SPRITES_BLOC_DEF_
 */
 
 // Funcs
-// Funcs
+SPRITES_t zse_sprites_sin_load(char name[]);
+int zse_sprites_sin_export(SPRITES_t *sprite ,char name[]);
 
+void zse_delete_sprites_ptr(SPRITES_t *sprites, size_t siz);
 
 #endif

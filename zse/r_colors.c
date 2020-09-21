@@ -45,9 +45,9 @@ COLORrgb_p* zse_r_colorsPallete_create (size_t size)
 
 }
 
-void zse_r_colorPload_default(COLORrgb_p * colorP)
+COLORrgb_p* zse_r_colorPload_default()
 {
-	colorP = zse_r_colorsPallete_create(8);
+	COLORrgb_p *colorP = zse_r_colorsPallete_create(8);
 
 	COLORrgb_p def_p[8] = {
 		{0, 0, 0},
@@ -66,6 +66,8 @@ void zse_r_colorPload_default(COLORrgb_p * colorP)
 		init_color(i, def_p[i].r, def_p[i].g, def_p[i].b);
 		init_pair(i, i, i);
 	}
+
+	return colorP;
 
 }
 

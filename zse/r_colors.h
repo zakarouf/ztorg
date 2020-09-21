@@ -21,6 +21,6 @@ typedef struct COLOR_PROFILE_
 
 COLORrgb_p* zse_r_colorsPallete_create (size_t size);
 void zse_delete_colorpallete(COLORrgb_p * pallate);
-void zse_r_colorPload_default(COLORrgb_p * colorP);
+COLORrgb_p* zse_r_colorPload_default(COLORrgb_p * colorP);
 
 #endif

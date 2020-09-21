@@ -1,4 +1,5 @@
-#include "r_lib.h"
+#include "zse_render.h"
+#include "sprites_lib.h"
 
 void r_render_show2dworld
 (
@@ -79,4 +80,55 @@ void r_render_show2dworld
 
 	// Add Cursor
 	wrefresh(win);
+}
+
+int zse_render_sprite
+(
+	WINDOW *win,
+	int startX,
+	int startY,
+	SPRITES_t* spr,
+	int startframe,
+	int endframe
+)
+{
+	clock_t start_time, end_time;
+	double time_taken;
+	int atframe = 0;
+
+
+
+	for(;;)
+	{
+		start_time = clock();
+		for(;;)
+		{
+			end_time = clock();
+			time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+
+			if(time_taken > spr->dt)
+			{
+				for (int i = 0; i < spr->Y; ++i)
+				{
+					for (int j = 0; j < spr->X; ++j)
+					{
+						mvaddch(i+startY, j+startX, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+					}
+				}
+				atframe++;
+				goto NEXT_FRAME;
+
+			}
+		}
+	NEXT_FRAME:
+		refresh();
+		if(atframe >= spr->frames)
+		{
+			goto FUNTION_END;
+		}
+	}
+	
+
+FUNTION_END:
+	return 0;
 }

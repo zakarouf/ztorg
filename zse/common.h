@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 #include <ncurses.h>
-
+#include <time.h>
 #include <math.h>
 
 #include "config.h"

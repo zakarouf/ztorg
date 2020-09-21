@@ -6,6 +6,7 @@
 
 #include "zse.h"
 #include "zse_com.h"
+#include "zse_render.h"
 
 
 #define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
