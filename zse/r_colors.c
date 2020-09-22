@@ -71,6 +71,15 @@ COLORrgb_p* zse_r_colorPload_default()
 
 }
 
+int zse_r_color_initpairs_Default()
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		init_pair(i, i, COLOR_BLACK);
+	}
+	return 0;
+}
+
 
 void zse_delete_colorpallete(COLORrgb_p * pallate)
 {

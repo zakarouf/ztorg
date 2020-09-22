@@ -23,4 +23,6 @@ COLORrgb_p* zse_r_colorsPallete_create (size_t size);
 void zse_delete_colorpallete(COLORrgb_p * pallate);
 COLORrgb_p* zse_r_colorPload_default(COLORrgb_p * colorP);
 
+int zse_r_color_initpairs_Default();
+
 #endif

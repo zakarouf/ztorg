@@ -112,7 +112,9 @@ int zse_render_sprite
 				{
 					for (int j = 0; j < spr->X; ++j)
 					{
-						mvaddch(i+startY, j+startX, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+						attrset(COLOR_PAIR(spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]>>8));
+						mvwaddch(win,i+startY, j+startX, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+						attrset(A_NORMAL);
 					}
 				}
 				atframe++;
@@ -121,7 +123,7 @@ int zse_render_sprite
 			}
 		}
 	NEXT_FRAME:
-		refresh();
+		wrefresh(win);
 		if(atframe >= spr->frames)
 		{
 			goto FUNTION_END;

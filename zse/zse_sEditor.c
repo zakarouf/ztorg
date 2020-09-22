@@ -5,7 +5,7 @@ static void r_render_showSeditorNormal
 (
 	WINDOW *win,
 	sprite_data_t *chunk,
-	COLORrgb_p *colo,
+	bool colormode,
 	const int Xsize,
 	const int Ysize,
 	const int Zsize,
@@ -39,6 +39,8 @@ static void r_render_showSeditorNormal
 
 	wclear(win);
 
+
+
 	for (; i < end_i; ++i)
 	{
 		j = x - (int)(screensizeX>>1) -1;
@@ -53,21 +55,27 @@ static void r_render_showSeditorNormal
 
 		for (; j < end_j; ++j)
 		{
-			lowerzc = chunk[getindex3d(j, i, lower_z, Xsize, Ysize)]&255;
-
-			if(lowerzc != ' ' && lowerzc == (chunk[getindex3d(j, i, z, Xsize, Ysize)]&255))attrset(COLOR_PAIR(2));
-
-			addch(chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
-			attrset(A_NORMAL);
-			if(lower_z >= 0 && (lowerzc != ' ') && (chunk[getindex3d(j, i, z, Xsize, Ysize)]&255) == ' ' )
+			if(!colormode)
 			{
-				attron(COLOR_PAIR(1));
-				addch('\b');
-				addch(lowerzc);
-				attroff(COLOR_PAIR(1));
+			
+				lowerzc = chunk[getindex3d(j, i, lower_z, Xsize, Ysize)]&255;
+				if(lowerzc != ' ' && lowerzc == (chunk[getindex3d(j, i, z, Xsize, Ysize)]&255))attrset(COLOR_PAIR(1));
+				addch(chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
+				if(lower_z >= 0 && (lowerzc != ' ') && (chunk[getindex3d(j, i, z, Xsize, Ysize)]&255) == ' ' )
+				{
+					attrset(COLOR_PAIR(5));
+					addch('\b');
+					addch(lowerzc);
+				}
+			}
+			else
+			{
+				//Colormode;
+				attrset(COLOR_PAIR(chunk[getindex3d(j, i, z, Xsize, Ysize)]>>8));
+				addch(chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
 			}
 
-
+			attrset(A_NORMAL);
 
 			if(j == x && i == y)
 			{
@@ -83,22 +91,15 @@ static void r_render_showSeditorNormal
 	wrefresh(win);
 }
 
-static int zse_sprites_edtior_func_copy_lastlayer(sprite_data_t* data, int fromframe,int atframe, int xsize, int ysize, int zsize)
+static int zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int fromframe,int atframe, int xsize, int ysize, int zsize)
 {
-	if(fromframe <= 1)
+	if(fromframe < 0)
 	{
 		return 1;
 	}
-	/*for (int i = 0; i < xsize*ysize; ++i)
+	for (int i = 0; i < xsize*ysize; ++i)
 	{
 		data[atframe*xsize*ysize +i] = data[fromframe*xsize*ysize +i];
-	}*/
-	for (int i = 0; i < ysize; ++i)
-	{
-		for (int j = 0; j < xsize; ++j)
-		{
-			data[getindex3d(j, i, atframe, xsize, ysize)] |= data[getindex3d(j, i, fromframe, xsize, ysize)]&0xFF;
-		}
 	}
 
 	return 0;
@@ -106,16 +107,15 @@ static int zse_sprites_edtior_func_copy_lastlayer(sprite_data_t* data, int fromf
 
 static int zse_sprites_edtior(SPRITES_t *spr)
 {
-	//SPRITES_t spr;
-	// Get All Atributes
 
 	char Toggle[2][4] = {"Off", "On"};
 
-	BRUSH_t brush = {0, 0, 0, 0, 0, 0};
+	BRUSH_t brush = {0, 0, 0, ' ', 0, 0};
 	char key;
 	char name[ZSE_MAX_FILENAME_SIZE];
 	char tmp_op;
 	bool colormode = 1;
+	char brush_colo = 0x01;
 	// note z is the frame
 
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
@@ -151,24 +151,39 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 				brush.ink |= getch();
 				break;
 			case 'e':
-				mvwprintw(status, 3, 0 ,"Save Sprite As >> ");wrefresh(status);
-				getstr(name);
-				zse_sprites_sin_export(spr, name);
+				brush.ink &= 0x00FF;
+				brush.ink |= (brush_colo * 0x100);
 				break;
 
 			case 'h':
 				mvwscanw(status, 4, 0 ,"%f" , &spr->dt);
 				break;
 			case ' ':
-				zse_render_sprite(stdscr ,0, 0, spr, 0, spr->frames);
+				zse_render_sprite(status ,0, 0, spr, 0, spr->frames);
 				break;
 			case ':':
 				tmp_op = getch();
 				if(tmp_op == 'o')colormode ^= 1;
-				if(tmp_op == 'c')zse_sprites_edtior_func_copy_lastlayer(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);
+				if(tmp_op == 'c'){zse_sprites_edtior_func_copy_lastframe(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);}
+				if(tmp_op == 's')
+				{
+					mvwprintw(status, 3, 0 ,"Save Sprite As >> ");wrefresh(status);
+					wgetstr(status,name);
+					zse_sprites_sin_export(spr, name);
+				}
 				break;
+			case '-':
+				brush_colo --;
+				if(brush_colo < 0){brush_colo = 0;}
+				break;
+			case '=':
+				brush_colo ++;
+				if(brush_colo > 7){brush_colo = 7;}
+				break;
+
 			case '`':
 				return 0;
+				break;
 		}
 
 		if(brush.toggle)
@@ -176,14 +191,15 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 			spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)] = brush.ink; 
 		}
 
-		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d\n", Toggle[brush.toggle], brush.ink , "NONE", brush.size);
-		mvwprintw(status, 1, 0, "POS (%3hd,%3hd) Frame - %3d/%3d", brush.x, brush.y, brush.z, spr->frames-1);
+		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%d}"
+			, Toggle[brush.toggle], brush.ink , "NONE", brush.size, brush_colo) ;
+		attrset(COLOR_PAIR(brush_colo));waddstr(status,"###\n");attrset(COLOR_PAIR(A_NORMAL));
 
-		r_render_showSeditorNormal(stdscr, spr->plot, spr->colorP, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
-		if(colormode)
-		{
+		mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d| "
+			, brush.x, brush.y, brush.z, spr->frames-1, spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)]>>8);
 
-		}
+		
+		r_render_showSeditorNormal(stdscr, spr->plot, colormode, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
 		wrefresh(status);
 	}
 
@@ -235,7 +251,8 @@ static void zse_sprite_newCreateMenu(SPRITES_t *spr)
 
 static int zse_sprites_debug(SPRITES_t *spr)
 {
-
+	fprintf(stdout, "%d\n%d\n %d", spr->X, spr->Y, spr->frames);
+	fprintf(stdout, "%f\n%d", spr->dt, spr->colorused);
 
 	return 0;
 }
@@ -243,8 +260,7 @@ static int zse_sprites_debug(SPRITES_t *spr)
 
 int zse_sprites_setup()
 {
-	init_pair(1, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(2, COLOR_RED, COLOR_BLACK);
+	zse_r_color_initpairs_Default();
 	SPRITES_t spr;
 	
 	zse_sprite_newCreateMenu(&spr);
