@@ -1,5 +1,5 @@
 #include "colors.h"
-
+#include <ncurses.h>
 int zse_r_colors_init()
 {
 

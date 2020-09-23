@@ -1,33 +1,31 @@
 #!/bin/bash
 
 CCF=clang
-CFLAGS='-Wall -std=c99 -O3'
+CFLAGS='-Wall -std=c99 -O2'
+HEADER='zse/ '
+CFILES=''
 LDFLAGS='-lncurses -lm'
-ZENGINE='./zse/*.c */*.c'
+ZENGINE='zse/*'
 
 OUTEX_FILE='z'
 
 tar -xf data.tar
 
-# Covert C files to .o files
-$CCF $CFLAGS $LDFLAGS -c $ZENGINE *.c
+#mkdir build
 
-# Compile programme
-$CCF $CFLAGS $LDFLAGS -o $OUTEX_FILE *.o
+for d in $ZENGINE ; do
+    if [[ -f $d ]]; then
+        if [[ $d == *.c ]]; then
+            CFILES="$CFILES $d"
+        fi
+    elif [[ -d $d ]]; then
+            HEADER="$HEADER $d/"
+        for subd in $d/* ; do
+            if [[ $subd == *.c ]]; then
+                CFILES="$CFILES $subd"
+            fi
+        done
+    fi
+done
 
-# Move exectable to its rightful place.
-mv $OUTEX_FILE data/
-# Remove .o files
-rm *.o
-
-
-if [[ $1 == "-run" ]]; then
-	cd data
-	./$OUTEX_FILE
-	cd ..
-fi
-
-
-if [[ $1 == "-test" ]]; then
-	rm -rf data
-fi
+$CCF $CFLAGS $LDFLAGS -I"$HEADER" -c $OUTEX_FILE $CFILES ztorg.c

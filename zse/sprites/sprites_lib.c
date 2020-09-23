@@ -4,7 +4,7 @@
 
 SPRITES_t zse_sprites_sin_load(char name[])
 {
-	SPRITES_t sprite;
+	SPRITES_t sprite = {0, 0, 0, 0 ,0, NULL, NULL};
 
 	char dirpos[74] = SPRITES_PARENTDIR;
 	sprintf(dirpos, "%s%s%s", SPRITES_PARENTDIR, name, SPRITES_SINGLE_EXT);
@@ -12,9 +12,6 @@ SPRITES_t zse_sprites_sin_load(char name[])
 	FILE *fp;
 	if((fp = fopen(dirpos, "r")) == NULL)
 	{
-		printf("%s",dirpos);
-		printf("UNABLE To LOAD Tile File\n");
-		getch();
 		return sprite;
 	}
 
@@ -46,9 +43,6 @@ int zse_sprites_sin_export(SPRITES_t *sprite ,char name[])
 	fp = fopen(dirpos, "w+");
 	if(fp == NULL)
 	{
-		printw("%s",dirpos);
-		printw("UNABLE To Creat Tile File\n");
-		getch();
 		return -1;
 	}
 

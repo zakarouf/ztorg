@@ -1,4 +1,5 @@
 #include "common.h"
+#include <ncurses.h>
 
 int zse_getint()
 {

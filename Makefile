@@ -1,6 +1,6 @@
 # Set project directory one level above of Makefile directory. $(CURDIR) is a GNU make variable containing the path to the current working directory
 PROJDIR := $(realpath $(CURDIR)/..)
-SOURCEDIR := $(PROJDIR)/Sources
+SOURCEDIR := $(PROJDIR)/zse
 BUILDDIR := $(PROJDIR)/Build
 
 # Name of the final executable
@@ -10,7 +10,7 @@ TARGET = z
 VERBOSE = TRUE
 
 # Create the list of directories
-DIRS = colors map r_curses sprites tiles tools_curses
+DIRS = zse/colors zse/map zse/r_curses zse/sprites zse/tiles zse/tools_curses
 SOURCEDIRS = $(foreach dir, $(DIRS), $(addprefix $(SOURCEDIR)/, $(dir)))
 TARGETDIRS = $(foreach dir, $(DIRS), $(addprefix $(BUILDDIR)/, $(dir)))
 
@@ -30,21 +30,21 @@ OBJS := $(subst $(SOURCEDIR),$(BUILDDIR),$(SOURCES:.c=.o))
 DEPS = $(OBJS:.o=.d)
 
 # Name the compiler
-CC = gcc
+CC = gcc-7
 
 # OS specific part
 ifeq ($(OS),Windows_NT)
-    RM = del /F /Q 
-    RMDIR = -RMDIR /S /Q
-    MKDIR = -mkdir
-    ERRIGNORE = 2>NUL || true
-    SEP=\\
+	RM = del /F /Q 
+	RMDIR = -RMDIR /S /Q
+	MKDIR = -mkdir
+	ERRIGNORE = 2>NUL || true
+	SEP=\\
 else
-    RM = rm -rf 
-    RMDIR = rm -rf 
-    MKDIR = mkdir -p
-    ERRIGNORE = 2>/dev/null
-    SEP=/
+	RM = rm -rf 
+	RMDIR = rm -rf 
+	MKDIR = mkdir -p
+	ERRIGNORE = 2>/dev/null
+	SEP=/
 endif
 
 # Remove space after separator
@@ -60,8 +60,8 @@ endif
 # Define the function that will generate each rule
 define generateRules
 $(1)/%.o: %.c
-    @echo Building $$@
-    $(HIDE)$(CC) -c $$(INCLUDES) -o $$(subst /,$$(PSEP),$$@) $$(subst /,$$(PSEP),$$<) -MMD
+	@echo Building $$@
+	$(HIDE)$(CC) -c $$(INCLUDES) -o $$(subst /,$$(PSEP),$$@) $$(subst /,$$(PSEP),$$<) -MMD
 endef
 
 .PHONY: all clean directories 
@@ -69,8 +69,8 @@ endef
 all: directories $(TARGET)
 
 $(TARGET): $(OBJS)
-    $(HIDE)echo Linking $@
-    $(HIDE)$(CC) $(OBJS) -o $(TARGET)
+	$(HIDE) echo Linking $@
+	$(HIDE)$(CC) $(OBJS) -o $(TARGET)
 
 # Include dependencies
 -include $(DEPS)
@@ -79,10 +79,10 @@ $(TARGET): $(OBJS)
 $(foreach targetdir, $(TARGETDIRS), $(eval $(call generateRules, $(targetdir))))
 
 directories: 
-    $(HIDE)$(MKDIR) $(subst /,$(PSEP),$(TARGETDIRS)) $(ERRIGNORE)
+	$(HIDE)$(MKDIR) $(subst /,$(PSEP),$(TARGETDIRS)) $(ERRIGNORE)
 
 # Remove all objects, dependencies and executable files generated during the build
 clean:
-    $(HIDE)$(RMDIR) $(subst /,$(PSEP),$(TARGETDIRS)) $(ERRIGNORE)
-    $(HIDE)$(RM) $(TARGET) $(ERRIGNORE)
-    @echo Cleaning done ! 
+	$(HIDE)$(RMDIR) $(subst /,$(PSEP),$(TARGETDIRS)) $(ERRIGNORE)
+	$(HIDE)$(RM) $(TARGET) $(ERRIGNORE)
+	@echo Cleaning done ! 

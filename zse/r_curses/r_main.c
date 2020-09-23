@@ -1,5 +1,4 @@
 #include "r_lib.h"
-#include "map_lib.h"
 
 int zse_r_init()
 {
