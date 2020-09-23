@@ -160,7 +160,7 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 				mvwscanw(status, 4, 0 ,"%f" , &spr->dt);
 				break;
 			case ' ':
-				zse_render_sprite(status ,0, 0, spr, 0, spr->frames);
+				zse_render_sprite(stdscr ,0, 0, spr, 0, spr->frames);
 				break;
 			case ':':
 				tmp_op = getch();
@@ -213,7 +213,8 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 static void zse_sprite_newCreateMenu(SPRITES_t *spr)
 {
 	clear();
-	printw("Create New Map(Y)");
+REPEAT:
+	printw("Create (N)ew Sprite Or (O)pen A Sprite file");
 	char yes = getch();
 	clear();
 
@@ -241,11 +242,14 @@ static void zse_sprite_newCreateMenu(SPRITES_t *spr)
 
 		spr->colorP = zse_r_colorsPallete_create (spr->colorused);
 	}
-	else
+	else if(yes == 'O')
 	{
 		char name[ZSE_MAX_FILENAME_SIZE];
 		getstr(name);
 		*spr = zse_sprites_sin_load(name);
+	}
+	else {
+		goto REPEAT;
 	}
 
 }
