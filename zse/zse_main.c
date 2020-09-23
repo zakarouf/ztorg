@@ -1,5 +1,5 @@
 #include "zse.h"
-#include "zse_com.h"
+#include "tools_curses/zse_tools.h"
 
 int main(int argc, char const *argv[])
 {
@@ -11,7 +11,7 @@ int main(int argc, char const *argv[])
 
 
 	// Set the Main game Func
-	zse_sprites_setup();
+	zse_tool_spriteEditor_main();
 
 	zse_r_exit();
 

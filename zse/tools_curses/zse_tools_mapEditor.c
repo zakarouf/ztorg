@@ -4,9 +4,10 @@
 
 -----------------------------------------------------*/
 
-#include "zse.h"
-#include "zse_com.h"
-#include "zse_render.h"
+#include "zse_tools.h"
+
+#include "../map/map_lib.h"
+#include "../r_curses/r_map.h"
 
 
 #define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
@@ -103,7 +104,7 @@ static int zse_editworld_st(ST_WORLD_t* map, char name[])
 }
 
 
-int zse_editor_st_main()
+int zse_tool_mapEditor_st_main()
 {
 
 	clear();

@@ -3,7 +3,7 @@
 CCF=clang
 CFLAGS='-Wall -std=c99 -O3'
 LDFLAGS='-lncurses -lm'
-ZENGINE='./zse/*.c'
+ZENGINE='./zse/*.c */*.c'
 
 OUTEX_FILE='z'
 

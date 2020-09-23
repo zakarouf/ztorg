@@ -1,7 +1,7 @@
 #ifndef MAP_LIB_H
 #define MAP_LIB_H
 
-#include "common.h"
+#include "../common.h"
 
 #define MAX_MAP_Xsize 1024
 #define MAX_MAP_Ysize 1024

@@ -1,7 +1,7 @@
 #ifndef ZSE_COLOR_H
 #define ZSE_COLOR_H
 
-#include "common.h"
+#include "../common.h"
 
 
 typedef int color_pairs;

@@ -1,8 +1,8 @@
-#ifndef ZSE_RENDER_MAIN_H
-#define ZSE_RENDER_MAIN_H
+#ifndef ZSE_RENDER_MAP_H
+#define ZSE_RENDER_MAP_H
 
 #include "r_lib.h"
-#include "sprites_lib.h"
+#include "../map/map_lib.h"
 
 void r_render_show2dworld
 (
@@ -16,16 +16,6 @@ void r_render_show2dworld
 	int z,
 	const int resizeX,
 	const int resizeY
-);
-
-int zse_render_sprite
-(
-	WINDOW *win,
-	int startX,
-	int startY,
-	SPRITES_t* spr,
-	int startframe,
-	int endframe
 );
 
 #endif

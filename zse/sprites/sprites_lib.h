@@ -1,10 +1,10 @@
 #ifndef ZSE_SPRITES_H
 #define ZSE_SPRITES_H
 
-#include "common.h"
+#include "../common.h"
 
 
-#include "r_colors.h"
+#include "../colors/colors.h"
 
 typedef uint16_t sprite_data_t;
 

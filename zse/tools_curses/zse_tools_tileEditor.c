@@ -1,5 +1,6 @@
-#include "zse.h"
-#include "zse_com.h"
+#include "zse_tools.h"
+#include "../tiles/tile_lib.h"
+#include "../r_curses/r_lib.h"
 
 #include <string.h>
 
@@ -158,7 +159,7 @@ static void t_main_scr (TILE_t *tile, int c_tile, int tile_size)
 
 }
 
-int zse_tile_maker_main ()
+int zse_tool_tileEditor_main ()
 {
 	int tile_size = 8;
 	TILE_t *tile = zse_tile_intiempty(8);

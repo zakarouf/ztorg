@@ -1,5 +1,6 @@
-#include "zse.h"
-#include "zse_render.h"
+
+#include "../r_curses/r_sprites.h"
+#include "../sprites/sprites_lib.h"
 
 static void r_render_showSeditorNormal
 (
@@ -258,7 +259,7 @@ static int zse_sprites_debug(SPRITES_t *spr)
 }
 
 
-int zse_sprites_setup()
+int zse_tool_spriteEditor_main()
 {
 	zse_r_color_initpairs_Default();
 	SPRITES_t spr;

@@ -1,7 +1,7 @@
 #ifndef ZSE_TILE_LIB_H
 #define ZSE_TILE_LIB_H
 
-#include "common.h"
+#include "../common.h"
 
 #define TILE_ISINVI 0x1
 #define TILE_ISBLOC 0x2

@@ -146,9 +146,6 @@ int zse_tile_export(TILE_t *tile, int size ,char name[], bool newtile)
 	FILE *fp;
 	if((fp = fopen(dirpos, "w")) == NULL)
 	{
-		printw("%s",dirpos);
-		printw("UNABLE To Creat Tile File\n");
-		getch();
 		return -1;
 	}
 

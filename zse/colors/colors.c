@@ -1,4 +1,4 @@
-#include "r_colors.h"
+#include "colors.h"
 
 int zse_r_colors_init()
 {
