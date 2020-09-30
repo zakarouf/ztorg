@@ -1,18 +1,17 @@
 #!/bin/bash
 
 CCF=clang
-CFLAGS='-Wall -std=c99 -O2'
+CFLAGS='-Wall -Os'
 HEADER='zse/ '
 CFILES=''
-LDFLAGS='-lncurses -lm'
+LDFLAGS='-lncurses'
 ZENGINE='zse/*'
 
 OUTEX_FILE='z'
 
 tar -xf data.tar
 
-#mkdir build
-
+# Get All the c files
 for d in $ZENGINE ; do
     if [[ -f $d ]]; then
         if [[ $d == *.c ]]; then
@@ -29,7 +28,7 @@ for d in $ZENGINE ; do
 done
 
 
-$CCF $CFLAGS $LDFLAGS -I"$HEADER" -c $CFILES ztorg.c
+$CCF $CFLAGS -std=$1 $LDFLAGS -I"$HEADER" -c $CFILES ztorg.c
 $CCF $CFLAGS $LDFLAGS -o data/$OUTEX_FILE *.o
 
 rm -rf *.o

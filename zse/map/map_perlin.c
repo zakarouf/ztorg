@@ -31,10 +31,10 @@ static const uint8_t  HASH[] = {
 
 static int noise2(int x, int y)
 {
-    int  yindex = (y + SEED) % 256;
+    int  yindex = (y + SEED) & 0xFF;
     if (yindex < 0)
         yindex += 256;
-    int  xindex = (HASH[yindex] + x) % 256;
+    int  xindex = (HASH[yindex] + x) & 0xFF;
     if (xindex < 0)
         xindex += 256;
     const int  result = HASH[xindex];

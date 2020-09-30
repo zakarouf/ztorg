@@ -2,7 +2,8 @@
 #include "../r_curses/r_sprites.h"
 #include "../sprites/sprites_lib.h"
 
-static void r_render_showSeditorNormal
+
+static void _render_showSeditorNormal
 (
 	WINDOW *win,
 	sprite_data_t *chunk,
@@ -115,14 +116,15 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 	char key;
 	char name[ZSE_MAX_FILENAME_SIZE];
 	char tmp_op;
-	bool colormode = 1;
+	char colormode = 1;
 	char brush_colo = 0x01;
 	// note z is the frame
 
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
-	
 
-	while(true)
+
+	_render_showSeditorNormal(stdscr, spr->plot, colormode, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
+	while(TRUE)
 	{
 		key = getch();
 
@@ -179,10 +181,11 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 				break;
 			case '=':
 				brush_colo ++;
-				if(brush_colo > 7){brush_colo = 7;}
+				if(brush_colo > COLORS){brush_colo = COLORS;}
 				break;
 
 			case '`':
+
 				return 0;
 				break;
 		}
@@ -193,14 +196,18 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 		}
 
 		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%d}"
-			, Toggle[brush.toggle], brush.ink , "NONE", brush.size, brush_colo) ;
-		attrset(COLOR_PAIR(brush_colo));waddstr(status,"###\n");attrset(COLOR_PAIR(A_NORMAL));
+			, Toggle[brush.toggle], brush.ink , "NONE", brush.size, brush_colo);
+
+		attrset(COLOR_PAIR(1));
+		waddstr(status,"###\n");
+		attrset(COLOR_PAIR(A_NORMAL));
+
 
 		mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d| "
 			, brush.x, brush.y, brush.z, spr->frames-1, spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)]>>8);
 
 		
-		r_render_showSeditorNormal(stdscr, spr->plot, colormode, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
+		_render_showSeditorNormal(stdscr, spr->plot, colormode, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
 		wrefresh(status);
 	}
 
@@ -210,7 +217,7 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 }
 
 
-static void zse_sprite_newCreateMenu(SPRITES_t *spr)
+static void _zse_sprite_newCreateMenu(SPRITES_t *spr)
 {
 	clear();
 REPEAT:
@@ -218,7 +225,7 @@ REPEAT:
 	char yes = getch();
 	clear();
 
-	if(yes == 'Y')
+	if(yes == 'N')
 	{
 		mvprintw(0, 0, "Get X 	     : ");
 		mvprintw(1, 0, "Get Y 	     : ");
@@ -244,8 +251,12 @@ REPEAT:
 	}
 	else if(yes == 'O')
 	{
-		char name[ZSE_MAX_FILENAME_SIZE];
-		getstr(name);
+
+		char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE);
+
+		zse_showdir_list(stdscr, 0, 0, SPRITES_PARENTDIR);
+		mvwgetstr(stdscr, getmaxy(stdscr)-1, 1, name);
+
 		*spr = zse_sprites_sin_load(name);
 	}
 	else {
@@ -254,6 +265,7 @@ REPEAT:
 
 }
 
+/*
 static int zse_sprites_debug(SPRITES_t *spr)
 {
 	fprintf(stdout, "%d\n%d\n %d", spr->X, spr->Y, spr->frames);
@@ -261,14 +273,14 @@ static int zse_sprites_debug(SPRITES_t *spr)
 
 	return 0;
 }
+*/
 
 
 int zse_tool_spriteEditor_main()
 {
-	zse_r_color_initpairs_Default();
 	SPRITES_t spr;
 	
-	zse_sprite_newCreateMenu(&spr);
+	_zse_sprite_newCreateMenu(&spr);
 
 	zse_sprites_edtior(&spr);
 

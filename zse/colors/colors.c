@@ -1,6 +1,7 @@
 #include "colors.h"
-#include <ncurses.h>
-int zse_r_colors_init()
+#include <ncurses/ncurses.h>
+
+int zse_r_colors_init(void)
 {
 
 /* test for color ability of the terminal */
@@ -45,7 +46,7 @@ COLORrgb_p* zse_r_colorsPallete_create (size_t size)
 
 }
 
-COLORrgb_p* zse_r_colorPload_default()
+COLORrgb_p* zse_r_colorPload_default(void)
 {
 	COLORrgb_p *colorP = zse_r_colorsPallete_create(8);
 
@@ -71,12 +72,45 @@ COLORrgb_p* zse_r_colorPload_default()
 
 }
 
-int zse_r_color_initpairs_Default()
+int zse_r_color_initpairs(int colorsize)
 {
-	for (int i = 0; i < 8; ++i)
+
+	for (int i = 0; i < colorsize; ++i)
 	{
 		init_pair(i, i, COLOR_BLACK);
 	}
+	return 0;
+}
+
+int zse_colors_test_showall()
+{
+	for (int i = 0; i < COLORS; ++i)
+	{
+		init_pair(i, COLOR_WHITE, i);
+	}
+
+	for (int i = 0; i < COLORS; ++i)
+	{
+
+		if(i == 16)
+		{
+			addch('\n');
+		}
+		else if (i % 6 == 0)
+		{
+			addch('\n');
+		}
+
+
+		attrset(COLOR_PAIR(i));
+		printw(" %3d ", i);
+		attrset(A_NORMAL);
+
+
+
+	}
+	getch();
+
 	return 0;
 }
 

@@ -28,7 +28,4 @@ typedef struct _map_editor_brush_t
 }BRUSH_t;
 
 
-int zse_getint();
-int zse_getint_printw_option(char str[]);
-
 #endif
