@@ -1,0 +1,34 @@
+How I Code Ztorg
+
+Function Name:
+    
+    I name fuction starting with the their scope and where they reside.
+    For Example:
+    If a Function exist in path:
+
+    zse/
+        |- color/
+                |- color.c
+
+    Then I'll simply start with zse_color_(1)_(2)..
+    Here (1) = If Its a child of a funtion then the functions name
+    And  (2) = What It does(in a word or two)
+
+    If its a static funtion then I dont usally specify the:
+    But i always put a underscore in front of it to specify its a static fuction.
+
+    Example of Function I used in Ztorg:
+        zse_map_export_st()
+
+            The name alone tells us the function is in zse distribution family
+            and is part of map library.
+            Then it tells us what it Does?
+                (Export) name under map library can only mean that it exports map
+                while `st` tells us that the func has more specific citeria i.e 
+                exorting static style maps(non infinite maps in zse).
+
+    -------------------------------------------------------
+    
+
+
+        

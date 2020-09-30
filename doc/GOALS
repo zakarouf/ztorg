@@ -1,0 +1,9 @@
+There are set of Goals I've set to before starting on this project which are:
+
+    - The Entire Program (binary i.e not including assets) will not be more than
+      1 Megabyte in Size.
+
+    - It will Provide Infinite and random Map Generation.
+    
+    - Player, NPCs, Entities will be fully supported.
+

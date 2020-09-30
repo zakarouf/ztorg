@@ -1,0 +1,9 @@
+Ncurses config I use:
+
+    --enable-widec
+    --with-pthread
+    
+
+#Optional 
+    
+    --with-x11-rgb=FILE
