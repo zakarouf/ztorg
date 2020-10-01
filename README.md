@@ -8,6 +8,16 @@ This is My First Attempt to have something remotely big Project.
 - The Source Code is Made to be Independent. I'll release a more Refined Library which is not tied w/ ztorg In Future. But if You are fairly competent in programming. You can use my source and modify however you like.
 - Its more of a Demo rather than a game.
 
+
+# Notice
+    
+    The Project is On hold as I'm thinking on how to implement the render api.
+    I mean ncurses is great and all but Im also thinking on creating an sperate
+    OpenGl based renderlib.
+    Thing is I dont know OpenGl ;_;
+    For the next few days I'll be learning OpenGl.
+    So yeah..._
+
 ### Installation & Execution
 
 #### Dependencies
