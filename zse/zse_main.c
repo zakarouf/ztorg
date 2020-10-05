@@ -2,6 +2,7 @@
 #include "tools_curses/zse_tools.h"
 
 int zse_colors_test_showall();
+int frogger();
 
 
 int zse_main_arg_pha(int arc, char const *ar[])
@@ -24,10 +25,14 @@ int main(int argc, char const *argv[])
 	{
 		return 1;
 	}
+	srandom(clock());
+
 	zse_r_color_initpairs(COLORS);
 	zse_main_arg_pha(argc, argv);
-	// Set the Main game Func
-	zse_tool_spriteEditor_main();
+	
+	// Set the Main game Func [select only one]
+	//zse_tool_spriteEditor_main();
+	frogger();
 
 
 	zse_r_exit();

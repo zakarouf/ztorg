@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CCF=clang
-CFLAGS='-Wall -Os'
+CFLAGS='-Wall -Ofast'
 HEADER='zse/ '
 CFILES=''
 LDFLAGS='-lncurses'
@@ -24,6 +24,14 @@ for d in $ZENGINE ; do
                 CFILES="$CFILES $subd"
             fi
         done
+    fi
+done
+
+for s in '.' ; do
+    if [[ -f $s ]]; then
+        if [[ $s == *.c ]]; then
+            CFILES="$CFILES $s"
+        fi
     fi
 done
 
