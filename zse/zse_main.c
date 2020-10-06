@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 	zse_main_arg_pha(argc, argv);
 	
 	// Set the Main game Func [select only one]
-	//zse_tool_spriteEditor_main();
+	// zse_tool_spriteEditor_main();
 	frogger();
 
 

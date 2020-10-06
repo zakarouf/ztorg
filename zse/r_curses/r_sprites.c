@@ -52,3 +52,21 @@ int zse_render_sprite
 FUNTION_END:
 	return 0;
 }
+
+void zse_render_spr
+(
+	WINDOW *win,
+	int startX,
+	int startY,
+	SPRITES_t* spr,
+	const int atframe
+)
+{
+	for (int i = 0; i < spr->Y; ++i)
+	{
+		for (int j = 0; j < spr->X; ++j)
+		{
+			mvwaddch(win, startY + i, startX + j, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+		}
+	}
+}

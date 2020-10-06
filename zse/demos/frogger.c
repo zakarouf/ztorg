@@ -1,4 +1,5 @@
 #include "../zse.h"
+#include "../r_curses/r_sprites.h"
 
 typedef struct entttt_
 {
@@ -8,19 +9,8 @@ typedef struct entttt_
 
 }ENTT_T;
 
-const char frogger_car[4][4]={
-    {' ',' ','_','\\'},
-    {'-','/',' ','|'},
-    {'-','-','-','='},
-    {'*',' ',' ','*'}
-};
-
-const char frogger_frog[4][4]={
-    {' ','0','0',' '},
-    {'(','-','-',')'},
-    {' ','(',')',' '},
-    {' ','H','H',' '}
-};
+#define ZSE_FROGGER_BASE_VELO 1.0f
+#define ZSE_FROGGER_BASE_NUMB 8
 
 static void initialize_entt(float lane[] ,ENTT_T * entt, int population, int mapx, int mapy, char f)
 {
@@ -35,7 +25,9 @@ static void initialize_entt(float lane[] ,ENTT_T * entt, int population, int map
 		{	
 			entt[i].x = mapx-1.0f;
 		}
+
 		entt[i].velo = lane[(int)entt[i].y];
+
 		if (f)
 		{
 			entt[i].x = (float)(random() % mapx);
@@ -44,50 +36,61 @@ static void initialize_entt(float lane[] ,ENTT_T * entt, int population, int map
 	}
 }
 
-static void draw(ST_WORLD_t *map, ENTT_T *entt, int enttsize, const int tilesize)
+static float getlane(float velo)
 {
-	for (int s = 0; s < enttsize; ++s)
-	{
-		for (int i = 0; i < tilesize; ++i)
-		{
-			for (int j = 0; j < tilesize; ++j)
-			{
-				mvwaddch(stdscr, (int)entt[s].y*tilesize +i , (int)entt[s].x*tilesize +j , frogger_car[i][j]);
-			}
-		}
-	}
-		
-	
-
-}
-
-static float getlane()
-{
-	int r = random() & 2;
+	int r = random() & 1;
 	if(r)
 	{
-		return -1.9f;
+		return -(velo);
 	}
 	else
 	{
-		return 1.9f;
+		return velo;
 	}
+}
+
+static ENTT_T* levelup(ST_WORLD_t * map, float *lane , int *enttsize, int level, ENTT_T *entt)
+{
+
+    free(entt);
+
+    *enttsize = enttsize[0] + (int)(sqrt(ZSE_FROGGER_BASE_NUMB * level));
+
+    for (int i = 0; i < map->Ysize; ++i)
+    {
+        lane[i] = getlane(lane[i]+0.5f);
+    }
+
+
+    ENTT_T *enttnew = malloc(sizeof(ENTT_T) * enttsize[0]);
+
+    return enttnew;
 }
 
 int frogger()
 {
 	ST_WORLD_t *map = zse_map_init_empty_st(20, 10, 2);
 	float lane[map->Ysize];
-	int tilesize = 4;
+    for (int i = 0; i < map->Ysize; ++i)
+    {
+        lane[i] = getlane(ZSE_FROGGER_BASE_VELO);
+    }
 
-	for (int i = 0; i < map->Ysize; ++i)
-	{
-		lane[i] = getlane();
-	}
+    int enttsize = 8;
+    int level = 0;
+    int score = 0;
+    int up = map->Ysize;
+    ENTT_T *entt;
+    entt = levelup(map, lane, &enttsize, level, NULL);
+    initialize_entt(lane ,entt, enttsize, map->Xsize, map->Ysize, TRUE);
 
-	int enttsize = 60;
-	ENTT_T *entt = malloc(sizeof(ENTT_T) * enttsize);
-	initialize_entt(lane ,entt, enttsize, map->Xsize, map->Ysize, TRUE);
+
+    SPRITES_t *spr = malloc(sizeof(SPRITES_t) * 2);
+    spr[0] = zse_sprites_sin_load("frog");
+    spr[1] = zse_sprites_sin_load("car");
+
+	
+	
 
 	int x = map->Xsize/2, y = map->Ysize-1;
 	char key;
@@ -108,15 +111,28 @@ int frogger()
 				if(y > 0)
 				{
 					y--;
+                    if(y < up)
+                    {
+                        up--;
+                        score += 10 + (10 * level);
+                    }
 				}
                 else{
                     clear();
-                    mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2, "YOU WON");
+                    mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2, "Level %d", level+1);
                     refresh();
                     nodelay(stdscr, FALSE);
                     getch();
 
-                    return 0;
+                    level++;
+                    entt = levelup(map, lane, &enttsize, level, entt);
+                    initialize_entt(lane ,entt, enttsize, map->Xsize, map->Ysize, TRUE);
+                    y = map->Ysize-1;
+                    nodelay(stdscr, TRUE);
+                    zse_map_delete_st(map);
+                    map = zse_map_init_empty_st(20, 10, 2);
+                    score += 100 * level;
+                    up = map->Ysize;
                 }
 				break;
 			case 's':
@@ -144,12 +160,15 @@ int frogger()
 		if(map->chunk[getindex3d(x, y, 1, map->Xsize, map->Ysize)] == '*')
 		{
 			clear();
-			mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2, "GAME OVER");
+			mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2 -4, "GAME OVER");
+            mvprintw(getmaxy(stdscr)/2 + 1, getmaxx(stdscr)/2 -10, "SCORE: %d  LEVEL: %d", score, level);
 			refresh();
 			nodelay(stdscr, FALSE);
 			getch();
-			return 0;
+
+            return 0;
 		}
+        clear();
 
 		for (int i = 0; i < enttsize; ++i)
 		{
@@ -161,19 +180,11 @@ int frogger()
 			}
 			map->chunk[getindex3d((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
 
-		}
-		clear();
-		draw(map, entt, enttsize, tilesize);
+            zse_render_spr(stdscr, (int)entt[i].x* spr[1].X , (int)entt[i].y*spr[1].Y, &spr[1], 0);
 
-		for (int i = 0; i < tilesize; ++i)
-		{
-			for (int j = 0; j < tilesize; ++j)
-			{
-				mvwaddch(stdscr, y*tilesize +i, x*tilesize +j, frogger_frog[i][j]);
-			}
 		}
-		
-
+        zse_render_spr(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0);
+        mvprintw(0, 0, "Score : %d    Level : %d", score, level);
 
 		refresh();
 		end_time = clock();

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 CCF=clang
-CFLAGS='-Wall -Ofast'
+CFLAGS='-Wall'
 HEADER='zse/ '
 CFILES=''
 LDFLAGS='-lncurses'

@@ -15,4 +15,13 @@ int zse_render_sprite
 	int endframe
 );
 
+void zse_render_spr
+(
+	WINDOW *win,
+	int startX,
+	int startY,
+	SPRITES_t* spr,
+	const int atframe
+);
+
 #endif
