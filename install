@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 CCF=clang
-CFLAGS='-Wall'
+CFLAGS='-Wall -Ofast'
 HEADER='zse/ '
 CFILES=''
-LDFLAGS='-lncurses'
+LDFLAGS='-lncursest'
 ZENGINE='zse/*'
 
 OUTEX_FILE='z'
