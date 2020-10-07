@@ -1,6 +1,6 @@
 #include "r_sprites.h"
 
-int zse_render_sprite
+int zse_render_sprite_full
 (
 	WINDOW *win,
 	int startX,
@@ -53,7 +53,7 @@ FUNTION_END:
 	return 0;
 }
 
-void zse_render_spr
+void zse_render_sprite
 (
 	WINDOW *win,
 	int startX,
