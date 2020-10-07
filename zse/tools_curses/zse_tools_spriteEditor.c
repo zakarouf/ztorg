@@ -1,3 +1,14 @@
+/*-----------------------------------------------------
+			Sprite Editer For ZSE
+//---------------------------------------------------//
+
+	+-----------------------------------------------+
+	|The sprites used for zse is in custom format   |
+	|single sprite is stored as .zspr format		|
+	+-----------------------------------------------+
+	
+	
+-----------------------------------------------------*/
 
 #include "../r_curses/r_sprites.h"
 #include "../sprites/sprites_lib.h"
@@ -7,7 +18,7 @@ static void _render_showSeditorNormal
 (
 	WINDOW *win,
 	sprite_data_t *chunk,
-	bool colormode,
+	char colormode,
 	const int Xsize,
 	const int Ysize,
 	const int Zsize,
@@ -93,7 +104,7 @@ static void _render_showSeditorNormal
 	wrefresh(win);
 }
 
-static int zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int fromframe,int atframe, int xsize, int ysize, int zsize)
+static int _zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int fromframe,int atframe, int xsize, int ysize, int zsize)
 {
 	if(fromframe < 0)
 	{
@@ -107,7 +118,7 @@ static int zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int fromf
 	return 0;
 }
 
-static int zse_sprites_edtior(SPRITES_t *spr)
+static int _zse_sprites_edtior(SPRITES_t *spr)
 {
 
 	char Toggle[2][4] = {"Off", "On"};
@@ -162,12 +173,12 @@ static int zse_sprites_edtior(SPRITES_t *spr)
 				mvwscanw(status, 4, 0 ,"%f" , &spr->dt);
 				break;
 			case ' ':
-				zse_render_sprite(stdscr ,0, 0, spr, 0, spr->frames);
+				zse_render_sprite_full(stdscr ,0, 0, spr, 0, spr->frames);
 				break;
 			case ':':
 				tmp_op = getch();
 				if(tmp_op == 'o')colormode ^= 1;
-				if(tmp_op == 'c'){zse_sprites_edtior_func_copy_lastframe(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);}
+				if(tmp_op == 'c'){_zse_sprites_edtior_func_copy_lastframe(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);}
 				if(tmp_op == 's')
 				{
 					mvwprintw(status, 3, 0 ,"Save Sprite As >> ");wrefresh(status);
@@ -254,26 +265,19 @@ REPEAT:
 
 		char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE);
 
-		zse_showdir_list(stdscr, 0, 0, SPRITES_PARENTDIR);
-		mvwgetstr(stdscr, getmaxy(stdscr)-1, 1, name);
+		int items;
+		char **fnames = zse_dir_getfnames(SPRITES_PARENTDIR, &items);
+		zse_r_selectListS(stdscr, 0, 0, fnames, items, name);
+		zse_free2dchar(fnames, items);
 
 		*spr = zse_sprites_sin_load(name);
+		free(name);
 	}
 	else {
 		goto REPEAT;
 	}
 
 }
-
-/*
-static int zse_sprites_debug(SPRITES_t *spr)
-{
-	fprintf(stdout, "%d\n%d\n %d", spr->X, spr->Y, spr->frames);
-	fprintf(stdout, "%f\n%d", spr->dt, spr->colorused);
-
-	return 0;
-}
-*/
 
 
 int zse_tool_spriteEditor_main()
@@ -282,9 +286,7 @@ int zse_tool_spriteEditor_main()
 	
 	_zse_sprite_newCreateMenu(&spr);
 
-	zse_sprites_edtior(&spr);
-
-
+	_zse_sprites_edtior(&spr);
 
 	return 0;
 }

@@ -1,6 +1,10 @@
 /*-----------------------------------------------------
-		Bare Bones Editor For ZSE
+				 Map Editer For ZSE
 //---------------------------------------------------//
+
+	+-----------------------------------------------+
+	|		A Bare Bones Map Editor For ZSE  	    |
+	+-----------------------------------------------+
 
 -----------------------------------------------------*/
 
@@ -14,7 +18,7 @@
 
 // 
 
-static void editor_help_st (WINDOW *win)
+static void _editor_help_st (WINDOW *win)
 {
 
 	wclear(win);
@@ -31,7 +35,7 @@ static void editor_help_st (WINDOW *win)
 
 }
 
-static int zse_editworld_st(ST_WORLD_t* map, char name[])
+static int _zse_editworld_st(ST_WORLD_t* map, char name[])
 {
 	char key;
 	char Toggle[2][4] = {"Off", "On"};
@@ -46,7 +50,7 @@ static int zse_editworld_st(ST_WORLD_t* map, char name[])
 
 
 	// Main Loop
-	while(true)
+	while(TRUE)
 	{
 		key = getch();
 		switch(key)
@@ -75,11 +79,11 @@ static int zse_editworld_st(ST_WORLD_t* map, char name[])
 				mvwscanw(status , 4, 0, "%hhd", &brush.ink);
 				break;
 			case 'e':
-				zse_map_export_st(map, name, "NONE", true);
+				zse_map_export_st(map, name, "NONE", TRUE);
 				break;
 
 			case 'h':
-				editor_help_st(log);
+				_editor_help_st(log);
 				break;
 
 			case '`':
@@ -124,7 +128,7 @@ int zse_tool_mapEditor_st_main()
 		addstr("Map Name : ");
 		getstr(returntilesetname);
 
-		zse_editworld_st(map, returntilesetname);
+		_zse_editworld_st(map, returntilesetname);
 
 		zse_map_delete_st(map);
 	}
@@ -145,7 +149,7 @@ int zse_tool_mapEditor_st_main()
 
 		
 
-		zse_editworld_st(map, returntilesetname);
+		_zse_editworld_st(map, returntilesetname);
 		zse_map_delete_st(map);
 	}
 

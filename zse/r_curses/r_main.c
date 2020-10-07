@@ -38,9 +38,6 @@ void zse_r_exit()
 	endwin();
 }
 
-#include <sys/types.h>
-#include <dirent.h>
-
 int zse_getint()
 {
     int r;
@@ -57,16 +54,66 @@ int zse_getint_printw_option(char str[])
     return r;
 }
 
-int zse_showdir_list(WINDOW* win ,int x, int y, char name[])
-{
-    DIR * drip = opendir(name);
-    if(drip == NULL) return -1;
-    struct dirent* dp;
-    while((dp = readdir(drip)) != NULL)
+int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname){
+    int scr_y = getmaxy(win), pagestart = 0, exit = 0;
+    char key = ' ';
+
+    while(!exit) 
     {
-        mvwprintw(win, y, x, "%s", dp->d_name);
-        y++;
+
+        switch(key)
+        {
+            case 'w':
+                pagestart--;
+                if(pagestart < 0)
+                {
+                    pagestart = 0;
+                }
+                break;
+            case 's':
+                pagestart++;
+                if(pagestart >= listsize)
+                {
+                    pagestart = listsize -1;
+                }
+                break;
+            case 'e':
+                echo();
+                mvwprintw(win ,scr_y-1, 0, ">>                    ");
+                wrefresh(win);
+                mvwscanw(win, scr_y-1, 3, "%s", getname);
+
+                noecho();
+                return 0;
+                
+                break;
+            case 'n':
+                echo();
+                mvwprintw(win ,scr_y-1, 0, ">>                    ");
+                wrefresh(win);
+                noecho();
+                return zse_getint();
+                break;
+            case 'q':
+                return 0;
+                break;
+        }
+
+
+        wclear(win);
+        for (int i = pagestart; i < scr_y + pagestart -2; ++i)
+        {
+            if (i < listsize)
+            {
+                mvwprintw(win ,i - pagestart+1 +y, 0+x, "[%d] %s|", i ,list[i]);
+            }
+
+        }
+
+        mvwprintw(win,scr_y-2, 0, "[n]Enter NumID | [e]Enter Name | [q]Confirm || ");
+        wrefresh(win);
+
+        key = wgetch(win);
     }
-    closedir(drip);
     return 0;
 }

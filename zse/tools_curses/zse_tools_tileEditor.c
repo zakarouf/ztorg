@@ -1,3 +1,16 @@
+/*-----------------------------------------------------
+			Tile Editer For ZSE
+//---------------------------------------------------//
+
+	+-----------------------------------------------+
+	|												|
+	+-----------------------------------------------+
+
+	NOTE:
+
+-----------------------------------------------------*/
+
+
 #include "zse_tools.h"
 #include "../tiles/tile_lib.h"
 #include "../r_curses/r_lib.h"
@@ -6,64 +19,7 @@
 
 #define ATTR_TXT_RAW "//////Attributes//////\n\n INVI\n WALL\n MOVE\n DEST\n FLUD\n TOXI\n WALK\n FUNC\n"
 
-
-static int t_selectile_raw (TILE_t *tile, int t_size, int *t_select)
-{
-	clear();
-	int y = getmaxy(stdscr), pagestart = 0, exit = 0;
-	char key = ' ';
-
-	while(!exit) 
-	{
-
-		switch(key)
-		{
-			case 'w':
-				pagestart--;
-				if(pagestart < 0)
-				{
-					pagestart = 0;
-				}
-				break;
-			case 's':
-				pagestart++;
-				if(pagestart >= t_size)
-				{
-					pagestart = t_size -1;
-				}
-				break;
-			case 'e':
-				echo();
-				mvprintw(y-1, 0, ">>                    ");refresh();
-				mvscanw(y-1, 3, "%d", t_select);
-				noecho();
-				break;
-			case 'q':
-				return 0;
-				break;
-		}
-
-
-		clear();
-		for (int i = pagestart; i < y + pagestart -2; ++i)
-		{
-			if (i < t_size)
-			{
-				mvprintw(i - pagestart+1, 0, "[%d] %32s|", i , tile[i].name_id);	
-			}
-
-		}
-
-		mvprintw(y-2, 0, "[e]Enter TileNum | [q]Confirm || Current : <%d> |%s|", *t_select, tile[t_select[0]].name_id);
-
-		refresh();
-		key = getch();
-	}
-
-	return 0;
-}
-
-static int t_edit_attribute (TILE_t *tile, int current_tile)
+static int _t_edit_attribute (TILE_t *tile, int current_tile)
 {
 	clear();
 	int y = getmaxy(stdscr);
@@ -141,7 +97,7 @@ static int t_edit_attribute (TILE_t *tile, int current_tile)
 	return 0;
 }
 
-static void t_main_scr (TILE_t *tile, int c_tile, int tile_size)
+static void _t_main_scr (TILE_t *tile, int c_tile, int tile_size)
 {
 	clear();
 	static char tf[2][6] = {"False", "True"};
@@ -159,12 +115,23 @@ static void t_main_scr (TILE_t *tile, int c_tile, int tile_size)
 
 }
 
+static int _t_selectile_raw (TILE_t *tile, int t_size)
+{
+	char **tname = zse_malloc_2D_array_char(ZSE_MAX_FILENAME_SIZE, t_size);
+	for (int i = 0; i < t_size; ++i)
+	{
+		sscanf(tile[i].name_id, "%s", tname[i]);
+	}
+	return zse_r_selectListS(stdscr, 0, 0, tname, t_size, "   ");
+
+}
+
 int zse_tool_tileEditor_main ()
 {
 	int tile_size = 8;
 	TILE_t *tile = zse_tile_intiempty(8);
 
-	bool quit = 0;
+	char quit = 0;
 	uint8_t key = ' ';
 	int current_tile = 0;
 	uint16_t y, x;
@@ -177,11 +144,11 @@ int zse_tool_tileEditor_main ()
 		switch(key)
 		{
 			case 'c':
-				t_selectile_raw(tile, tile_size, &current_tile);
+				current_tile = _t_selectile_raw(tile, tile_size);
 				refresh();
 				break;
 			case 'e':
-				t_edit_attribute (tile, current_tile);
+				_t_edit_attribute (tile, current_tile);
 				refresh();
 				break;
 			case 'n':
@@ -230,7 +197,7 @@ int zse_tool_tileEditor_main ()
 
 				if(strcmp(name, "0") != 0)
 				{
-					zse_tile_export(tile, tile_size ,name, true);
+					zse_tile_export(tile, tile_size ,name, TRUE);
 				}
 				
 				noecho();
@@ -242,7 +209,7 @@ int zse_tool_tileEditor_main ()
 
 		
 
-		t_main_scr (tile, current_tile, tile_size);
+		_t_main_scr (tile, current_tile, tile_size);
 		refresh();
 		key = getch();
 
