@@ -1,5 +1,5 @@
 #include "colors.h"
-#include <ncurses/ncurses.h>
+#include <ncursest/ncurses.h>
 
 int zse_r_colors_init(void)
 {
@@ -19,13 +19,6 @@ int zse_r_colors_init(void)
         puts("Unable to start colors.");
         return(1);
     }
-
-/* colors are okay; continue */
-    //printw("Colors initialized.\n");
-    //printw("%d colors available.\n",COLORS);
-    //printw("%d color pairs.",COLOR_PAIRS);
-    //refresh();
-    //getch();
 
 
     return(0);

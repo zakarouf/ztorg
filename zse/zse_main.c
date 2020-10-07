@@ -1,3 +1,14 @@
+/*-----------------------------------------------------
+			Zakarouf's Sandbox Engine (ZSE)
+//---------------------------------------------------//
+
+	+-----------------------------------------------+
+	| 			ZSE's Main 							|
+	+-----------------------------------------------+
+	
+
+-----------------------------------------------------*/
+
 #include "zse.h"
 #include "tools_curses/zse_tools.h"
 
@@ -31,8 +42,8 @@ int main(int argc, char const *argv[])
 	zse_main_arg_pha(argc, argv);
 	
 	// Set the Main game Func [select only one]
-	// zse_tool_spriteEditor_main();
-	frogger();
+	 zse_tool_spriteEditor_main();
+	//frogger();
 
 
 	zse_r_exit();

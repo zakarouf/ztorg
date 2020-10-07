@@ -166,8 +166,12 @@ int frogger()
 			nodelay(stdscr, FALSE);
 			getch();
 
+            zse_map_delete_st(map);
+            zse_delete_sprites_ptr(spr, 2);
+
             return 0;
 		}
+        
         clear();
 
 		for (int i = 0; i < enttsize; ++i)
@@ -180,10 +184,10 @@ int frogger()
 			}
 			map->chunk[getindex3d((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
 
-            zse_render_spr(stdscr, (int)entt[i].x* spr[1].X , (int)entt[i].y*spr[1].Y, &spr[1], 0);
+            zse_render_sprite(stdscr, (int)entt[i].x* spr[1].X , (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
 
 		}
-        zse_render_spr(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0);
+        zse_render_sprite(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)
         mvprintw(0, 0, "Score : %d    Level : %d", score, level);
 
 		refresh();
