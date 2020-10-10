@@ -12,6 +12,7 @@
 
 #include "../r_curses/r_sprites.h"
 #include "../sprites/sprites_lib.h"
+#include "../sys/sys.h"
 
 
 static void _render_showSeditorNormal

@@ -40,6 +40,14 @@ typedef struct _MAPDEF_INFITY_WORLD_t
 
 
 
+//------------------------------------------
+// Common Funcs/Macro
+//------------------------------------------
+
+#define zse_mapx(map) map->Xsize
+#define zse_mapy(map) map->Ysize
+#define zse_mapz(map) map->Zsize
+
 
 /*
 ---------------------------------------------------------------------
@@ -63,7 +71,7 @@ void zse_map_set_perlin_seed(int seed);
 //MAP_In && MAP_Out
 
 ST_WORLD_t* zse_map_load_st (char name[], char *returntilesetname);
-int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool newmap);
+int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], char newmap);
 
 //MAP Draw
 void zse_map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile);

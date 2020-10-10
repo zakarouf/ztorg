@@ -4,7 +4,7 @@ CCF=clang
 CFLAGS='-Wall -Ofast'
 HEADER='zse/ '
 CFILES=''
-LDFLAGS='-lncursest'
+LDFLAGS='-lncurses'
 ZENGINE='zse/*'
 
 OUTEX_FILE='z'

@@ -54,7 +54,8 @@ int zse_getint_printw_option(char str[])
     return r;
 }
 
-int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname){
+int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname)
+{
     int scr_y = getmaxy(win), pagestart = 0, exit = 0;
     char key = ' ';
 
@@ -82,7 +83,6 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
                 mvwprintw(win ,scr_y-1, 0, ">>                    ");
                 wrefresh(win);
                 mvwscanw(win, scr_y-1, 3, "%s", getname);
-
                 noecho();
                 return 0;
                 
@@ -91,8 +91,10 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
                 echo();
                 mvwprintw(win ,scr_y-1, 0, ">>                    ");
                 wrefresh(win);
+                int tmpr;
+                mvwscanw(win ,scr_y-1, 3, "%d", &tmpr);
                 noecho();
-                return zse_getint();
+                return tmpr >= listsize ? listsize-1: tmpr;
                 break;
             case 'q':
                 return 0;
@@ -110,7 +112,7 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
 
         }
 
-        mvwprintw(win,scr_y-2, 0, "[n]Enter NumID | [e]Enter Name | [q]Confirm || ");
+        mvwprintw(win,scr_y-2, 0, "[n]Enter NumID | [e]Enter Name | [q]Confirm");
         wrefresh(win);
 
         key = wgetch(win);

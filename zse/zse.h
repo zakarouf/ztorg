@@ -5,5 +5,6 @@
 #include "r_curses/r_lib.h"
 #include "tiles/tile_lib.h"
 #include "sprites/sprites_lib.h"
+#include "entity/entity.h"
 
 #endif

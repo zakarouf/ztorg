@@ -66,7 +66,7 @@ static TILE_t* _tile_load_maindata(char dirpos[])
 
 }
 
-TILE_t* zse_tile_realloc (int *old_size, int new_size, TILE_t *tile)
+TILE_t* zse_tile_realloc (size_t *old_size, size_t new_size, TILE_t *tile)
 {
 	TILE_t *tmp = tile;
 	tmp = realloc (tile, sizeof(TILE_t) * new_size);
@@ -95,14 +95,13 @@ TILE_t* zse_tile_realloc (int *old_size, int new_size, TILE_t *tile)
 }
 
 
-TILE_t* zse_tile_intiempty (int t_size)
+TILE_t* zse_tile_intiempty (size_t t_size)
 {
 	TILE_t *tile = malloc(sizeof(TILE_t) * t_size);
 
 	for (int i = 0; i < t_size ; i++)
 	{
 		sprintf(tile[i].name_id, "NULL");
-		//tile[i].tex_id = 0;
 		tile[i].symb = 32;
 		tile[i].coloc = 0;
 		tile[i].attr = 0;
@@ -111,10 +110,11 @@ TILE_t* zse_tile_intiempty (int t_size)
 	return tile;
 }
 
-TILE_t *zse_tile_load(char name[], int *size)
+static TILE_t *zse_tile_load(char name[], size_t *size)
 {
 	if(strcmp(name, TILE_DEFAULTTILESET) == 0)
 	{
+		*size = 8;
 		return _tile_getdefault();
 	}
 
@@ -130,7 +130,7 @@ TILE_t *zse_tile_load(char name[], int *size)
 	return tile;
 }
 
-int zse_tile_export(TILE_t *tile, int size ,char name[], bool newtile)
+static int zse_tile_export(TILE_t *tile, size_t size ,char name[], char newtile)
 {
 	char tile_dir[64] = TILE_PARENTDIR;
 	char dirpos[72];
@@ -155,4 +155,39 @@ int zse_tile_export(TILE_t *tile, int size ,char name[], bool newtile)
 
 	fclose(fp);
 	return 0;
+}
+
+
+//--------------------------TILESET-------------------------------------------
+TILESET_t zse_tileset_get (char name[])
+{
+	TILESET_t t;
+	t.tile = zse_tile_load(name, &t.tsize);
+	return t;
+}
+
+TILESET_t zse_tileset_init (void)
+{
+	TILESET_t t;
+	t.tsize = 8;
+	t.tile = zse_tile_intiempty(t.tsize);
+	return t;
+}
+
+int zse_tileset_chsize(TILESET_t *t, size_t newsize)
+{
+	t->tile =  zse_tile_realloc(&t->tsize, newsize, t->tile);
+	return 0;
+}
+
+int zse_tileset_exp (char name[], TILESET_t *t, int newt)
+{
+	zse_tile_export(t[0].tile, t[0].tsize, name, newt);
+	return 0;
+}
+
+void zse_tileset_delete(TILESET_t *t)
+{
+	free(t->tile);
+	free(t->tex);
 }

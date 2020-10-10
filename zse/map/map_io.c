@@ -87,9 +87,9 @@ static int _map_load_commondata_st (ST_WORLD_t *map, char *returntilesetname, ch
     return 0;
 }
 
-//------------------Map_load_ex-------------------//
+//------------------Map_EXPORT-------------------//
 
-int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool newmap)
+int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], char newmap)
 {
 	char mapdir[48] = MAP_DIR_NAME;
 	char dirpos[74] = "";
@@ -112,6 +112,7 @@ int zse_map_export_st(ST_WORLD_t *map, char name[], char tilesetname[], bool new
 
 }
 
+//------------------Map_LOAD-------------------//
 
 ST_WORLD_t* zse_map_load_st (char name[], char *returntilesetname)
 {

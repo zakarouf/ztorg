@@ -13,8 +13,8 @@
 #include "tools_curses/zse_tools.h"
 
 int zse_colors_test_showall();
-int frogger();
-
+int demo_frogger();
+int demo_2048 ();
 
 int zse_main_arg_pha(int arc, char const *ar[])
 {
@@ -38,12 +38,15 @@ int main(int argc, char const *argv[])
 	}
 	srandom(clock());
 
-	zse_r_color_initpairs(COLORS);
+	zse_r_color_initpairs256();
 	zse_main_arg_pha(argc, argv);
 	
 	// Set the Main game Func [select only one]
-	 zse_tool_spriteEditor_main();
-	//frogger();
+	//zse_tool_spriteEditor_main();
+	zse_tool_mapEditor_st_main();
+
+	//demo_frogger();
+	//demo_2048();
 
 
 	zse_r_exit();

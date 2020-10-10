@@ -3,6 +3,7 @@
 void r_render_show2dworld
 (
 	WINDOW *win,
+	TILE_t *t,
 	plotdata_t *chunk,
 	const int Xsize,
 	const int Ysize,
@@ -52,11 +53,11 @@ void r_render_show2dworld
 		{
 			if (chunk[getindex3d(j, i, z, Xsize, Ysize)])
 			{
-				addch('#');
+				addch(t[chunk[getindex3d(j, i, z, Xsize, Ysize)]].symb);
 			}
 			else 
 			{
-				if (chunk[getindex3d(j, i, lower_z, Xsize, Ysize)])
+				if (t[chunk[getindex3d(j, i, lower_z, Xsize, Ysize)]].attr & TILE_ISBLOC)
 				{
 					addch('.');
 				}
@@ -77,6 +78,4 @@ void r_render_show2dworld
 		cursor_y++;
 	}
 
-	// Add Cursor
-	wrefresh(win);
 }

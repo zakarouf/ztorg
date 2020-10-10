@@ -12,8 +12,10 @@
 
 
 #include "zse_tools.h"
+
 #include "../tiles/tile_lib.h"
 #include "../r_curses/r_lib.h"
+#include "../sys/sys.h"
 
 #include <string.h>
 
@@ -128,8 +130,7 @@ static int _t_selectile_raw (TILE_t *tile, int t_size)
 
 int zse_tool_tileEditor_main ()
 {
-	int tile_size = 8;
-	TILE_t *tile = zse_tile_intiempty(8);
+	TILESET_t t = zse_tileset_init ();
 
 	char quit = 0;
 	uint8_t key = ' ';
@@ -144,31 +145,31 @@ int zse_tool_tileEditor_main ()
 		switch(key)
 		{
 			case 'c':
-				current_tile = _t_selectile_raw(tile, tile_size);
+				current_tile = _t_selectile_raw(t.tile, t.tsize);
 				refresh();
 				break;
 			case 'e':
-				_t_edit_attribute (tile, current_tile);
+				_t_edit_attribute (t.tile, current_tile);
 				refresh();
 				break;
 			case 'n':
 				echo();
 				mvprintw(y-1, 0, "New Tile Name >> ");
-				mvscanw(y-1, 17, "%s", tile[current_tile].name_id);
+				mvscanw(y-1, 17, "%s", t.tile[current_tile].name_id);
 				noecho();
 				break;
 			case 'x':
 				echo();
 				mvprintw(y-1, 0, "Expand Tile : Enter New size >> ");
-				unsigned int newsize;
+				size_t newsize;
 				mvscanw(y-1, 32, "%d", &newsize);
-				tile = zse_tile_realloc(&tile_size, newsize, tile);
+				zse_tileset_chsize(&t, newsize);
 				noecho();
 				break;
 			case 'w':
 				echo();
 				mvprintw(y-1, 0, "Change Map Symb >> ");
-				mvscanw(y-1, 19, "%c", &tile[current_tile].symb);
+				mvscanw(y-1, 19, "%c", &t.tile[current_tile].symb);
 				break;
 			case 'q':
 				echo();
@@ -179,7 +180,7 @@ int zse_tool_tileEditor_main ()
 
 				if(getch() == 'Y')
 				{	
-					free(tile);
+					free(t.tile);
 					quit |= 1;
 					return 0;
 				}
@@ -197,7 +198,7 @@ int zse_tool_tileEditor_main ()
 
 				if(strcmp(name, "0") != 0)
 				{
-					zse_tile_export(tile, tile_size ,name, TRUE);
+					zse_tileset_exp (name, &t, TRUE);
 				}
 				
 				noecho();
@@ -209,7 +210,7 @@ int zse_tool_tileEditor_main ()
 
 		
 
-		_t_main_scr (tile, current_tile, tile_size);
+		_t_main_scr (t.tile, current_tile, t.tsize);
 		refresh();
 		key = getch();
 

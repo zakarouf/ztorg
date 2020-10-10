@@ -3,10 +3,12 @@
 
 #include "r_lib.h"
 #include "../map/map_lib.h"
+#include "../tiles/tile_lib.h"
 
 void r_render_show2dworld
 (
 	WINDOW *win,
+	TILE_t *t,
 	plotdata_t *chunk,
 	const int Xsize,
 	const int Ysize,

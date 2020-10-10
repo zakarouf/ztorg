@@ -12,6 +12,8 @@
 
 #include "../map/map_lib.h"
 #include "../r_curses/r_map.h"
+#include "../tiles/tile_lib.h"
+#include "../sys/sys.h"
 
 
 #define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
@@ -24,7 +26,8 @@ static void _editor_help_st (WINDOW *win)
 	wclear(win);
 
 	wprintw(win,"Move UP/DOWN/LEFT/RIGHT/ : 'w/s/a/d |\nMove Layer UP/DOWN 'z/x'\n\n");
-	wprintw(win,"Change Brush 'c' |\nChange Size 'b' |\nToggle Brush'v' |");
+	wprintw(win,"Change Brush 'c' |\nChange Size 'b' |\nToggle Brush'v' |\n");
+	wprintw(win,"Save 'e' |\nQuit '`'");
 
 	wrefresh(win);
 
@@ -35,7 +38,25 @@ static void _editor_help_st (WINDOW *win)
 
 }
 
-static int _zse_editworld_st(ST_WORLD_t* map, char name[])
+static int _zse_t_ed_getbrush(TILESET_t *t)
+{
+	WINDOW *tmpw = newwin(getmaxy(stdscr) -1, getmaxx(stdscr), 0, getmaxx(stdscr)/3);
+
+	char **n = zse_malloc_2D_array_char(ZSE_MAX_FILENAME_SIZE, t->tsize);
+	for (int i = 0; i < t->tsize; ++i)
+	{
+		sscanf(t->tile[i].name_id, "%s", n[i]);
+	}
+
+	char tmp[12];
+	int r = zse_r_selectListS(tmpw, 0, 0, n, t->tsize, tmp);
+	delwin(tmpw);
+	zse_free2dchar(n, t->tsize);
+
+	return r;
+}
+
+static int _zse_editworld_st(ST_WORLD_t* map, TILESET_t* t, char name[])
 {
 	char key;
 	char Toggle[2][4] = {"Off", "On"};
@@ -45,8 +66,8 @@ static int _zse_editworld_st(ST_WORLD_t* map, char name[])
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 	WINDOW * log = newwin(getmaxy(stdscr), getmaxx(stdscr), 0 , EDITOR_LOG_X_START(getmaxx(stdscr)));
 
-	r_render_show2dworld(stdscr, map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 1);
-
+	r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 1);
+	scroll(log);
 
 
 	// Main Loop
@@ -71,15 +92,18 @@ static int _zse_editworld_st(ST_WORLD_t* map, char name[])
 				break;
 
 			case 'b':
-				mvwscanw(status, 4, 0 ,"%hhd" , &brush.size);
+				echo();
+				mvwprintw(status, 4, 0, "Size >>");
+				mvwscanw(status, 4, 8 ,"%hhd" , &brush.size);
+				noecho();
 			case 'v':
 				brush.toggle ^= 1;
 				break;
 			case 'c':
-				mvwscanw(status , 4, 0, "%hhd", &brush.ink);
+				brush.ink = _zse_t_ed_getbrush(t);
 				break;
 			case 'e':
-				zse_map_export_st(map, name, "NONE", TRUE);
+				zse_map_export_st(map, name, "DEFAULT", TRUE);
 				break;
 
 			case 'h':
@@ -95,15 +119,20 @@ static int _zse_editworld_st(ST_WORLD_t* map, char name[])
 			zse_map_draw_circle (map, brush.x, brush.y, brush.z , brush.size , brush.ink);
 		}
 
-		r_render_show2dworld(stdscr, map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6);
+		
+		
+
+		// Draw Routine
+		r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6);
 
 		mvwprintw(status, 0, 0,"Brush[%3s] -> ID.%3d {%s} :: %d\n", Toggle[brush.toggle], brush.ink , "NONE", brush.size);
 		mvwprintw(status, 1, 0, "X - %3d || Y - %3d || Z - %3d", brush.x, brush.y, brush.z);
+		mvwprintw(status, 2, 0, "[h]Help");
 
+		wrefresh(stdscr);
 		wrefresh(status);
+		wrefresh(log);
 
-
-		
 	}
 }
 
@@ -128,7 +157,9 @@ int zse_tool_mapEditor_st_main()
 		addstr("Map Name : ");
 		getstr(returntilesetname);
 
-		_zse_editworld_st(map, returntilesetname);
+		TILESET_t t = zse_tileset_get ("DEFAULT");
+
+		_zse_editworld_st(map, &t, returntilesetname);
 
 		zse_map_delete_st(map);
 	}
@@ -146,10 +177,12 @@ int zse_tool_mapEditor_st_main()
 		//ST_WORLD_t *map = map_load_st(returntilesetname, returntilesetname);
 		ST_WORLD_t *map = zse_map_load_st(mapname, returntilesetname);
 
+		TILESET_t t = zse_tileset_get (returntilesetname);
+		
 
 		
 
-		_zse_editworld_st(map, returntilesetname);
+		_zse_editworld_st(map, &t, mapname);
 		zse_map_delete_st(map);
 	}
 

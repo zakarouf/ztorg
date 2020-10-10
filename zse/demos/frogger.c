@@ -67,7 +67,7 @@ static ENTT_T* levelup(ST_WORLD_t * map, float *lane , int *enttsize, int level,
     return enttnew;
 }
 
-int frogger()
+int demo_frogger()
 {
 	ST_WORLD_t *map = zse_map_init_empty_st(20, 10, 2);
 	float lane[map->Ysize];
@@ -190,7 +190,7 @@ int frogger()
         zse_render_sprite(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)
         mvprintw(0, 0, "Score : %d    Level : %d", score, level);
 
-		refresh();
+		wrefresh(stdscr);
 		end_time = clock();
 		time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
 	}

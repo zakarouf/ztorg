@@ -1,5 +1,5 @@
 #include "colors.h"
-#include <ncursest/ncurses.h>
+#include <ncurses/ncurses.h>
 
 int zse_r_colors_init(void)
 {
@@ -39,36 +39,10 @@ COLORrgb_p* zse_r_colorsPallete_create (size_t size)
 
 }
 
-COLORrgb_p* zse_r_colorPload_default(void)
-{
-	COLORrgb_p *colorP = zse_r_colorsPallete_create(8);
-
-	COLORrgb_p def_p[8] = {
-		{0, 0, 0},
-		{1000, 1000, 1000},
-		{1000, 200, 200},
-		{200, 1000, 200},
-		{200, 200, 1000},
-		{500, 500, 100},
-		{100, 600, 400},
-		{1000, 800, 200}
-	};
-
-	for (int i = 0; i < 8; ++i)
-	{
-		colorP[i] = def_p[i];
-		init_color(i, def_p[i].r, def_p[i].g, def_p[i].b);
-		init_pair(i, i, i);
-	}
-
-	return colorP;
-
-}
-
-int zse_r_color_initpairs(int colorsize)
+int zse_r_color_initpairs256()
 {
 
-	for (int i = 0; i < colorsize; ++i)
+	for (int i = 0; i < 0x100; ++i)
 	{
 		init_pair(i, i, COLOR_BLACK);
 	}
