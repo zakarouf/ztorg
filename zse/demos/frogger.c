@@ -172,7 +172,7 @@ int demo_frogger()
             return 0;
 		}
         
-        clear();
+        wclear(stdscr);
 
 		for (int i = 0; i < enttsize; ++i)
 		{
@@ -184,7 +184,7 @@ int demo_frogger()
 			}
 			map->chunk[getindex3d((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
 
-            zse_render_sprite(stdscr, (int)entt[i].x* spr[1].X , (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
+            zse_render_sprite(stdscr, zse_r_ssmooth(entt[i].x, spr[1].Y), (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
 
 		}
         zse_render_sprite(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)

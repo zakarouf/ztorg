@@ -1,7 +1,7 @@
 #ifndef Z_RENDER_LIB_H
 #define Z_RENDER_LIB_H
 
-#include <ncurses/ncurses.h>
+
 #include "../colors/colors.h"
 
 int zse_r_init();

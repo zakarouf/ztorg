@@ -46,7 +46,7 @@ static int _d_2048_getrandom(ST_WORLD_t* map, int range)
 	
 	return 1;
 }
-
+/*
 static int _d_2048_draw_boxline(WINDOW*win, int x, int y, int x1, int y1, int tilesize)
 {
 
@@ -63,6 +63,7 @@ static int _d_2048_draw_boxline(WINDOW*win, int x, int y, int x1, int y1, int ti
 
 	return 0;
 }
+*/
 
 static int _d_2048_draw(WINDOW*win, int x, int y, ST_WORLD_t *map)
 {

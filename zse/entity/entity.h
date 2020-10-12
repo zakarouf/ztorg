@@ -14,6 +14,14 @@ typedef enum ENITY_CLASS_STATS
 	JACK
 }ENTCLASS;
 
+typedef enum ENITY_ALLIANCE
+{
+	ENT_ALLHOST,
+	ENT_ALLPEACE,
+	ENT_CUSTOM,
+
+}ENTT_ALL;
+
 
 struct _ENT_STATUS
 {
@@ -28,6 +36,11 @@ struct _ENT_STRATS {
 	uint16_t def;	
 };
 
+struct _ENT_SOCIALBIO
+{
+	uint16_t alliaceID;
+};
+
 typedef struct _ENT_ENTTIES
 {
 	float X;
@@ -36,6 +49,17 @@ typedef struct _ENT_ENTTIES
 	float A;
 	struct _ENT_STRATS strats;
 	struct _ENT_STATUS status;
+	uint16_t sign;
 }ENTT_t;
+
+typedef struct _ENT_ENTTIESPACK
+{
+	ENTT_t* ent;
+	int esize;
+}ENTTP_t;
+
+
+ENTT_t *init_ENTT_t (ENTCLASS class);
+void zse_entity_delete (ENTT_t *ent);
 
 #endif

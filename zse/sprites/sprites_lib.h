@@ -64,6 +64,9 @@ typedef struct SPRITES_BLOC_DEF_
     [sprites]
 */
 
+#define zse_sprX(spr) (SPRITES_t)spr.X
+#define zse_sprY(spr) (SPRITES_t)spr.Y
+
 // Funcs
 SPRITES_t zse_sprites_sin_load(char name[]);
 int zse_sprites_sin_export(SPRITES_t *sprite ,char name[]);

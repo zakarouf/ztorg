@@ -14,12 +14,15 @@
 #include "../sprites/sprites_lib.h"
 #include "../sys/sys.h"
 
+#define ZSE_T_SPRSR_OP_COLORS    0x1
+#define ZSE_T_SPRSR_OP_TRANSENAB 0x2
+#define ZSE_T_SPRSR_OP_TRANSSHOW 0x4
 
 static void _render_showSeditorNormal
 (
 	WINDOW *win,
 	sprite_data_t *chunk,
-	char colormode,
+	char options,
 	const int Xsize,
 	const int Ysize,
 	const int Zsize,
@@ -49,11 +52,7 @@ static void _render_showSeditorNormal
 	}
 
 	const int lower_z = (z-1>=0)? z-1:0;
-	char lowerzc;
-
-	wclear(win);
-
-
+	uint8_t lowerzc;
 
 	for (; i < end_i; ++i)
 	{
@@ -64,40 +63,85 @@ static void _render_showSeditorNormal
 				end_j = screensizeX+1;
 			}
 		}
+        lowerzc = chunk[getindex3d(j, i, lower_z, Xsize, Ysize)]&0xff;
 
 		wmove(win ,cursor_y, cursor_x);
 
 		for (; j < end_j; ++j)
 		{
-			if(!colormode)
+
+			if ((chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xff) != 0xff) // IF plot point is not transperant (0xff)
 			{
-			
-				lowerzc = chunk[getindex3d(j, i, lower_z, Xsize, Ysize)]&255;
-				if(lowerzc != ' ' && lowerzc == (chunk[getindex3d(j, i, z, Xsize, Ysize)]&255))attrset(COLOR_PAIR(1));
-				addch(chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
-				if(lower_z >= 0 && (lowerzc != ' ') && (chunk[getindex3d(j, i, z, Xsize, Ysize)]&255) == ' ' )
+				if(!(options&ZSE_T_SPRSR_OP_COLORS))
 				{
-					attrset(COLOR_PAIR(5));
-					addch('\b');
-					addch(lowerzc);
+
+					if(lowerzc == (chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xff)) // Check is Lower Z value and Z value is Same(Not Counting SPACE)
+                    {
+						wattrset(win ,COLOR_PAIR(1));
+                        waddch(win ,chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xFF);
+                    }
+                    else
+                    {
+                        waddch(win ,chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xFF);
+                    }
+
+				}
+
+				else
+				{
+					//Colormode;
+
+					wattrset(win ,COLOR_PAIR(chunk[getindex3d(j, i, z, Xsize, Ysize)]>>8));
+					waddch(win ,chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
 				}
 			}
+
 			else
 			{
-				//Colormode;
-				attrset(COLOR_PAIR(chunk[getindex3d(j, i, z, Xsize, Ysize)]>>8));
-				addch(chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
+				wattrset(win, COLOR_PAIR(7));
+
+				if (options&ZSE_T_SPRSR_OP_TRANSENAB)
+				{
+
+                    
+					for (int l = lower_z; l >= 0; --l)
+                    {
+                        if ((chunk[getindex3d(j, i, l, Xsize, Ysize)]&255) == 0xff)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            if (options&ZSE_T_SPRSR_OP_TRANSSHOW)
+                            {
+                                wattrset(win ,COLOR_PAIR(COLORS+1));       
+                            }
+                            else
+                            {
+                                wattrset(win ,COLOR_PAIR(chunk[getindex3d(j, i, l, Xsize, Ysize)]>>8));
+                            }
+                            
+                            waddch(win ,chunk[getindex3d(j, i, l, Xsize, Ysize)]&0xff);
+                            break;
+                        }
+                    }
+				}
+				else
+				{
+					waddch(win, ' ');
+				}
 			}
 
-			attrset(A_NORMAL);
+
+			wattrset(win, A_NORMAL);
 
 			if(j == x && i == y)
 			{
-				addstr("\b@");
+				waddstr(win, "\b@");
 			}
 
 		}
-		printw("| %d", i);
+		wprintw(win, "| %d", i);
 		cursor_y++;
 	}
 
@@ -119,28 +163,37 @@ static int _zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int from
 	return 0;
 }
 
+static int _zse_t_spr_selectop(int op, int to_op)
+{
+    int tmp = op;
+    
+    tmp = tmp^to_op;
+
+    return tmp;
+
+}
+
 static int _zse_sprites_edtior(SPRITES_t *spr)
 {
 
 	char Toggle[2][4] = {"Off", "On"};
 
-	BRUSH_t brush = {0, 0, 0, ' ', 0, 0};
-	char key;
+	BRUSH_t brush = {0, 0, 0, '.', 0, 0};
+
 	char name[ZSE_MAX_FILENAME_SIZE];
 	char tmp_op;
-	char colormode = 1;
-	char brush_colo = 0x01;
+	char r_options = ZSE_T_SPRSR_OP_COLORS | ZSE_T_SPRSR_OP_TRANSENAB | ZSE_T_SPRSR_OP_TRANSSHOW;
+	short brush_colo = 0x01;
 	// note z is the frame
 
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
 
-	_render_showSeditorNormal(stdscr, spr->plot, colormode, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
+	_render_showSeditorNormal(stdscr, spr->plot, r_options, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
 	while(TRUE)
 	{
-		key = getch();
 
-		switch(key){
+		switch(getch()){
 			case 'w':if(brush.y -1 >= 0)brush.y--;
 				break;
 			case 's':if(brush.y +1 < spr->Y)brush.y++;
@@ -152,11 +205,15 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 			case 'z':
 				if(brush.z +1 < spr->frames){brush.z++;}
 				break;
-			case 'x':if(brush.z -1 >= 0){brush.z--;}
+			case 'x':
+				if(brush.z -1 >= 0){brush.z--;}
 				break;
 
 			case 'b':
-				mvwscanw(status, 4, 0 ,"%hhd" , &brush.size);
+                echo();
+                mvwprintw(status, 4, 0 ,"Brush Size >>");wrefresh(status);
+				mvwscanw(status, 4, 14 ,"%hhd" , &brush.size);
+                noecho();
 				break;
 			case 'v':
 				brush.toggle ^= 1;
@@ -166,11 +223,12 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				brush.ink |= getch();
 				break;
 			case 'e':
-				brush.ink &= 0x00FF;
-				brush.ink |= (brush_colo * 0x100);
+				brush.ink &= 0x00FF;	// Clear any Previous color
+				brush.ink |= (brush_colo * 0x100); // Apply color
 				break;
-
 			case 'h':
+				break;
+			case 'r':
 				mvwscanw(status, 4, 0 ,"%f" , &spr->dt);
 				break;
 			case ' ':
@@ -178,27 +236,37 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				break;
 			case ':':
 				tmp_op = getch();
-				if(tmp_op == 'o')colormode ^= 1;
+				if(tmp_op == 'o')r_options = _zse_t_spr_selectop(r_options, ZSE_T_SPRSR_OP_COLORS);
+                if(tmp_op == 'p')r_options = _zse_t_spr_selectop(r_options, ZSE_T_SPRSR_OP_TRANSENAB);
+                if(tmp_op == 'i')r_options = _zse_t_spr_selectop(r_options, ZSE_T_SPRSR_OP_TRANSSHOW);
+
 				if(tmp_op == 'c'){_zse_sprites_edtior_func_copy_lastframe(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);}
-				if(tmp_op == 's')
+
+				if(tmp_op == 's') // Save Map
 				{
 					mvwprintw(status, 3, 0 ,"Save Sprite As >> ");wrefresh(status);
 					wgetstr(status,name);
 					zse_sprites_sin_export(spr, name);
 				}
+
+				if(tmp_op == 'x')brush.ink |= 0xFF;
 				break;
 			case '-':
 				brush_colo --;
-				if(brush_colo < 0){brush_colo = 0;}
+				if(brush_colo < 0){brush_colo = COLORS -1;}
 				break;
 			case '=':
 				brush_colo ++;
-				if(brush_colo > COLORS){brush_colo = COLORS;}
+				if(brush_colo > COLORS){brush_colo = 0;}
 				break;
 
 			case '`':
 
+                //zse_delete_sprites_ptr(spr, 1);
+
 				return 0;
+				break;
+			default:
 				break;
 		}
 
@@ -207,20 +275,23 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 			spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)] = brush.ink; 
 		}
 
-		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%d}"
+		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%i}"
 			, Toggle[brush.toggle], brush.ink , "NONE", brush.size, brush_colo);
 
-		attrset(COLOR_PAIR(1));
-		waddstr(status,"###\n");
-		attrset(COLOR_PAIR(A_NORMAL));
+		wattrset(status, COLOR_PAIR(brush_colo));
+		waddstr(status,"##  \n");
+		wattrset(status, COLOR_PAIR(A_NORMAL));
 
 
-		mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d| "
+		mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
 			, brush.x, brush.y, brush.z, spr->frames-1, spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)]>>8);
 
-		
-		_render_showSeditorNormal(stdscr, spr->plot, colormode, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
+        mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d", r_options&ZSE_T_SPRSR_OP_COLORS, r_options&ZSE_T_SPRSR_OP_TRANSENAB, r_options&ZSE_T_SPRSR_OP_TRANSSHOW);
+
+		wclear(stdscr);
+		_render_showSeditorNormal(stdscr, spr->plot, r_options, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
 		wrefresh(status);
+
 	}
 
 
@@ -265,6 +336,7 @@ REPEAT:
 	{
 
 		char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE);
+		sprintf(name, "bloc");
 
 		int items;
 		char **fnames = zse_dir_getfnames(SPRITES_PARENTDIR, &items);

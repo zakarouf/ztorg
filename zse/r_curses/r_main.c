@@ -58,6 +58,7 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
 {
     int scr_y = getmaxy(win), pagestart = 0, exit = 0;
     char key = ' ';
+    int tmpr;
 
     while(!exit) 
     {
@@ -91,10 +92,12 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
                 echo();
                 mvwprintw(win ,scr_y-1, 0, ">>                    ");
                 wrefresh(win);
-                int tmpr;
                 mvwscanw(win ,scr_y-1, 3, "%d", &tmpr);
                 noecho();
-                return tmpr >= listsize ? listsize-1: tmpr;
+                tmpr = tmpr >= listsize ? listsize-1: tmpr;
+                sprintf(getname, "%s", list[tmpr]);
+
+                return tmpr;
                 break;
             case 'q':
                 return 0;
@@ -107,7 +110,7 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
         {
             if (i < listsize)
             {
-                mvwprintw(win ,i - pagestart+1 +y, 0+x, "[%d] %s|", i ,list[i]);
+                mvwprintw(win ,i - pagestart+1 +y, 0+x, "[%d] %s", i ,list[i]);
             }
 
         }

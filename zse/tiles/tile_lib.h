@@ -53,7 +53,7 @@ int zse_tileset_chsize(TILESET_t *t, size_t newsize);
 TILESET_t zse_tileset_get (char name[]);
 int zse_tileset_exp (char name[], TILESET_t *t, int newt);
 
-
+void zse_tileset_delete(TILESET_t *t);
 
 //TILE_t* zse_tile_intiempty (size_t t_size);
 //TILE_t* zse_tile_realloc (size_t *old_size, size_t new_size, TILE_t *tile);

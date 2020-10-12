@@ -30,9 +30,11 @@ int zse_render_sprite_full
 				{
 					for (int j = 0; j < spr->X; ++j)
 					{
-						attrset(COLOR_PAIR(spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]>>8));
-						mvwaddch(win,i+startY, j+startX, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
-						attrset(A_NORMAL);
+						if((spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF) != 0xFF){
+							attrset(COLOR_PAIR(spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]>>8));
+							mvwaddch(win,i+startY, j+startX, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+							attrset(A_NORMAL);
+						}
 					}
 				}
 				atframe++;
@@ -53,6 +55,11 @@ FUNTION_END:
 	return 0;
 }
 
+int zse_r_ssmooth(float pos, float slength)
+{
+	return (pos * slength)+(pos*1/slength) -slength;
+}
+
 void zse_render_sprite
 (
 	WINDOW *win,
@@ -66,7 +73,9 @@ void zse_render_sprite
 	{
 		for (int j = 0; j < spr->X; ++j)
 		{
-			mvwaddch(win, startY + i, startX + j, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+			if((spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF) != 0xFF){
+				mvwaddch(win, startY + i, startX + j, spr->plot[getindex3d(j, i, atframe, spr->X, spr->Y)]&0xFF);
+			}
 		}
 	}
 }

@@ -14,12 +14,8 @@ ENTT_t *init_ENTT_t (ENTCLASS class)
 		pp->status.XP = 0;
 		pp->status.MP = 2;
 		pp->status.SPD = 1.0f;
+		pp->sign = 1;
 	}
 
 	return pp;
-}
-
-void p_delENTT_t (ENTT_t *ent)
-{
-	free(ent);
 }

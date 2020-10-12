@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CCF=clang
+CCF=gcc
 CFLAGS='-Wall -Ofast'
 HEADER='zse/ '
 CFILES=''

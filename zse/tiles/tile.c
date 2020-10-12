@@ -163,6 +163,7 @@ TILESET_t zse_tileset_get (char name[])
 {
 	TILESET_t t;
 	t.tile = zse_tile_load(name, &t.tsize);
+	t.tiletexsize = 4;
 	return t;
 }
 

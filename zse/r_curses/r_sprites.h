@@ -24,4 +24,6 @@ void zse_render_sprite
 	const int atframe
 );
 
+int zse_r_ssmooth(float pos, float slength);
+
 #endif

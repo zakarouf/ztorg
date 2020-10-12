@@ -1,5 +1,4 @@
 #include "colors.h"
-#include <ncurses/ncurses.h>
 
 int zse_r_colors_init(void)
 {
@@ -39,13 +38,15 @@ COLORrgb_p* zse_r_colorsPallete_create (size_t size)
 
 }
 
-int zse_r_color_initpairs256()
+int zse_r_color_initpairs(void)
 {
 
-	for (int i = 0; i < 0x100; ++i)
+	// Colors Text w/ Black b/g from 0 to 256
+	for (int i = 0; i < COLORS; ++i)
 	{
 		init_pair(i, i, COLOR_BLACK);
 	}
+
 	return 0;
 }
 
