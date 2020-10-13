@@ -72,16 +72,20 @@ int demo_cave_hunter ()
 	spr[BLOC] = zse_sprites_sin_load("bloc");
 
 	nodelay(stdscr, TRUE);
+	char state = 1;
 
 	while(TRUE)
 	{
+		wclear(stdscr);
 		switch(getch())
 		{
 			case 'a':
 				player->X--;
+				state = 1;
 				break;
 			case 'd':
 				player->X++;
+				state = 2;
 				break;
 			case 'w':
 				player->Y--;
@@ -89,6 +93,7 @@ int demo_cave_hunter ()
 			case 's':
 				player->Y++;
 				break;
+			
 			case '`':
 				return 0;
 				break;
@@ -97,9 +102,13 @@ int demo_cave_hunter ()
 				break;
 
 		}
+		zse_render_sprite(stdscr, 0, 0, &spr[P1], 0);
+		zse_render_sprite(stdscr, 0, 0, &spr[P1], state);
+		
 
-		wclear(stdscr);
-		ren(stdscr, &spr[BLOC], &ts, map, player);
+		//wclear(stdscr);
+		wrefresh(stdscr);
+		//ren(stdscr, &spr[BLOC], &ts, map, player);
 		wrefresh(stdscr);
 	}
 	

@@ -50,34 +50,28 @@ int zse_r_color_initpairs(void)
 	return 0;
 }
 
-int zse_colors_test_showall()
+int zse_colors_test_showall(WINDOW *win, int atx, int aty)
 {
+	int tmpx = atx;
 	for (int i = 0; i < COLORS; ++i)
 	{
-		init_pair(i, COLOR_WHITE, i);
-	}
-
-	for (int i = 0; i < COLORS; ++i)
-	{
-
-		if(i == 16)
+		if (i % 6 == 0)
 		{
-			addch('\n');
-		}
-		else if (i % 6 == 0)
-		{
-			addch('\n');
+			aty++;
+			atx = tmpx;
 		}
 
 
-		attrset(COLOR_PAIR(i));
-		printw(" %3d ", i);
-		attrset(A_NORMAL);
 
+		wattrset(win, COLOR_PAIR(i));
+		mvwprintw(win, aty, atx*5, " %3d ", i);
+		wattrset(win, A_NORMAL);
+		atx++;
 
-
+		
 	}
-	getch();
+
+	zse_r_color_initpairs();
 
 	return 0;
 }

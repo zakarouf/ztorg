@@ -12,14 +12,14 @@
 #include "zse.h"
 #include "tools_curses/zse_tools.h"
 
-int zse_colors_test_showall();
+
 int demo_frogger();
 int demo_2048 ();
 int demo_cave_hunter ();
 
 #define ZSE_ARG_COMMANDS_HELP \
 	"Ztorg (c) Zakarouf 2020\n"\
-	"\tCommands\n"\
+	"\n\n"\
 	"-c\t Show Colors\n"\
 	"-t\t Tools\n"\
 	"\t\tm\t Map Editor\n"\
@@ -39,7 +39,8 @@ int zse_main_arg_pha(int arc, char const *ar[])
 			switch(ar[i][1])
 			{
 				case 'c':
-					zse_colors_test_showall();
+					zse_colors_test_showall(stdscr, 0, 0);
+					getch();
 					break;
 				case 't':
 					if (ar[i][2] == 'm')
@@ -56,8 +57,9 @@ int zse_main_arg_pha(int arc, char const *ar[])
 						demo_cave_hunter();
 					else if (ar[i][2] == '2')
 						demo_2048();
+					break;
 				case 'h':
-					endwin();
+					zse_r_exit();
 					fprintf(stdout ,ZSE_ARG_COMMANDS_HELP);
 					return 0;
 					break;

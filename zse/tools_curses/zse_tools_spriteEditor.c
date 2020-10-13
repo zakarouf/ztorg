@@ -18,6 +18,20 @@
 #define ZSE_T_SPRSR_OP_TRANSENAB 0x2
 #define ZSE_T_SPRSR_OP_TRANSSHOW 0x4
 
+#define ZSE_T_SPRSR_OP_HELPTEXT \
+	"Sprite Help:\n"\
+	"w,a,s,d   Move Brush\n"\
+	"z, x      Move To Layer Up/Down\n"\
+	"c         Change Ink\n"\
+	"v         Toggle Brush\n"\
+    "b         Change Size\n"\
+    "h         Realloc Frames\n"\
+    "r         Change dt\n"\
+    ":         Commands\n"\
+    "e         Apply Colour\n"\
+    "-,=,_,+   Change Colour\n"\
+    "`         Exit\n"
+
 static void _render_showSeditorNormal
 (
 	WINDOW *win,
@@ -114,7 +128,7 @@ static void _render_showSeditorNormal
                         {
                             if (options&ZSE_T_SPRSR_OP_TRANSSHOW)
                             {
-                                wattrset(win ,COLOR_PAIR(COLORS+1));       
+                                wattrset(win ,COLOR_PAIR(0xff) | A_REVERSE);      
                             }
                             else
                             {
@@ -149,9 +163,9 @@ static void _render_showSeditorNormal
 	wrefresh(win);
 }
 
-static int _zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int fromframe,int atframe, int xsize, int ysize, int zsize)
+static int _zse_sprites_edtior_func_CopyFrame(sprite_data_t* data, int fromframe,int atframe, int xsize, int ysize, int zsize)
 {
-	if(fromframe < 0)
+	if(fromframe < 0 || fromframe >= zsize)
 	{
 		return 1;
 	}
@@ -161,16 +175,6 @@ static int _zse_sprites_edtior_func_copy_lastframe(sprite_data_t* data, int from
 	}
 
 	return 0;
-}
-
-static int _zse_t_spr_selectop(int op, int to_op)
-{
-    int tmp = op;
-    
-    tmp = tmp^to_op;
-
-    return tmp;
-
 }
 
 static int _zse_sprites_edtior(SPRITES_t *spr)
@@ -184,7 +188,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 	char tmp_op;
 	char r_options = ZSE_T_SPRSR_OP_COLORS | ZSE_T_SPRSR_OP_TRANSENAB | ZSE_T_SPRSR_OP_TRANSSHOW;
 	short brush_colo = 0x01;
-	// note z is the frame
+	// NOTE: z is the frame
 
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
@@ -209,6 +213,8 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				if(brush.z -1 >= 0){brush.z--;}
 				break;
 
+
+            // Brush
 			case 'b':
                 echo();
                 mvwprintw(status, 4, 0 ,"Brush Size >>");wrefresh(status);
@@ -222,35 +228,67 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				brush.ink &= 0xFF00;
 				brush.ink |= getch();
 				break;
-			case 'e':
-				brush.ink &= 0x00FF;	// Clear any Previous color
-				brush.ink |= (brush_colo * 0x100); // Apply color
-				break;
+
+
+            // Canvas Manupilation
 			case 'h':
+                // Realloc Frames
 				break;
 			case 'r':
+                // Edit dt
 				mvwscanw(status, 4, 0 ,"%f" , &spr->dt);
 				break;
-			case ' ':
-				zse_render_sprite_full(stdscr ,0, 0, spr, 0, spr->frames);
-				break;
+
+            // Commands
 			case ':':
 				tmp_op = getch();
-				if(tmp_op == 'o')r_options = _zse_t_spr_selectop(r_options, ZSE_T_SPRSR_OP_COLORS);
-                if(tmp_op == 'p')r_options = _zse_t_spr_selectop(r_options, ZSE_T_SPRSR_OP_TRANSENAB);
-                if(tmp_op == 'i')r_options = _zse_t_spr_selectop(r_options, ZSE_T_SPRSR_OP_TRANSSHOW);
 
-				if(tmp_op == 'c'){_zse_sprites_edtior_func_copy_lastframe(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);}
+                // Enable To Render Colours
+				if(tmp_op == 'o')r_options ^= ZSE_T_SPRSR_OP_COLORS;
+                // Enable Transparency
+                if(tmp_op == 'p')r_options ^= ZSE_T_SPRSR_OP_TRANSENAB;
+                // Make Transparent stand out
+                if(tmp_op == 'i')r_options ^= ZSE_T_SPRSR_OP_TRANSSHOW;
 
-				if(tmp_op == 's') // Save Map
+                // Copy Last Frame
+				if(tmp_op == 'c'){_zse_sprites_edtior_func_CopyFrame(spr->plot, brush.z-1, brush.z, spr->X, spr->Y, spr->frames);}
+
+                //Copy From Selected Frame
+                if(tmp_op == 'f')
+                {
+                    int frame;
+                    wscanw(status, "%d", &frame);
+                    _zse_sprites_edtior_func_CopyFrame(spr->plot, frame, brush.z, spr->X, spr->Y, spr->frames);
+                }
+
+                // Save Sprite
+				if(tmp_op == 's')
 				{
 					mvwprintw(status, 3, 0 ,"Save Sprite As >> ");wrefresh(status);
 					wgetstr(status,name);
 					zse_sprites_sin_export(spr, name);
 				}
 
+                // Slide Show Sprite
+                if(tmp_op == ' ')zse_render_sprite_full(stdscr ,0, 0, spr, 0, spr->frames);
+
+                // Select Transparent Char
 				if(tmp_op == 'x')brush.ink |= 0xFF;
+
+                // Help
+                if(tmp_op == 'h')
+                {
+                    mvwprintw(stdscr, 0,0, "%s", ZSE_T_SPRSR_OP_HELPTEXT);
+                    wgetch(stdscr);
+                }
+
 				break;
+
+			// Colour Stuff
+            case 'e':
+                brush.ink &= 0x00FF;    // Clear any Previous color
+                brush.ink |= (brush_colo * 0x100); // Apply color
+                break;
 			case '-':
 				brush_colo --;
 				if(brush_colo < 0){brush_colo = COLORS -1;}
@@ -259,13 +297,24 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				brush_colo ++;
 				if(brush_colo > COLORS){brush_colo = 0;}
 				break;
-
-			case '`':
-
-                //zse_delete_sprites_ptr(spr, 1);
-
-				return 0;
+			case '_':
+				brush_colo += 6;
+				if(brush_colo < 0){brush_colo = COLORS -1;}
 				break;
+			case '+':
+				brush_colo += 6;
+				if(brush_colo > COLORS){brush_colo = 0;}
+				break;
+			case 127:
+				zse_colors_test_showall(stdscr, getmaxx(stdscr)/5 -(6*3), 0);
+				getch();
+				break;
+
+            // Exit
+			case '`':
+				return 0;
+				break
+                ;
 			default:
 				break;
 		}
@@ -275,7 +324,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 			spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)] = brush.ink; 
 		}
 
-		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%i}"
+		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%hi}"
 			, Toggle[brush.toggle], brush.ink , "NONE", brush.size, brush_colo);
 
 		wattrset(status, COLOR_PAIR(brush_colo));
@@ -286,7 +335,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 		mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
 			, brush.x, brush.y, brush.z, spr->frames-1, spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)]>>8);
 
-        mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d", r_options&ZSE_T_SPRSR_OP_COLORS, r_options&ZSE_T_SPRSR_OP_TRANSENAB, r_options&ZSE_T_SPRSR_OP_TRANSSHOW);
+        mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d", r_options&ZSE_T_SPRSR_OP_COLORS? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSENAB? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSSHOW? 1:0);
 
 		wclear(stdscr);
 		_render_showSeditorNormal(stdscr, spr->plot, r_options, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
