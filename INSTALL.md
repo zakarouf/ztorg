@@ -34,6 +34,8 @@ Just change to whatever your liking
 
 ### 2. Install
 
-
 ```
+git clone https://github/zakarouf/ztorg
+cd ztorg
+python3 files.py ./ | ./install
 ```

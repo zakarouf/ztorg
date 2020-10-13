@@ -9,7 +9,7 @@ This is My First Attempt to have something remotely big Project.
 - Its more of a Demo rather than a game.
 
 
-* ![How to Install Ztorg?](INSTALL.md)
+Read On [How to Install Ztorg?](INSTALL.md)
 
 
 MORE DOCS INCOMMING!!!

@@ -3,7 +3,6 @@
 CCF=gcc
 CFLAGS='-Wall -Ofast'
 HEADER='zse/ '
-CFILES=''
 LDFLAGS='-lncurses'
 ZENGINE='zse/*'
 
@@ -12,28 +11,7 @@ OUTEX_FILE='z'
 tar -xf data.tar
 
 # Get All the c files
-for d in $ZENGINE ; do
-    if [[ -f $d ]]; then
-        if [[ $d == *.c ]]; then
-            CFILES="$CFILES $d"
-        fi
-    elif [[ -d $d ]]; then
-            HEADER="$HEADER $d/"
-        for subd in $d/* ; do
-            if [[ $subd == *.c ]]; then
-                CFILES="$CFILES $subd"
-            fi
-        done
-    fi
-done
-
-for s in '.' ; do
-    if [[ -f $s ]]; then
-        if [[ $s == *.c ]]; then
-            CFILES="$CFILES $s"
-        fi
-    fi
-done
+read CFILES
 
 
 $CCF $CFLAGS -std=$1 $LDFLAGS -I"$HEADER" -c $CFILES ztorg.c
