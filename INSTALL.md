@@ -16,7 +16,7 @@ You will need the following to build and install Ztorg:
 
 ### 0. Downloads
 
-You can Get Ztorg by either ![Releases](https://github.com/zakarouf/ztorg/releases)
+You can Get Ztorg by either [Releases](https://github.com/zakarouf/ztorg/releases)
 
 ### 1. Config
 
