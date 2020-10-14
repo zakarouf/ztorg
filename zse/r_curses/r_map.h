@@ -3,7 +3,7 @@
 
 #include "r_lib.h"
 #include "../map/map_lib.h"
-#include "../tiles/tile_lib.h"
+#include "../tile/tile_lib.h"
 
 void r_render_show2dworld
 (

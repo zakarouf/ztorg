@@ -15,7 +15,7 @@
 
 int demo_frogger();
 int demo_2048 ();
-int demo_cave_hunter ();
+//int demo_cave_hunter ();
 
 #define ZSE_ARG_COMMANDS_HELP \
 	"Ztorg (c) Zakarouf 2020\n"\
@@ -54,7 +54,7 @@ int zse_main_arg_pha(int arc, char const *ar[])
 					if (ar[i][2] == 'f')
 						demo_frogger();
 					else if (ar[i][2] == 'c')
-						demo_cave_hunter();
+						;//demo_cave_hunter();
 					else if (ar[i][2] == '2')
 						demo_2048();
 					break;

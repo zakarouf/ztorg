@@ -1,5 +1,5 @@
 #include "../zse.h"
-#include "../r_curses/r_sprites.h"
+#include "../r_curses/r_sprite.h"
 
 typedef struct entttt_
 {

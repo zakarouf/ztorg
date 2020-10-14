@@ -13,7 +13,7 @@
 
 #include "zse_tools.h"
 
-#include "../tiles/tile_lib.h"
+#include "../tile/tile_lib.h"
 #include "../r_curses/r_lib.h"
 #include "../sys/sys.h"
 

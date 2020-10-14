@@ -2,7 +2,7 @@
 #define Z_RENDER_LIB_H
 
 
-#include "../colors/colors.h"
+#include "color.h"
 
 int zse_r_init();
 void zse_r_exit();
