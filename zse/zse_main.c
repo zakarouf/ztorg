@@ -16,6 +16,7 @@
 int demo_frogger();
 int demo_2048 ();
 //int demo_cave_hunter ();
+int ztorg(char name[]);
 
 #define ZSE_ARG_COMMANDS_HELP \
 	"Ztorg (c) Zakarouf 2020\n"\
@@ -41,6 +42,7 @@ int zse_main_arg_pha(int arc, char const *ar[])
 				case 'c':
 					zse_colors_test_showall(stdscr, 0, 0);
 					getch();
+					return 0;
 					break;
 				case 't':
 					if (ar[i][2] == 'm')
@@ -49,6 +51,7 @@ int zse_main_arg_pha(int arc, char const *ar[])
 						zse_tool_spriteEditor_main();
 					else if (ar[i][2] == 't')
 						zse_tool_tileEditor_main ();
+					return 0;
 					break;
 				case 'd':
 					if (ar[i][2] == 'f')
@@ -57,6 +60,11 @@ int zse_main_arg_pha(int arc, char const *ar[])
 						;//demo_cave_hunter();
 					else if (ar[i][2] == '2')
 						demo_2048();
+					return 0;
+					break;
+				case 'z':
+					ztorg("test");
+					return 0;
 					break;
 				case 'h':
 					zse_r_exit();
@@ -85,7 +93,6 @@ int main(int argc, char const *argv[])
 
 	zse_r_color_initpairs();
 	zse_main_arg_pha(argc, argv);
-	
 
 	zse_r_exit();
 

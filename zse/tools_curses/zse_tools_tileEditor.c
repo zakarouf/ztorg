@@ -21,6 +21,10 @@
 
 #define ATTR_TXT_RAW "//////Attributes//////\n\n INVI\n WALL\n MOVE\n DEST\n FLUD\n TOXI\n WALK\n FUNC\n"
 
+#define ZSE_T_TILEEDIT_HELPTXT \
+	""
+
+
 static int _t_edit_attribute (TILE_t *tile, int current_tile)
 {
 	clear();
@@ -124,7 +128,10 @@ static int _t_selectile_raw (TILE_t *tile, int t_size)
 	{
 		sscanf(tile[i].name_id, "%s", tname[i]);
 	}
-	return zse_r_selectListS(stdscr, 0, 0, tname, t_size, "   ");
+	char a[ZSE_MAX_FILENAME_SIZE];
+	int return1 = zse_r_selectListS(stdscr, 0, 0, tname, t_size, a);
+	zse_free2dchar(tname, t_size);
+	return return1;
 
 }
 

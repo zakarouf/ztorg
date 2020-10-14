@@ -33,6 +33,9 @@
     "-,=,_,+   Change Colour\n"\
     "`         Exit\n"
 
+
+static void _zse_sprite_newCreateMenu(SPRITES_t *spr);
+
 static void _render_showSeditorNormal
 (
 	WINDOW *win,
@@ -182,6 +185,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 {
 
 	char Toggle[2][4] = {"Off", "On"};
+	size_t sessions = 1;
 
 	BRUSH_t brush = {0, 0, 0, '.', 0, 0};
 
@@ -306,13 +310,20 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				brush_colo += 6;
 				if(brush_colo > COLORS){brush_colo = 0;}
 				break;
-			case 127:
+			case 127: // Delete
 				zse_colors_test_showall(stdscr, getmaxx(stdscr)/5 -(6*3), 0);
 				getch();
 				break;
 
+			case '!':
+				//sessions++;
+				//spr = realloc(spr, sessions);
+
+				break;
+
             // Exit
 			case '`':
+				zse_delete_sprites_ptr(spr, sessions);
 				return 0;
 				break;
 			default:
@@ -353,7 +364,7 @@ static void _zse_sprite_newCreateMenu(SPRITES_t *spr)
 {
 	clear();
 REPEAT:
-	printw("Create (N)ew Sprite Or (O)pen A Sprite file");
+	printw("Create (N)ew Sprite Or (O)pen A Sprite file || (Q)uit");
 	char yes = getch();
 	clear();
 
@@ -399,6 +410,11 @@ REPEAT:
 		*spr = zse_sprites_sin_load(name);
 		free(name);
 	}
+	else if(yes == 'Q')
+	{
+		return;
+	}
+
 	else {
 		goto REPEAT;
 	}
@@ -408,11 +424,11 @@ REPEAT:
 
 int zse_tool_spriteEditor_main()
 {
-	SPRITES_t spr;
+	SPRITES_t *spr = malloc(sizeof(SPRITES_t));
 	
-	_zse_sprite_newCreateMenu(&spr);
+	_zse_sprite_newCreateMenu(spr);
 
-	_zse_sprites_edtior(&spr);
+	_zse_sprites_edtior(spr);
 
 	return 0;
 }
