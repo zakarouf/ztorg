@@ -3,16 +3,31 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [0.3.0rc-1] -2020-10-14
+### Added
+    - Demos Added
+    - Entities Added
+
+### Changed
+    - Removed Custom Colour
+
+### Fixed
+    - Bugfixes
+
 ## [0.3] -2020-07-08
 ### Added
     - NPC units 
     - Tiles and Terrain for map
     - 3d raycasting mode
+    - Sprites
+    - Sprite Editor
+    - Up 256 Color Support
 
 ### Changed
     - Moved Common code base and Created a Game Engine
     - Linker Removed Indefinately
     - Neighbour Removed
+
 ### Fixed
     - Better Code Workflow. Nearly no globals. Most of function use Pointers instead of handling heavy chunks of data now
 

@@ -16,7 +16,7 @@
 #define DEGREE_1   0.0174533f
 
 /*Toggle Free Rotation*/
-// #define Z_FREE_ROTATION
+//#define Z_FREE_ROTATION
 
 
 // PLAY
@@ -25,6 +25,8 @@
 
 // Render
 #define RAY_DISTANCE_INCREMENT 0.1f
+#define DEPTH      40
+#define FOV DEGREE_90
 
 // Key Config
 #define KEY_MOVE_UP_FOR 	'w'
