@@ -2,7 +2,6 @@
 #define ZSE_COLOR_H
 
 #include "../common.h"
-
 #include <ncurses/ncurses.h>
 
 typedef int color_pairs;
