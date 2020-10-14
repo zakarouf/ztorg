@@ -66,7 +66,7 @@ static int _zse_editworld_st(ST_WORLD_t* map, TILESET_t* t, char name[])
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 	WINDOW * log = newwin(getmaxy(stdscr), getmaxx(stdscr), 0 , EDITOR_LOG_X_START(getmaxx(stdscr)));
 
-	r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 1);
+	r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 1, TRUE);
 	scroll(log);
 
 
@@ -123,7 +123,7 @@ static int _zse_editworld_st(ST_WORLD_t* map, TILESET_t* t, char name[])
 		
 
 		// Draw Routine
-		r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6);
+		r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6, TRUE);
 
 		mvwprintw(status, 0, 0,"Brush[%3s] -> ID.%3d {%s} :: %d\n", Toggle[brush.toggle], brush.ink , "NONE", brush.size);
 		mvwprintw(status, 1, 0, "X - %3d || Y - %3d || Z - %3d", brush.x, brush.y, brush.z);

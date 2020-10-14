@@ -12,7 +12,8 @@ void r_render_show2dworld
 	int y,
 	int z,
 	const int resizeX,
-	const int resizeY
+	const int resizeY,
+	char scale_
 )
 {
 	const int screensizeX = getmaxx(win) -(resizeX);
@@ -74,7 +75,7 @@ void r_render_show2dworld
 			}
 
 		}
-		printw("| %d", i);
+		printw("| %d", i*scale_);
 		cursor_y++;
 	}
 

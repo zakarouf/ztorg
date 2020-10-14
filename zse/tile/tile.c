@@ -2,7 +2,6 @@
 #include <string.h>
 #include <sys/stat.h>
 
-
 static TILE_t* _tile_getdefault()
 {
 	TILE_t *tileset = malloc(sizeof(TILE_t) * 8);
@@ -34,7 +33,7 @@ static TILE_t* _tile_getdefault()
 		symb[8] = 
 		{'.', '#', '#', '#', '#', '%', '~', ' '},
 		colo[8] = 
-		{1, 1, 2, 1, 1, 1, 1, 1};
+		{3, 15, 2, 3, 6, 1, 4, 0};
 
 	for(int i = 0; i < 8; i++)
 		{

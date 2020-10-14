@@ -17,7 +17,8 @@ void r_render_show2dworld
 	int y,
 	int z,
 	const int resizeX,
-	const int resizeY
+	const int resizeY,
+	char scale_
 );
 
 #endif
