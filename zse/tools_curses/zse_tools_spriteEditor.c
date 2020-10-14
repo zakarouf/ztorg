@@ -10,8 +10,9 @@
 	
 -----------------------------------------------------*/
 
-#include "../r_curses/r_sprites.h"
-#include "../sprites/sprites_lib.h"
+#include "../r_curses/r_sprite.h"
+#include "../r_curses/r_lib.h"
+#include "../sprite/sprite_lib.h"
 #include "../sys/sys.h"
 
 #define ZSE_T_SPRSR_OP_COLORS    0x1
@@ -192,7 +193,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
-
+	wclear(stdscr);
 	_render_showSeditorNormal(stdscr, spr->plot, r_options, spr->X, spr->Y, spr->frames, brush.x, brush.y, brush.z, 0, 0);
 	while(TRUE)
 	{
@@ -313,8 +314,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
             // Exit
 			case '`':
 				return 0;
-				break
-                ;
+				break;
 			default:
 				break;
 		}
@@ -359,17 +359,20 @@ REPEAT:
 
 	if(yes == 'N')
 	{
-		mvprintw(0, 0, "Get X 	     : ");
-		mvprintw(1, 0, "Get Y 	     : ");
-		mvprintw(2, 0, "Get Frames   : ");
-		mvprintw(3, 0, "Get DeltaTime: ");
-		mvprintw(4, 0, "Get Max Color: ");
-
+		mvprintw(0, 0, "Get X 	     	: ");
 		mvscanw(0, 14, "%hd", &spr->X);
+
+		mvprintw(1, 0, "Get Y 	     	: ");
 		mvscanw(1, 14, "%hd", &spr->Y);
+
+		mvprintw(2, 0, "Get Frames   	: ");
 		mvscanw(2, 14, "%d", &spr->frames);
+
+		mvprintw(3, 0, "Get DeltaTime	: ");
 		mvscanw(3, 14, "%f", &spr->dt);
-		mvscanw(4, 14, "%hd", &spr->colorused);
+
+		mvprintw(4, 0, "Get Max Sequence: ");
+		mvscanw(4, 14, "%hd", &spr->seqMax);
 
 
 		spr->plot = malloc(sizeof(sprite_data_t) * spr->X * spr->Y * spr->frames);
@@ -379,7 +382,8 @@ REPEAT:
 			spr->plot[i] = ' ';
 		}
 
-		spr->colorP = zse_r_colorsPallete_create (spr->colorused);
+		spr->sequences[0] = malloc(sizeof(sequence_data_t) * spr->seqMax);
+		spr->sequences[1] = malloc(sizeof(sequence_data_t) * spr->seqMax);
 	}
 	else if(yes == 'O')
 	{

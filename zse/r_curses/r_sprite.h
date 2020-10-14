@@ -3,7 +3,7 @@
 
 #include "r_lib.h"
 
-#include "../sprites/sprites_lib.h"
+#include "../sprite/sprite_lib.h"
 
 int zse_render_sprite_full
 (

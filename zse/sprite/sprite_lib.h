@@ -3,38 +3,37 @@
 
 #include "../common.h"
 
-
-#include "../colors/colors.h"
-
 typedef uint16_t sprite_data_t;
+typedef uint8_t sequence_data_t;
 
 typedef struct SPRITES_DEF_
 {
     uint16_t X;
     uint16_t Y;
-    unsigned int frames;
+    uint32_t frames;
     float dt;
-    unsigned short colorused;
+    uint16_t seqMax;
     sprite_data_t* plot;
-    COLORrgb_p *colorP;
+    sequence_data_t* sequences[2];
+
 
 }SPRITES_t;
 
-typedef struct COLORLESS_SPRITES_DEF_
+typedef struct SEQUENCELESS_SPRITES_DEF_
 {
     uint16_t X;
     uint16_t Y;
     unsigned int frames;
     float dt;
     sprite_data_t* plot;
-}COLORLESS_SPRITES_t;
+}SEQUENCELESS_SPRITES_t;
 
 typedef struct SPRITES_BLOC_DEF_
 {
     int blocsize;
     unsigned short colorused;
-    COLORrgb_p *colorP;
-    COLORLESS_SPRITES_t* sprites;
+    //COLORrgb_p *colorP;
+    SEQUENCELESS_SPRITES_t* sprites;
 
 }SPRITES_BLOC_t;
 
@@ -71,6 +70,7 @@ typedef struct SPRITES_BLOC_DEF_
 SPRITES_t zse_sprites_sin_load(char name[]);
 int zse_sprites_sin_export(SPRITES_t *sprite ,char name[]);
 
+SPRITES_t* zse_sprites_createNew(int x, int y, int frame, float dt, int sq);
 void zse_delete_sprites_ptr(SPRITES_t *sprites, size_t siz);
 
 #endif
