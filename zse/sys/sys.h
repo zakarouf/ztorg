@@ -9,4 +9,6 @@ char **zse_realloc_2D_array_char (char **arr , unsigned int x, unsigned int y, u
 char** zse_dir_getfnames(char path[], int *getitems);
 
 
+long zse_sys_getRamUsage(void);
+
 #endif

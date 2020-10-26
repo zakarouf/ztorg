@@ -1,6 +1,9 @@
 #include "../common.h"
 
 #include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
 #include <dirent.h>
 
 char **zse_malloc_2D_array_char (unsigned int x, unsigned int y) {
@@ -37,6 +40,14 @@ void zse_free2dchar(char **mem, int size)
 	}
 	free(mem);
 
+}
+
+long zse_sys_getRamUsage(void)
+{
+    struct rusage usage;
+    int ret;
+    ret = getrusage(RUSAGE_SELF, &usage);
+    return usage.ru_maxrss;
 }
 
 char** zse_dir_getfnames(char path[], int *getitems)
