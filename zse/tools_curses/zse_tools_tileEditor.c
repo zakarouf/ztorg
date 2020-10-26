@@ -13,10 +13,6 @@
 
 #include "zse_tools.h"
 
-#include "../tile/tile_lib.h"
-#include "../r_curses/r_lib.h"
-#include "../sys/sys.h"
-
 #include <string.h>
 
 #define ATTR_TXT_RAW "//////Attributes//////\n\n INVI\n WALL\n MOVE\n DEST\n FLUD\n TOXI\n WALK\n FUNC\n"

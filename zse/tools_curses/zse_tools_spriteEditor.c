@@ -10,10 +10,7 @@
 	
 -----------------------------------------------------*/
 
-#include "../r_curses/r_sprite.h"
-#include "../r_curses/r_lib.h"
-#include "../sprite/sprite_lib.h"
-#include "../sys/sys.h"
+#include "zse_tools.h"
 
 #define ZSE_T_SPRSR_OP_COLORS    0x1
 #define ZSE_T_SPRSR_OP_TRANSENAB 0x2
@@ -81,26 +78,26 @@ static void _render_showSeditorNormal
 				end_j = screensizeX+1;
 			}
 		}
-        lowerzc = chunk[getindex3d(j, i, lower_z, Xsize, Ysize)]&0xff;
+        lowerzc = chunk[zse_xyz3Dto1D(j, i, lower_z, Xsize, Ysize)]&0xff;
 
 		wmove(win ,cursor_y, cursor_x);
 
 		for (; j < end_j; ++j)
 		{
 
-			if ((chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xff) != 0xff) // IF plot point is not transperant (0xff)
+			if ((chunk[zse_xyz3Dto1D(j, i, z, Xsize, Ysize)]&0xff) != 0xff) // IF plot point is not transperant (0xff)
 			{
 				if(!(options&ZSE_T_SPRSR_OP_COLORS))
 				{
 
-					if(lowerzc == (chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xff)) // Check is Lower Z value and Z value is Same(Not Counting SPACE)
+					if(lowerzc == (chunk[zse_xyz3Dto1D(j, i, z, Xsize, Ysize)]&0xff)) // Check is Lower Z value and Z value is Same(Not Counting SPACE)
                     {
 						wattrset(win ,COLOR_PAIR(1));
-                        waddch(win ,chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xFF);
+                        waddch(win ,chunk[zse_xyz3Dto1D(j, i, z, Xsize, Ysize)]&0xFF);
                     }
                     else
                     {
-                        waddch(win ,chunk[getindex3d(j, i, z, Xsize, Ysize)]&0xFF);
+                        waddch(win ,chunk[zse_xyz3Dto1D(j, i, z, Xsize, Ysize)]&0xFF);
                     }
 
 				}
@@ -109,8 +106,8 @@ static void _render_showSeditorNormal
 				{
 					//Colormode;
 
-					wattrset(win ,COLOR_PAIR(chunk[getindex3d(j, i, z, Xsize, Ysize)]>>8));
-					waddch(win ,chunk[getindex3d(j, i, z, Xsize, Ysize)]&255);
+					wattrset(win ,COLOR_PAIR(chunk[zse_xyz3Dto1D(j, i, z, Xsize, Ysize)]>>8));
+					waddch(win ,chunk[zse_xyz3Dto1D(j, i, z, Xsize, Ysize)]&255);
 				}
 			}
 
@@ -124,7 +121,7 @@ static void _render_showSeditorNormal
                     
 					for (int l = lower_z; l >= 0; --l)
                     {
-                        if ((chunk[getindex3d(j, i, l, Xsize, Ysize)]&255) == 0xff)
+                        if ((chunk[zse_xyz3Dto1D(j, i, l, Xsize, Ysize)]&255) == 0xff)
                         {
                             continue;
                         }
@@ -136,10 +133,10 @@ static void _render_showSeditorNormal
                             }
                             else
                             {
-                                wattrset(win ,COLOR_PAIR(chunk[getindex3d(j, i, l, Xsize, Ysize)]>>8));
+                                wattrset(win ,COLOR_PAIR(chunk[zse_xyz3Dto1D(j, i, l, Xsize, Ysize)]>>8));
                             }
                             
-                            waddch(win ,chunk[getindex3d(j, i, l, Xsize, Ysize)]&0xff);
+                            waddch(win ,chunk[zse_xyz3Dto1D(j, i, l, Xsize, Ysize)]&0xff);
                             break;
                         }
                     }
@@ -275,7 +272,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				}
 
                 // Slide Show Sprite
-                if(tmp_op == ' ')zse_render_sprite_full(stdscr ,0, 0, spr, 0, spr->frames);
+                if(tmp_op == ' ')zse_r_sprite_full(stdscr ,0, 0, spr, 0, spr->frames);
 
                 // Select Transparent Char
 				if(tmp_op == 'x')brush.ink |= 0xFF;
@@ -332,7 +329,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 
 		if(brush.toggle)
 		{
-			spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)] = brush.ink; 
+			spr->plot[zse_xyz3Dto1D(brush.x, brush.y, brush.z, spr->X, spr->Y)] = brush.ink; 
 		}
 
 		mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%hi}"
@@ -344,7 +341,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 
 
 		mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
-			, brush.x, brush.y, brush.z, spr->frames-1, spr->plot[getindex3d(brush.x, brush.y, brush.z, spr->X, spr->Y)]>>8);
+			, brush.x, brush.y, brush.z, spr->frames-1, spr->plot[zse_xyz3Dto1D(brush.x, brush.y, brush.z, spr->X, spr->Y)]>>8);
 
         mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d", r_options&ZSE_T_SPRSR_OP_COLORS? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSENAB? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSSHOW? 1:0);
 

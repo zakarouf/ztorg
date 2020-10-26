@@ -10,11 +10,6 @@
 
 #include "zse_tools.h"
 
-#include "../map/map_lib.h"
-#include "../r_curses/r_map.h"
-#include "../tile/tile_lib.h"
-#include "../sys/sys.h"
-
 
 #define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
 
