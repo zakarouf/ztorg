@@ -13,7 +13,7 @@
 #include "config.h"
 
 
-#define getindex3d(x, y, z, X, Y) x + ((y)*X) + ((z)*X*Y)
+#define zse_xyz3Dto1D(x, y, z, X, Y) x + ((y)*X) + ((z)*X*Y)
 
 typedef struct _map_editor_brush_t
 {
