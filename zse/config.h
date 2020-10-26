@@ -8,6 +8,10 @@
 #define ZSE_ENGINE_VERSION "0.3\0\0\0\0\0"
 
 
+// ZSE RENDER_PLUG
+//#define ZSE_CONFIG_SDL_ENABLE
+#define ZSE_CONFIG_CURSES_ENABLE
+
 
 // PI VAL
 #define PI_VAL     3.1415926535f
@@ -33,8 +37,6 @@
 #define KEY_MOVE_DOWN_BACK 	's'
 #define KEY_MOVE_TURN_LEFT 	'a'
 #define KEY_MOVE_TURN_RIGHT 'd'
-
-
 
 
 

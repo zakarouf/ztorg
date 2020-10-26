@@ -1,5 +1,4 @@
 #include "../zse.h"
-#include "../r_curses/r_sprite.h"
 
 typedef struct entttt_
 {
@@ -157,7 +156,7 @@ int demo_frogger()
 			default:break;
 		}
 
-		if(map->chunk[getindex3d(x, y, 1, map->Xsize, map->Ysize)] == '*')
+		if(map->chunk[zse_xyz3Dto1D(x, y, 1, map->Xsize, map->Ysize)] == '*')
 		{
 			clear();
 			mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2 -4, "GAME OVER");
@@ -176,18 +175,18 @@ int demo_frogger()
 
 		for (int i = 0; i < enttsize; ++i)
 		{
-			map->chunk[getindex3d((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = ' ';
+			map->chunk[zse_xyz3Dto1D((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = ' ';
 			entt[i].x += entt[i].velo*time_taken;
 			if(entt[i].x < 0.0f || entt[i].x > map->Xsize)
 			{
 				initialize_entt(lane ,&entt[i], 1, map->Xsize, map->Ysize, FALSE);
 			}
-			map->chunk[getindex3d((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
+			map->chunk[zse_xyz3Dto1D((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
 
-            zse_render_sprite(stdscr, zse_r_ssmooth(entt[i].x, spr[1].Y), (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
+            zse_r_sprite(stdscr, zse_r_ssmooth(entt[i].x, spr[1].Y), (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
 
 		}
-        zse_render_sprite(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)
+        zse_r_sprite(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)
         mvprintw(0, 0, "Score : %d    Level : %d", score, level);
 
 		wrefresh(stdscr);

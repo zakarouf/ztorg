@@ -76,7 +76,7 @@ static int _d_2048_draw(WINDOW*win, int x, int y, ST_WORLD_t *map)
 	{
 		for (int j = 0; j < zse_mapx(map); ++j)
 		{
-			mvwprintw(win, (i+y) *2, (j+x) *2, "%d " , map->chunk[getindex3d(j, i, 0, zse_mapx(map), zse_mapx(map))]);
+			mvwprintw(win, (i+y) *2, (j+x) *2, "%d " , map->chunk[zse_xyz3Dto1D(j, i, 0, zse_mapx(map), zse_mapx(map))]);
 		}
 	}
 
@@ -94,10 +94,10 @@ static int _d_2048_logic_add(ST_WORLD_t* map, char key)
 		{
 			for (int y = zse_mapy(map) - 1; y < 0; y -= 1)
 			{
-				if (map->chunk[getindex3d(x, 3, 0, zse_mapx(map), zse_mapy(map))] == map->chunk[getindex3d(x, 2, 0, zse_mapx(map), zse_mapy(map))])
+				if (map->chunk[zse_xyz3Dto1D(x, 3, 0, zse_mapx(map), zse_mapy(map))] == map->chunk[zse_xyz3Dto1D(x, 2, 0, zse_mapx(map), zse_mapy(map))])
 				{
-					map->chunk[getindex3d(x, 2, 0, zse_mapx(map), zse_mapy(map))] = map->chunk[getindex3d(x, 3, 0, zse_mapx(map), zse_mapy(map))] + map->chunk[getindex3d(x, 2, 0, zse_mapx(map), zse_mapy(map))];
-					map->chunk[getindex3d(x, 3, 0, zse_mapx(map), zse_mapy(map))] = 0;
+					map->chunk[zse_xyz3Dto1D(x, 2, 0, zse_mapx(map), zse_mapy(map))] = map->chunk[zse_xyz3Dto1D(x, 3, 0, zse_mapx(map), zse_mapy(map))] + map->chunk[zse_xyz3Dto1D(x, 2, 0, zse_mapx(map), zse_mapy(map))];
+					map->chunk[zse_xyz3Dto1D(x, 3, 0, zse_mapx(map), zse_mapy(map))] = 0;
 				}
 			}
 		}
@@ -109,15 +109,15 @@ static int _d_2048_logic_add(ST_WORLD_t* map, char key)
 		{
 			for (int y = 0; y < zse_mapy(map)-1; ++y)
 			{
-				if (map->chunk[getindex3d(x, y+1, 0, zse_mapx(map), zse_mapy(map))] == map->chunk[getindex3d(x, y, 0, zse_mapx(map), zse_mapy(map))])
+				if (map->chunk[zse_xyz3Dto1D(x, y+1, 0, zse_mapx(map), zse_mapy(map))] == map->chunk[zse_xyz3Dto1D(x, y, 0, zse_mapx(map), zse_mapy(map))])
 				{
-					map->chunk[getindex3d(x, y+1, 0, zse_mapx(map), zse_mapy(map))] = map->chunk[getindex3d(x, y, 0, zse_mapx(map), zse_mapy(map))] + map->chunk[getindex3d(x, y + 1, 0, zse_mapx(map), zse_mapy(map))];
-					map->chunk[getindex3d(x, y, 0, zse_mapx(map), zse_mapy(map))] = 0;
+					map->chunk[zse_xyz3Dto1D(x, y+1, 0, zse_mapx(map), zse_mapy(map))] = map->chunk[zse_xyz3Dto1D(x, y, 0, zse_mapx(map), zse_mapy(map))] + map->chunk[zse_xyz3Dto1D(x, y + 1, 0, zse_mapx(map), zse_mapy(map))];
+					map->chunk[zse_xyz3Dto1D(x, y, 0, zse_mapx(map), zse_mapy(map))] = 0;
 				}
-				else if (map->chunk[getindex3d(x, y+1, 0, zse_mapx(map), zse_mapy(map))] == 0)
+				else if (map->chunk[zse_xyz3Dto1D(x, y+1, 0, zse_mapx(map), zse_mapy(map))] == 0)
 				{
-					map->chunk[getindex3d(x, y+1, 0, zse_mapx(map), zse_mapy(map))] = map->chunk[getindex3d(x, y, 0, zse_mapx(map), zse_mapy(map))];
-					map->chunk[getindex3d(x, y, 0, zse_mapx(map), zse_mapy(map))] = 0;
+					map->chunk[zse_xyz3Dto1D(x, y+1, 0, zse_mapx(map), zse_mapy(map))] = map->chunk[zse_xyz3Dto1D(x, y, 0, zse_mapx(map), zse_mapy(map))];
+					map->chunk[zse_xyz3Dto1D(x, y, 0, zse_mapx(map), zse_mapy(map))] = 0;
 				}
 			}
 		}
