@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 import os, sys, fnmatch
 
-folderIgnore={"r_stdio", ".git"}
+folderIgnore={"data", "doc" ,"stdio", ".git", "SDL", "tisk", "vulkan"}
 IgnoreNames={"cave_hunter.c"}
+
+
+
+def makeConfig():
+    return 0
 
 def checkIfNameFound(name, nArray):
     for i in nArray:
