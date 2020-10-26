@@ -29,7 +29,7 @@ void zse_map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata
         for (; j < end_j ; ++j) {
 
             if( ((j - x) * (j - x) + (i - y) * (i - y)) <= r * r ) {
-                	map->chunk[getindex3d(j, i, z, map->Xsize, map->Ysize)] = tile;
+                	map->chunk[zse_xyz3Dto1D(j, i, z, map->Xsize, map->Ysize)] = tile;
             }
         }
     }

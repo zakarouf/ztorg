@@ -36,7 +36,7 @@ static int ren(WINDOW *win, SPRITES_t *spr, TILESET_t *ts, ST_WORLD_t * map, ENT
 
 		for (; j < end_j; ++j)
 		{
-			if (map->chunk[getindex3d(j, i, 0, zse_mapx(map), zse_mapy(map))] == 1)
+			if (map->chunk[zse_xyz3Dto1D(j, i, 0, zse_mapx(map), zse_mapy(map))] == 1)
 			{
 				mvwaddch(win, cursor_y/4, cursor_x/4, '#');
 				//zse_render_sprite(stdscr, cursor_x, cursor_y, spr, 0);	
