@@ -5,6 +5,7 @@ void zse_r_render_world_raycast (WINDOW *win, ENTT_t *player, ST_WORLD_t *map, T
 	wclear(win);
 
 	int color_txt = 1;
+	chtype shade = ' ' | COLOR_PAIR(0);
 	wmove(win ,0, 0);
 
 	for (int x = 0; x < getmaxx(win); x++) 
@@ -32,10 +33,10 @@ void zse_r_render_world_raycast (WINDOW *win, ENTT_t *player, ST_WORLD_t *map, T
 				ray_distance = DEPTH;
 			}
 			else {
-				if((tile[map->chunk[getindex3d(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISBLOC) && !(tile[map->chunk[getindex3d(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISINVI)) 
+				if((tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISBLOC) && !(tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISINVI)) 
 				{
 					chech_if_hitwall = 1;
-					color_txt = tile[map->chunk[getindex3d(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].coloc;
+					color_txt = tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].coloc;
 				}
 			}	
 		} // WHILE LOOP END
@@ -44,28 +45,20 @@ void zse_r_render_world_raycast (WINDOW *win, ENTT_t *player, ST_WORLD_t *map, T
 		int floor = getmaxy(win) - ceiling;
 
 
-		int shade = ' ';
 
-		if(ray_distance >= DEPTH-4 ) {shade = '.';}
-		if(ray_distance >= DEPTH-2)  {shade = ';';}
-		if(ray_distance >= DEPTH-1 ) {shade = '#';}
-		if(ray_distance == DEPTH)	 {shade = ' ';}
+		if(ray_distance >= DEPTH-4 ) {shade = '.' | COLOR_PAIR(color_txt) ;}
+		else if(ray_distance >= DEPTH-2)  {shade = ';' | COLOR_PAIR(color_txt) ;}
+		else if(ray_distance >= DEPTH-1 ) {shade = '=' | COLOR_PAIR(color_txt) ;}
+		else if(ray_distance == DEPTH)	 {shade = '#' | COLOR_PAIR(color_txt) ;}
+		else{shade = ' ' | COLOR_PAIR(1);}
 
 
 		for (int y = 0; y < getmaxy(win); y++)
 		{
 			if(y > ceiling && y <= floor){
-				if(!out_of_bounds && shade == ' ')
-				{
-					attron(COLOR_PAIR(color_txt));
-				}
 				
 				mvwaddch(win ,y, x, shade);
 
-				if(!out_of_bounds && shade == ' ')
-				{
-					attrset(A_NORMAL);
-				}
 			}
 
 		}

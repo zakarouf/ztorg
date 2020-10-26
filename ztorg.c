@@ -28,6 +28,8 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 	float mvmt_spd = 1.0f, turn_angle = TURN_SPEED;
 	p1->Z = 1;
 	p1->A = 0.0f;
+	p1->X = 10;
+	p1->Y = 10;
 
 	uint8_t key = ' ';
 	char dire[5][7]={
@@ -116,7 +118,7 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 		}
 
 
-		if(!(tileset->tile[map->chunk[getindex3d((int)p1->X, (int)p1->Y, (int)p1->Z, map->Xsize, map->Ysize)]].attr &TILE_ISPASS))
+		if(!(tileset->tile[map->chunk[zse_xyz3Dto1D((int)p1->X, (int)p1->Y, (int)p1->Z, map->Xsize, map->Ysize)]].attr &TILE_ISPASS))
 		{
 			p1->X = px; 
 			p1->Y = py;

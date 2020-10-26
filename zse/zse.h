@@ -3,7 +3,7 @@
 
 #include "sys/sys.h"
 #include "map/map_lib.h"
-#include "r_curses/r_lib.h"
+#include "render/curses/curses.h"
 #include "tile/tile_lib.h"
 #include "sprite/sprite_lib.h"
 #include "entity/entity.h"
