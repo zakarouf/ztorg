@@ -33,9 +33,9 @@ typedef struct _MAPDEF_INFINITE_WORLD_t
 {
   uint8_t ChunkSizeXY;
   uint8_t ChunkSizeZ;
-  uint8_t _MaxChunk;
+  uint8_t _MaxChunkRadius;
 
-  plotdata_t **chunk;
+  plotdata_t **chunks;
 
 }IN_WORLD_t;
 
@@ -102,15 +102,23 @@ typedef struct _MAPDEF_INFINITE_WORLD_t
 #define zse_mapy(map) map->Ysize
 #define zse_mapz(map) map->Zsize
 
-#define ZSE_mapIN_CHUNKSIZE_DEFAULT 1
+#define ZSE_mapIN_CHUNKRADIUSSIZE_DEFAULT 1
 #define ZSE_mapIN_CHUNK_XY_SIZE_DEFAULT 32
 #define ZSE_mapIN_CHUNK_Z_SIZE_DEFAULT 1
 
-#define zse_absMapINPos(p, C) (p)*(C)
+#define zse_mapINAbsPos(p, C, CSize) ((CSize)*(C)) + p
 #define zse_mapINxy(mapIN) mapIN->ChunkSizeXY
-#define zse_mapInChunks(n) (1 + 2*n)
-#define zse_mapInChunksMid(n) (int)( (float)(Chunks(n)/2) + 0.5f )
+#define zse_mapInSideCLen(_MaxChunkRadius) (1 + (2*(_MaxChunkRadius)))
+#define zse_mapINTotalChunkNo(_MaxChunkRadius) zse_mapInSideCLen(_MaxChunkRadius)*zse_mapInSideCLen(_MaxChunkRadius)
+#define zse_mapInChunksMid(_MaxChunkRadius) (int)( ((float)zse_mapINTotalChunkNo(_MaxChunkRadius) /2) - 0.5f )
 #define zse_mapINChunks_Atgetxyz(chunkno, x, y, z, mapIN) (IN_WORLD_t*)mapIN->chunk[chunkno][zse_xyz3Dto1D(x, y, z, mapIN->ChunkSizeXY, mapIN->ChunkSizeXY)]
+
+#define zse_mapINchunklineStartEnd(ch , start, end, _MaxChunkRadius) \
+  end = zse_mapInSideCLen(_MaxChunkRadius) * ch; \
+  start = zse_mapInSideCLen(_MaxChunkRadius) * (ch>0? ch-1:0)
+#define zse_mapINchunklineStartEndPLR(start, end ,_MaxChunkRadius) \
+  end = (int) ((zse_mapInChunksMid(_MaxChunkRadius) + (float)(zse_mapInSideCLen(_MaxChunkRadius)/2 + 0.5f))); \
+  start = (int) ((zse_mapInChunksMid(_MaxChunkRadius) - (float)(zse_mapInSideCLen(_MaxChunkRadius)/2 - 0.5f)))
 
 /*
 ---------------------------------------------------------------------
@@ -151,11 +159,17 @@ int zse_map_export_st (ST_WORLD_t *map, char name[], char tilesetname[], char ne
 
 //MAP Edit/draw
 void zse_map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile);
+void zse_map_fillupchunk_in(IN_WORLD_t *mapIN, int ChunkNo, int atChunkX, int atChunkY);
+void zse_map_fillentireChunks_in(IN_WORLD_t *mapIN, int px, int py);
 
 
 //MAP misc
 void zse_map_delete_st(ST_WORLD_t *map);
 ST_WORLD_t* zse_map_init_empty_st(int x, int y, int z);
+
+void zse_map_fillChunkGenerate2D_in(plotdata_t *chunk, uint16_t dimentionXY ,int chunkXY[2]);
+void zse_map_delete_in(IN_WORLD_t *mapIN, int isptr, size_t size);
+IN_WORLD_t zse_map_init_empty_in();
 
 
 #endif
