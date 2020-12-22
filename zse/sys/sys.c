@@ -1,4 +1,4 @@
-#include "../common.h"
+#include "sys.h"
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -75,4 +75,26 @@ char** zse_dir_getfnames(char path[], int *getitems)
 
     *getitems = items;
     return fnames;
+}
+
+zse_int zse_sswitch(zse_int i)
+{
+    return i* -1;
+}
+
+zse_int zse_sswitchS(zse_int i)
+{
+    return (0b11111111111111111111111111111111 ^ i) + 1;
+}
+
+int zse_sys_formatCheck(char version[])
+{
+    for (int i = 0; i < sizeof(ZSE_ENGINE_VERSION); ++i)
+    {
+        if (version[i] != ZSE_ENGINE_VERSION[i])
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
