@@ -2,50 +2,50 @@
 
 typedef struct entttt_
 {
-	float x;
-	float y;
-	float velo;
+    float x;
+    float y;
+    float velo;
 
 }ENTT_T;
 
 #define ZSE_FROGGER_BASE_VELO 1.0f
 #define ZSE_FROGGER_BASE_NUMB 8
 
-static void initialize_entt(float lane[] ,ENTT_T * entt, int population, int mapx, int mapy, char f)
+static void initialize_entt(float lane[] ,ENTT_T * entt, int population, int mapx, int mapy, char firstTime)
 {
-	for (int i = 0; i < population; ++i)
-	{
-		entt[i].y = (float)(random() % mapy-1);
-		if(lane[(int)entt[i].y] > 0.0f)
-		{
-			entt[i].x = 0.0f;
-		}
-		else
-		{	
-			entt[i].x = mapx-1.0f;
-		}
+    for (int i = 0; i < population; ++i)
+    {
+        entt[i].y = (float)(random() % mapy-1);
+        if(lane[(int)entt[i].y] > 0.0f)
+        {
+            entt[i].x = 0.0f;
+        }
+        else
+        {   
+            entt[i].x = mapx-1.0f;
+        }
 
-		entt[i].velo = lane[(int)entt[i].y];
+        entt[i].velo = lane[(int)entt[i].y];
 
-		if (f)
-		{
-			entt[i].x = (float)(random() % mapx);
-		}
-		
-	}
+        if (firstTime)
+        {
+            entt[i].x = (float)(random() % mapx);
+        }
+        
+    }
 }
 
 static float getlane(float velo)
 {
-	int r = random() & 1;
-	if(r)
-	{
-		return -(velo);
-	}
-	else
-	{
-		return velo;
-	}
+    int r = random() & 1;
+    if(r)
+    {
+        return -(velo);
+    }
+    else
+    {
+        return velo;
+    }
 }
 
 static ENTT_T* levelup(ST_WORLD_t * map, float *lane , int *enttsize, int level, ENTT_T *entt)
@@ -68,8 +68,8 @@ static ENTT_T* levelup(ST_WORLD_t * map, float *lane , int *enttsize, int level,
 
 int demo_frogger()
 {
-	ST_WORLD_t *map = zse_map_init_empty_st(20, 10, 2);
-	float lane[map->Ysize];
+    ST_WORLD_t *map = zse_map_init_empty_st(20, 10, 2);
+    float lane[map->Ysize];
     for (int i = 0; i < map->Ysize; ++i)
     {
         lane[i] = getlane(ZSE_FROGGER_BASE_VELO);
@@ -85,37 +85,39 @@ int demo_frogger()
 
 
     SPRITES_t *spr = malloc(sizeof(SPRITES_t) * 2);
-    spr[0] = zse_sprites_sin_load("frog");
-    spr[1] = zse_sprites_sin_load("car");
+    spr[0] = zse_sprites_sin_load("frog.zspr");
+    spr[1] = zse_sprites_sin_load("car.zspr");
 
-	
-	
+    
+    
 
-	int x = map->Xsize/2, y = map->Ysize-1;
-	char key;
+    int x = map->Xsize/2, y = map->Ysize-1;
+    
 
-	clock_t start_time = 0.0f, end_time = 0.0f;
-	double time_taken;
+    clock_t start_time = 0.0f, end_time = 0.0f;
+    double time_taken;
 
 
-	nodelay(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
+    noecho();
 
-	while(TRUE)
-	{
-		start_time = clock();
-		key = getch();
+    while(TRUE)
+    {
+        start_time = clock();
+        
 
-		switch(key){
-			case 'w':
-				if(y > 0)
-				{
-					y--;
+        
+        switch(getch()){
+            case 'w':
+                if(y > 0)
+                {
+                    y--;
                     if(y < up)
                     {
                         up--;
                         score += 10 + (10 * level);
                     }
-				}
+                }
                 else{
                     clear();
                     mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2, "Level %d", level+1);
@@ -133,67 +135,72 @@ int demo_frogger()
                     score += 100 * level;
                     up = map->Ysize;
                 }
-				break;
-			case 's':
-				if(y <= map->Ysize)
-				{
-					y++;
-				}
-				break;
-			case 'a':
-				if(x > 0)
-				{
-					x--;
-				}
-				break;
-			case 'd':
-				if(x <= map->Xsize)
-				{
-					x++;
-				}
-				break;
+                break;
+            case 's':
+                if(y <= map->Ysize)
+                {
+                    y++;
+                }
+                break;
+            case 'a':
+                if(x > 0)
+                {
+                    x--;
+                }
+                break;
+            case 'd':
+                if(x <= map->Xsize)
+                {
+                    x++;
+                }
+                break;
 
-			default:break;
-		}
+            default:break;
+        }
 
-		if(map->chunk[zse_xyz3Dto1D(x, y, 1, map->Xsize, map->Ysize)] == '*')
-		{
-			clear();
-			mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2 -4, "GAME OVER");
+        if(map->chunk[zse_xyz3Dto1D(x, y, 1, map->Xsize, map->Ysize)] == '*')
+        {
+            clear();
+            mvprintw(getmaxy(stdscr)/2, getmaxx(stdscr)/2 -4, "GAME OVER");
             mvprintw(getmaxy(stdscr)/2 + 1, getmaxx(stdscr)/2 -10, "SCORE: %d  LEVEL: %d", score, level);
-			refresh();
-			nodelay(stdscr, FALSE);
-			getch();
+            refresh();
+            nodelay(stdscr, FALSE);
+            getch();
 
             zse_map_delete_st(map);
             zse_delete_sprites_ptr(spr, 2);
 
             return 0;
-		}
+        }
         
-        wclear(stdscr);
+        zse_rtC_spritePrintf(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)
 
-		for (int i = 0; i < enttsize; ++i)
-		{
-			map->chunk[zse_xyz3Dto1D((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = ' ';
-			entt[i].x += entt[i].velo*time_taken;
-			if(entt[i].x < 0.0f || entt[i].x > map->Xsize)
-			{
-				initialize_entt(lane ,&entt[i], 1, map->Xsize, map->Ysize, FALSE);
-			}
-			map->chunk[zse_xyz3Dto1D((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
+        for (int i = 0; i < enttsize; ++i)
+        {
+            zse_rtC_clearPortion(stdscr, ((int)entt[i].x *spr[1].X), ((int)entt[i].y *spr[1].Y), 4, 4);
 
-            zse_r_sprite(stdscr, zse_r_ssmooth(entt[i].x, spr[1].Y), (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
+            map->chunk[zse_xyz3Dto1D((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = ' ';
+            entt[i].x += entt[i].velo*time_taken;
+            if(entt[i].x < 0.0f || entt[i].x > map->Xsize)
+            {
+                initialize_entt(lane ,&entt[i], 1, map->Xsize, map->Ysize, FALSE);
+            }
+            map->chunk[zse_xyz3Dto1D((int)entt[i].x ,(int)entt[i].y, 1, map->Xsize, map->Ysize)] = '*';
 
-		}
-        zse_r_sprite(stdscr, x*spr[0].X, y*spr[0].Y, &spr[0], 0); // Show Player(Frog)
-        mvprintw(0, 0, "Score : %d    Level : %d", score, level);
+            zse_rtC_spritePrintf(stdscr, zse_rtC_spriteSmooth(entt[i].x, spr[1].Y), (int)entt[i].y*spr[1].Y, &spr[1], 0); // Show Cars
 
-		wrefresh(stdscr);
-		end_time = clock();
-		time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
-	}
+        }
+
+        mvprintw(getmaxy(stdscr) -1, 0, "Score : %d    Level : %d", score, level);
+
+        wrefresh(stdscr);
+        
+        zse_rtC_clearPortion(stdscr, (x*spr[0].X), (y*spr[0].Y), 4, 4 );
+        
+        end_time = clock();
+        time_taken = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    }
 
 
-	return 0;
+    return 0;
 }

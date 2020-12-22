@@ -2,8 +2,7 @@
 
 CCF=gcc
 CFLAGS='-Wall -Ofast'
-HEADER='zse/ '
-LDFLAGS='-lncurses'
+LDFLAGS='-lncurses -lvulkan -lglfw -Wl,-rpath -Wl,/usr/local/lib'
 ZENGINE='zse/*'
 
 OUTEX_FILE='z'
@@ -14,7 +13,7 @@ tar -xf data.tar
 read CFILES
 
 
-$CCF $CFLAGS -std=$1 $LDFLAGS -I"$HEADER" -c $CFILES ztorg.c
-$CCF $CFLAGS $LDFLAGS -o data/$OUTEX_FILE *.o
+$CCF -std=$1 -c $CFILES ztorg.c
+$CCF $LDFLAGS -o data/$OUTEX_FILE *.o
 
 rm -rf *.o
