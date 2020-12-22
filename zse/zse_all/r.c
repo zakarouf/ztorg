@@ -46,11 +46,11 @@ void zse_r_render_world_raycast (WINDOW *win, ENTT_t *player, ST_WORLD_t *map, T
 
 
 
-		if(ray_distance >= DEPTH-4 ) {shade = '.' | COLOR_PAIR(color_txt) ;}
-		else if(ray_distance >= DEPTH-2)  {shade = ';' | COLOR_PAIR(color_txt) ;}
-		else if(ray_distance >= DEPTH-1 ) {shade = '=' | COLOR_PAIR(color_txt) ;}
-		else if(ray_distance == DEPTH)	 {shade = '#' | COLOR_PAIR(color_txt) ;}
-		else{shade = ' ' | COLOR_PAIR(1);}
+		if(ray_distance <= DEPTH / 4 ) {shade = '#' | COLOR_PAIR(color_txt) ;}
+		else if(ray_distance <= DEPTH / 3)  {shade = '=' | COLOR_PAIR(color_txt) ;}
+		else if(ray_distance <= DEPTH / 2 ) {shade = '\"' | COLOR_PAIR(color_txt) ;}
+		else if(ray_distance <= DEPTH)	 {shade = '.' | COLOR_PAIR(color_txt) ;}
+		else{shade = ' ' | COLOR_PAIR(5) ;}
 
 
 		for (int y = 0; y < getmaxy(win); y++)

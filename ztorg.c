@@ -20,16 +20,18 @@ enum STAT_SHOW
 	ST_SHOW_MAGE,
 };
 
+/* Data */
+
 static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 {
 	char quit = 0;
 
 	float px, py;
 	float mvmt_spd = 1.0f, turn_angle = TURN_SPEED;
-	p1->Z = 1;
 	p1->A = 0.0f;
-	p1->X = 10;
-	p1->Y = 10;
+	p1->X = zse_rtC_getint("X ");refresh();
+	p1->Y = zse_rtC_getint("Y ");refresh();
+	p1->Z = zse_rtC_getint("Z ");refresh();
 
 	uint8_t key = ' ';
 	char dire[5][7]={
@@ -145,14 +147,14 @@ int ztorg (char name[])
 	ST_WORLD_t *map = zse_map_load_st(name , returntilesetname);
 	TILESET_t tileset = zse_tileset_get(returntilesetname);
 
-	ENTT_t *p = init_ENTT_t(JACK);
+	ENTT_t *p = zse_entt_init_ENTT_t(JACK);
 	p->X = 10;
 	p->Y = 10;
 
 	ztorg_main_loop (p, map, &tileset);
 
 	zse_map_delete_st(map);
-	zse_entity_delete(p);
+	zse_entt_delete(p);
 
 	return 0;
 }

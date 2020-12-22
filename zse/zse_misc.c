@@ -14,7 +14,7 @@ int	zse_delete_all(TILESET_t *t, ST_WORLD_t *map, ENTT_t *ent)
 	
 	if (ent != NULL)
 	{
-		zse_entity_delete (ent);	
+		zse_entt_delete (ent);	
 	}
 	
 
