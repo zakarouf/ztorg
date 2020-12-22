@@ -5,7 +5,7 @@
 
 #include "../../sprite/sprite_lib.h"
 
-int zse_r_sprite_full
+int zse_rtC_spritePrintAll
 (
 	WINDOW *win,
 	int startX,
@@ -15,7 +15,7 @@ int zse_r_sprite_full
 	int endframe
 );
 
-void zse_r_sprite
+void zse_rtC_spritePrintf
 (
 	WINDOW *win,
 	int startX,
@@ -24,6 +24,6 @@ void zse_r_sprite
 	const int atframe
 );
 
-int zse_r_ssmooth(float pos, float slength);
+int zse_rtC_spriteSmooth(float pos, float slength);
 
 #endif

@@ -5,7 +5,7 @@
 #include "../../map/map_lib.h"
 #include "../../tile/tile_lib.h"
 
-void r_render_show2dworld
+void zse_rtC_map_show2dworld
 (
 	WINDOW *win,
 	TILE_t *t,

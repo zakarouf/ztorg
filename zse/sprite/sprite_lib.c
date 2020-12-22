@@ -1,4 +1,5 @@
 #include "sprite_lib.h"
+#include "../sys/sys.h"
 
 #define ZSE_ENABLE_COLOR
 
@@ -7,7 +8,7 @@ SPRITES_t zse_sprites_sin_load(char name[])
 	SPRITES_t sprite = {0, 0, 0, 0 ,0, NULL, {NULL, NULL}};
 
 	char dirpos[74] = SPRITES_PARENTDIR;
-	sprintf(dirpos, "%s%s%s", SPRITES_PARENTDIR, name, SPRITES_SINGLE_EXT);
+	sprintf(dirpos, "%s%s", SPRITES_PARENTDIR, name);
 
 	FILE *fp;
 	if((fp = fopen(dirpos, "r")) == NULL)
@@ -18,6 +19,8 @@ SPRITES_t zse_sprites_sin_load(char name[])
 	// Read Stuff
 	char version[8];
 	fread(version, sizeof(char) *8, 1, fp);
+	//zse_sys_formatCheck(version);
+
 	fread(&sprite, sizeof(SPRITES_t), 1, fp);
 	
 	sprite.plot = malloc(sizeof(sprite_data_t) * sprite.X * sprite.Y * sprite.frames);

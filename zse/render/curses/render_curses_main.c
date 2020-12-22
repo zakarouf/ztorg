@@ -1,6 +1,6 @@
 #include "curses.h"
 
-int zse_r_init()
+int zse_rtC_init()
 {
 	initscr();
 	raw();
@@ -33,19 +33,19 @@ int zse_r_init()
 	return 0;
 }
 
-void zse_r_exit()
+void zse_rtC_exit()
 {
 	endwin();
 }
 
-int zse_getint()
+int zse_rtC_getint()
 {
     int r;
     scanw("%d", &r);
     return r;
 }
 
-int zse_getint_printw_option(char str[])
+int zse_rtC_getint_printw_option(char str[])
 {
     int r;
     clear();
@@ -54,7 +54,7 @@ int zse_getint_printw_option(char str[])
     return r;
 }
 
-int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname)
+int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname)
 {
     int scr_y = getmaxy(win), pagestart = 0, exit = 0;
     char key = ' ';
@@ -121,4 +121,17 @@ int zse_r_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char
         key = wgetch(win);
     }
     return 0;
+}
+
+void zse_rtC_clearPortion(WINDOW *win, int x, int y, int uptoX, int uptoY)
+{
+    const int ylim = y + uptoY;
+    const int xlim = x + uptoX;
+    for (; y < ylim; ++y)
+    {
+        for (; x < xlim; ++x)
+        {
+            mvwprintw(win , y, x, " ");
+        }
+    }
 }

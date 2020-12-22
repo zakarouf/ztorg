@@ -1,6 +1,6 @@
 #include "render_curses_sprite.h"
 
-int zse_r_sprite_full
+int zse_rtC_spritePrintAll
 (
 	WINDOW *win,
 	int startX,
@@ -55,12 +55,12 @@ FUNTION_END:
 	return 0;
 }
 
-int zse_r_ssmooth(float pos, float slength)
+int zse_rtC_spriteSmooth(float pos, float slength)
 {
 	return (pos * slength)+(pos*1/slength) -slength;
 }
 
-void zse_r_sprite
+void zse_rtC_spritePrintf
 (
 	WINDOW *win,
 	int startX,
@@ -69,13 +69,16 @@ void zse_r_sprite
 	const int atframe
 )
 {
+	sprite_data_t *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->X, spr->Y)];	
 	for (int i = 0; i < spr->Y; ++i)
 	{
 		for (int j = 0; j < spr->X; ++j)
 		{
-			if((spr->plot[zse_xyz3Dto1D(j, i, atframe, spr->X, spr->Y)]&0xFF) != 0xFF){
-				mvwaddch(win, startY + i, startX + j, spr->plot[zse_xyz3Dto1D(j, i, atframe, spr->X, spr->Y)]&0xFF);
-			}
+			//if((*sprp) != 0xFF){
+				mvwaddch(win, startY + i, startX + j, *sprp);
+			//}
+
+			sprp++;
 		}
 	}
 }

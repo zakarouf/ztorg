@@ -7,7 +7,7 @@
 #define zse_createcolor(at, r, g, b) init_color(at, r, g, b)
 
 
-int zse_colors_test_showall(WINDOW *win, int atx, int aty);
-int zse_r_color_initpairs(void);
+int zse_rtC_colors_test_showall(WINDOW *win, int atx, int aty);
+int zse_rtC_color_initpairs(void);
 
 #endif

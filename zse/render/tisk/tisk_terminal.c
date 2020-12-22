@@ -2,7 +2,7 @@
 #include <sys/ioctl.h>
 
 
-void zse_r_tiskTest()
+void zse_rtT_tiskTest()
 {
 	char buff1[] = "abc";
 
@@ -23,4 +23,12 @@ void zse_r_tiskTest()
     write(STDOUT_FILENO, "\n", 1);
 
     return;
+}
+
+void zse_rtT_rewind(int x)
+{
+    for (int i = 0; i < x; ++i)
+    {
+        write(STDOUT_FILENO, "\b", 1);
+    }
 }

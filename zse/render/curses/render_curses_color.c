@@ -1,6 +1,6 @@
 #include "curses.h"
 
-int zse_r_color_initpairs(void)
+int zse_rtC_color_initpairs(void)
 {
 
 	// Colors Text w/ Black b/g from 0 to 256
@@ -12,7 +12,7 @@ int zse_r_color_initpairs(void)
 	return 0;
 }
 
-int zse_colors_test_showall(WINDOW *win, int atx, int aty)
+int zse_rtC_colors_test_showall(WINDOW *win, int atx, int aty)
 {
 	int tmpx = atx;
 	for (int i = 0; i < COLORS; ++i)
@@ -33,7 +33,7 @@ int zse_colors_test_showall(WINDOW *win, int atx, int aty)
 		
 	}
 
-	zse_r_color_initpairs();
+	zse_rtC_color_initpairs();
 
 	return 0;
 }
