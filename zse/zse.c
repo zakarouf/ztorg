@@ -17,6 +17,7 @@ int demo_frogger();
 int demo_2048 ();
 //int demo_cave_hunter ();
 int demo_perlin();
+int zse_demo_screenSaver();
 int ztorg(char name[]);
 
 #define ZSE_ARG_COMMANDS_HELP \
@@ -32,7 +33,7 @@ int ztorg(char name[]);
 	"\t\tc\t Cave Hunter\n"\
 	"\t\t2\t 2048\n"\
 
-int zse_main_arg_pha(int arc, char const *ar[])
+static int zse_main_arg_pha(int arc, char const *ar[])
 {
 	for (int i = 0; i < arc; ++i)
 	{
@@ -41,7 +42,7 @@ int zse_main_arg_pha(int arc, char const *ar[])
 			switch(ar[i][1])
 			{
 				case 'c':
-					zse_colors_test_showall(stdscr, 0, 0);
+					zse_rtC_colors_test_showall(stdscr, 0, 0);
 					getch();
 					return 0;
 					break;
@@ -63,14 +64,16 @@ int zse_main_arg_pha(int arc, char const *ar[])
 						demo_2048();
 					else if (ar[i][2] == 'p')
 						demo_perlin();
+					else if (ar[i][2] == 's')
+						zse_demo_screenSaver();
 					return 0;
 					break;
 				case 'z':
-					ztorg("test");
+					ztorg((char *)ar[i+1]);
 					return 0;
 					break;
 				case 'h':
-					zse_r_exit();
+					zse_rtC_exit();
 					fprintf(stdout ,ZSE_ARG_COMMANDS_HELP);
 					return 0;
 					break;
@@ -87,12 +90,12 @@ int zse_main_arg_pha(int arc, char const *ar[])
 
 int zse_initMainScreen_curses()
 {
-	if(zse_r_init())
+	if(zse_rtC_init())
 	{
 		return 1;
 	}
 
-	zse_r_color_initpairs();
+	zse_rtC_color_initpairs();
 
 	return 0;
 
@@ -110,6 +113,7 @@ int zse_initMainScreen_SDL()
 
 
 
+
 int main(int argc, char const *argv[])
 {
 
@@ -122,13 +126,14 @@ int main(int argc, char const *argv[])
 
 	//void zse_r_tiskTest();
 	//zse_r_tiskTest();
+	//void zse_render_vulkanInitTEST();	
+	//	zse_render_vulkanInitTEST();
 
 	srandom(clock());
-
 	
 	zse_main_arg_pha(argc, argv);
 #ifdef ZSE_CONFIG_CURSES_ENABLE
-	zse_r_exit();
+	zse_rtC_exit();
 #endif
 
 	return 0;
