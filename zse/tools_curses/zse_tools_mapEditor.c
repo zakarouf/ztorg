@@ -44,7 +44,7 @@ static int _zse_t_ed_getbrush(TILESET_t *t)
 	}
 
 	char tmp[12];
-	int r = zse_r_selectListS(tmpw, 0, 0, n, t->tsize, tmp);
+	int r = zse_rtC_selectListS(tmpw, 0, 0, n, t->tsize, tmp);
 	delwin(tmpw);
 	zse_free2dchar(n, t->tsize);
 
@@ -61,7 +61,7 @@ static int _zse_editworld_st(ST_WORLD_t* map, TILESET_t* t, char name[])
 	WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 	WINDOW * log = newwin(getmaxy(stdscr), getmaxx(stdscr), 0 , EDITOR_LOG_X_START(getmaxx(stdscr)));
 
-	r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 1, TRUE);
+	zse_rtC_map_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 1, TRUE);
 	scroll(log);
 
 
@@ -118,7 +118,7 @@ static int _zse_editworld_st(ST_WORLD_t* map, TILESET_t* t, char name[])
 		
 
 		// Draw Routine
-		r_render_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6, TRUE);
+		zse_rtC_map_show2dworld(stdscr, t->tile ,map->chunk, map->Xsize, map->Ysize, map->Zsize, brush.x, brush.y, brush.z, 3, 6, TRUE);
 
 		mvwprintw(status, 0, 0,"Brush[%3s] -> ID.%3d {%s} :: %d\n", Toggle[brush.toggle], brush.ink , "NONE", brush.size);
 		mvwprintw(status, 1, 0, "X - %3d || Y - %3d || Z - %3d", brush.x, brush.y, brush.z);
@@ -145,7 +145,7 @@ int zse_tool_mapEditor_st_main()
 	if (op == 'n')
 	{
 
-		ST_WORLD_t *map = zse_map_init_empty_st(zse_getint_printw_option("X - "), zse_getint_printw_option("Y - "), zse_getint_printw_option("Z - "));
+		ST_WORLD_t *map = zse_map_init_empty_st(zse_rtC_getint_printw_option("X - "), zse_rtC_getint_printw_option("Y - "), zse_rtC_getint_printw_option("Z - "));
 
 		char returntilesetname[ZSE_MAX_FILENAME_SIZE];
 
@@ -169,7 +169,7 @@ int zse_tool_mapEditor_st_main()
 		printw("Name : ");
 		getstr(mapname);
 
-		//ST_WORLD_t *map = map_load_st(returntilesetname, returntilesetname);
+		
 		ST_WORLD_t *map = zse_map_load_st(mapname, returntilesetname);
 
 		TILESET_t t = zse_tileset_get (returntilesetname);

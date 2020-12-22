@@ -31,8 +31,6 @@
     "`         Exit\n"
 
 
-static void _zse_sprite_newCreateMenu(SPRITES_t *spr);
-
 static void _render_showSeditorNormal
 (
 	WINDOW *win,
@@ -266,13 +264,15 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
                 // Save Sprite
 				if(tmp_op == 's')
 				{
+					echo();
 					mvwprintw(status, 3, 0 ,"Save Sprite As >> ");wrefresh(status);
 					wgetstr(status,name);
+					noecho();
 					zse_sprites_sin_export(spr, name);
 				}
 
                 // Slide Show Sprite
-                if(tmp_op == ' ')zse_r_sprite_full(stdscr ,0, 0, spr, 0, spr->frames);
+                if(tmp_op == ' ')zse_rtC_spritePrintAll(stdscr ,0, 0, spr, 0, spr->frames);
 
                 // Select Transparent Char
 				if(tmp_op == 'x')brush.ink |= 0xFF;
@@ -308,7 +308,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 				if(brush_colo > COLORS){brush_colo = 0;}
 				break;
 			case 127: // Delete
-				zse_colors_test_showall(stdscr, getmaxx(stdscr)/5 -(6*3), 0);
+				zse_rtC_colors_test_showall(stdscr, getmaxx(stdscr)/5 -(6*3), 0);
 				getch();
 				break;
 
@@ -357,64 +357,69 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
 }
 
 
-static void _zse_sprite_newCreateMenu(SPRITES_t *spr)
+static int _zse_sprite_newCreateMenu(SPRITES_t *spr)
 {
-	clear();
-REPEAT:
-	printw("Create (N)ew Sprite Or (O)pen A Sprite file || (Q)uit");
-	char yes = getch();
-	clear();
-
-	if(yes == 'N')
+	
+	
+	while(TRUE)
 	{
-		mvprintw(0, 0, "Get X 	     	: ");
-		mvscanw(0, 14, "%hd", &spr->X);
+		clear();
+		printw("Create (N)ew Sprite Or (O)pen A Sprite file || (Q)uit");
+		char yes = getch();
+		clear();
 
-		mvprintw(1, 0, "Get Y 	     	: ");
-		mvscanw(1, 14, "%hd", &spr->Y);
-
-		mvprintw(2, 0, "Get Frames   	: ");
-		mvscanw(2, 14, "%d", &spr->frames);
-
-		mvprintw(3, 0, "Get DeltaTime	: ");
-		mvscanw(3, 14, "%f", &spr->dt);
-
-		mvprintw(4, 0, "Get Max Sequence: ");
-		mvscanw(4, 14, "%hd", &spr->seqMax);
-
-
-		spr->plot = malloc(sizeof(sprite_data_t) * spr->X * spr->Y * spr->frames);
-
-		for (int i = 0; i < spr->X * spr->Y * spr->frames; ++i)
+		if(yes == 'N')
 		{
-			spr->plot[i] = ' ';
+			mvprintw(0, 0, "Get X 	     	: ");
+			mvscanw(0, 16, "%hd", &spr->X);
+
+			mvprintw(1, 0, "Get Y 	     	: ");
+			mvscanw(1, 16, "%hd", &spr->Y);
+
+			mvprintw(2, 0, "Get Frames   	: ");
+			mvscanw(2, 16, "%d", &spr->frames);
+
+			mvprintw(3, 0, "Get DeltaTime	: ");
+			mvscanw(3, 16, "%f", &spr->dt);
+
+			mvprintw(4, 0, "Get Max Sequence: ");
+			mvscanw(4, 16, "%hd", &spr->seqMax);
+
+
+			spr->plot = malloc(sizeof(sprite_data_t) * spr->X * spr->Y * spr->frames);
+
+			for (int i = 0; i < spr->X * spr->Y * spr->frames; ++i)
+			{
+				spr->plot[i] = ' ';
+			}
+
+			spr->sequences[0] = malloc(sizeof(sequence_data_t) * spr->seqMax);
+			spr->sequences[1] = malloc(sizeof(sequence_data_t) * spr->seqMax);
+
+			return 0;
 		}
+		else if(yes == 'O')
+		{
 
-		spr->sequences[0] = malloc(sizeof(sequence_data_t) * spr->seqMax);
-		spr->sequences[1] = malloc(sizeof(sequence_data_t) * spr->seqMax);
+			char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE);
+			sprintf(name, "bloc");
+
+			int items;
+			char **fnames = zse_dir_getfnames(SPRITES_PARENTDIR, &items);
+			zse_rtC_selectListS(stdscr, 0, 0, fnames, items, name);
+			zse_free2dchar(fnames, items);
+
+			*spr = zse_sprites_sin_load(name);
+			free(name);
+
+			return 0;
+		}
+		else if(yes == 'Q')
+		{
+			return 1;
+		}
 	}
-	else if(yes == 'O')
-	{
 
-		char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE);
-		sprintf(name, "bloc");
-
-		int items;
-		char **fnames = zse_dir_getfnames(SPRITES_PARENTDIR, &items);
-		zse_r_selectListS(stdscr, 0, 0, fnames, items, name);
-		zse_free2dchar(fnames, items);
-
-		*spr = zse_sprites_sin_load(name);
-		free(name);
-	}
-	else if(yes == 'Q')
-	{
-		return;
-	}
-
-	else {
-		goto REPEAT;
-	}
 
 }
 
@@ -423,7 +428,8 @@ int zse_tool_spriteEditor_main()
 {
 	SPRITES_t *spr = malloc(sizeof(SPRITES_t));
 	
-	_zse_sprite_newCreateMenu(spr);
+	if(_zse_sprite_newCreateMenu(spr))
+		return 0;
 
 	_zse_sprites_edtior(spr);
 

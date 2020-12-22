@@ -125,7 +125,7 @@ static int _t_selectile_raw (TILE_t *tile, int t_size)
 		sscanf(tile[i].name_id, "%s", tname[i]);
 	}
 	char a[ZSE_MAX_FILENAME_SIZE];
-	int return1 = zse_r_selectListS(stdscr, 0, 0, tname, t_size, a);
+	int return1 = zse_rtC_selectListS(stdscr, 0, 0, tname, t_size, a);
 	zse_free2dchar(tname, t_size);
 	return return1;
 
