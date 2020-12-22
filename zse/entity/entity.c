@@ -26,7 +26,7 @@ ENTTP_t zse_entt_gethostile(int size)
 	return ep;
 }
 
-void zse_entity_delete (ENTT_t *ent)
+void zse_entt_delete (ENTT_t *ent)
 {
 	free(ent);
 }

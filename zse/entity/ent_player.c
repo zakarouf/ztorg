@@ -1,6 +1,6 @@
 #include "entity.h"
 
-ENTT_t *init_ENTT_t (ENTCLASS class)
+ENTT_t *zse_entt_init_ENTT_t (ENTCLASS class)
 {
 	ENTT_t *pp = malloc(sizeof(ENTT_t));
 

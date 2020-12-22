@@ -47,6 +47,9 @@ typedef struct _ENT_ENTTIES
 	float Y;
 	float Z;
 	float A;
+	int Cx;
+	int Cy;
+	int Cz;
 	struct _ENT_STRATS strats;
 	struct _ENT_STATUS status;
 	uint16_t sign;
@@ -59,7 +62,7 @@ typedef struct _ENT_ENTTIESPACK
 }ENTTP_t;
 
 
-ENTT_t *init_ENTT_t (ENTCLASS class);
-void zse_entity_delete (ENTT_t *ent);
+ENTT_t *zse_entt_init_ENTT_t (ENTCLASS class);
+void zse_entt_delete (ENTT_t *ent);
 
 #endif
