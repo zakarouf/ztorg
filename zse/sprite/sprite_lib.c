@@ -126,6 +126,18 @@ SPRITES_t* zse_sprites_createNew(int x, int y, int frame, float dt, int sq)
 	return spr;
 }
 
+void zse_sprite_swapColors(SPRITES_t *spr, int targetColo, int colorCode)
+{
+	for (int i = 0; i < spr[0].frames*spr[0].X*spr[0].Y; ++i)
+	{
+		if ((spr[0].plot[i] & 0xFF00)>>8 == targetColo)
+		{
+			spr[0].plot[i] &= 0x00FF;
+			spr[0].plot[i] |= colorCode<<8;
+		}
+		
+	}
+}
 
 
 /*

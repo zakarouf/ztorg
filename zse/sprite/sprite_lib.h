@@ -73,4 +73,6 @@ int zse_sprites_sin_export(SPRITES_t *sprite ,char name[]);
 SPRITES_t* zse_sprites_createNew(int x, int y, int frame, float dt, int sq);
 void zse_delete_sprites_ptr(SPRITES_t *sprites, size_t siz);
 
+void zse_sprite_swapColors(SPRITES_t *spr, int targetColo, int colorCode);
+
 #endif
