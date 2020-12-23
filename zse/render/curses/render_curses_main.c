@@ -18,13 +18,13 @@ int zse_rtC_init()
     {
         endwin();
         puts("Unable to start colors.");
-        return(1);
+        return 1;
     }
 
     if (!(can_change_color()))
     {
         printw("Cant Change Color");
-        return(1);
+        return 1;
     }
 
 	use_default_colors();
