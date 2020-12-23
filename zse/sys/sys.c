@@ -98,3 +98,16 @@ int zse_sys_formatCheck(char version[])
     }
     return 0;
 }
+
+int zse_sys_getLocalTime(int *h, int *m, int *s)
+{
+    time_t tCurrentTime;
+    struct tm *timeinfo;
+    time(&tCurrentTime);
+    timeinfo = localtime(&tCurrentTime);
+    *h = timeinfo->tm_hour;
+    *m = timeinfo->tm_min;
+    *s = timeinfo->tm_sec;
+
+    return 0;
+}

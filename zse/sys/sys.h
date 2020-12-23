@@ -17,4 +17,6 @@ zse_int zse_sswitchS(zse_int i);
 #define zse_sswitch_M(i) i* -1
 #define zse_sswitchS_M(i) (0b11111111111111111111111111111111 ^ i) + 1
 
+int zse_sys_getLocalTime(int *h, int *m, int *s);
+
 #endif
