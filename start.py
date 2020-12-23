@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os, sys, fnmatch
 
-folderIgnore={"data", "doc" ,"stdio", ".git", "SDL", "tisk", "vulkan"}
+folderIgnore={"data", "doc" ,"stdio", ".git", "SDL", "tisk", "vulkan", "opengl"}
 IgnoreNames={"cave_hunter.c"}
 
 

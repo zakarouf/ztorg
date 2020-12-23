@@ -2,7 +2,7 @@
 
 CCF=gcc
 CFLAGS='-Wall -Ofast'
-LDFLAGS='-lncurses -lvulkan -lglfw -Wl,-rpath -Wl,/usr/local/lib'
+LDFLAGS='-lncurses -lm -lvulkan -lglfw -Wl,-rpath -Wl,/usr/local/lib'
 ZENGINE='zse/*'
 
 OUTEX_FILE='z'
