@@ -19,4 +19,8 @@ zse_int zse_sswitchS(zse_int i);
 
 int zse_sys_getLocalTime(int *h, int *m, int *s);
 
+#define zse_sys_fillArrayVal(array, val, len)\
+    for (int i = 0; i < len; ++i)\
+        array[i] = val;\
+
 #endif

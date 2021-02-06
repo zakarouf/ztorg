@@ -10,15 +10,18 @@
 -----------------------------------------------------*/
 
 #include "zse.h"
-#include "tools_curses/zse_tools.h"
+#include "../programs/tools_curses/zse_tools.h"
 
 
 int demo_frogger();
 int demo_2048 ();
+
 //int demo_cave_hunter ();
 int demo_perlin();
 int zse_demo_screenSaver();
 int ztorg(char name[]);
+int ztorg_ray (char name[]);
+int zse_tools_textEditor();
 
 #define ZSE_ARG_COMMANDS_HELP \
 	"Ztorg (c) Zakarouf 2020\n"\
@@ -53,6 +56,8 @@ static int zse_main_arg_pha(int arc, char const *ar[])
 						zse_tool_spriteEditor_main();
 					else if (ar[i][2] == 't')
 						zse_tool_tileEditor_main ();
+					else if (ar[i][2] == 'e')
+						zse_tools_textEditor();
 					return 0;
 					break;
 				case 'd':
@@ -70,6 +75,10 @@ static int zse_main_arg_pha(int arc, char const *ar[])
 					break;
 				case 'z':
 					ztorg((char *)ar[i+1]);
+					return 0;
+					break;
+				case 'x':
+					ztorg_ray((char*)ar[i+1]);
 					return 0;
 					break;
 				case 'h':

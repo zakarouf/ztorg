@@ -7,6 +7,7 @@
     |single sprite is stored as .zspr format        |
     +-----------------------------------------------+
     
+    TODO: Complete Sequence
     
 -----------------------------------------------------*/
 
@@ -32,6 +33,34 @@
     "-,=,_,+   Change Colour\n"\
     "`         Exit\n"
 
+typedef struct _ZSE_SPRITE_BUFFER
+{
+    SPRITES_t spr;
+    zse_i8_t dirty;
+
+
+}zse_spriteBuffer_t;
+
+static int _zse_tools_spriteEditor_spriteTest(SPRITES_t *spr)
+{
+    clear();
+    printw("X -> %d\nY -> %d\nFrames -> %d\n", spr->X, spr->Y, spr->frames);
+    printw("MAX Sequence %d\nPrinting Sequence\n", spr->seqMax);
+
+    for (int i = 0; i < spr->seqMax; ++i)
+    {
+        addstr("->");
+        for (int j = 0; j < spr->_seqEnd[i]; ++j)
+        {
+            printw(" %d", spr->seqData[i][j]);
+        }
+        printw(" | %d\n", spr->_seqEnd[i]);
+    }
+
+    refresh();
+    return OK;
+
+}
 
 static void _render_showSeditorNormal
 (
@@ -178,6 +207,114 @@ static int _zse_sprites_edtior_func_CopyFrame(sprite_data_t* data, int fromframe
     return 0;
 }
 
+static void _zse_tools_spritesEditor_render_showframesSequences(WINDOW *win, int x, int y, int cur ,sequence_data_t seqEnd, sequence_data_t* seqData)
+{
+    wmove(win ,y, x);
+    waddch(win ,'[');
+
+    for (int i = 0; i < seqEnd; ++i)
+    {
+        if (i == cur){
+            attron(A_REVERSE);    
+            wprintw(win, " %d", seqData[i]);
+            attroff(A_REVERSE);
+        }
+        else
+        {
+            wprintw(win, " %d", seqData[i]);
+        }
+
+        
+    }
+    waddch(win, ']');
+};
+
+int zse_sprite_reallocSingleSequence(SPRITES_t *spr, int seqCur, int newlen)
+{
+    if (newlen <= 0)
+        return -1;
+
+    void *a = realloc(spr->seqData[seqCur], sizeof(sequence_data_t) * newlen);
+
+    if (a != NULL)
+    {
+        spr->seqData[seqCur] = a;
+        spr->_seqEnd[seqCur] = newlen;
+    }
+
+
+    return 0;
+}
+
+static int _zse_tools_spriteEditor_createSequence(SPRITES_t *spr, int renOP)
+{
+    static int seqs_Cur = 0;
+    int seqFrameCur = 0;
+    int framelayerCur = 0;
+    
+
+    while(TRUE)
+    {
+        switch(getch())
+        {
+            case 'a':
+                if(seqFrameCur > 0){
+                    seqFrameCur--;
+                }
+                break;
+
+            case 'd':
+                if(seqFrameCur < spr->_seqEnd[seqs_Cur]-1){
+                    seqFrameCur++;
+                }
+                break;
+
+            case '=':
+                zse_sprite_reallocSingleSequence(&spr[0], seqs_Cur, spr->_seqEnd[seqs_Cur] + 1);
+                spr->seqData[seqs_Cur][spr->_seqEnd[seqs_Cur] - 1] = 0;
+                break;
+            case '-':
+                zse_sprite_reallocSingleSequence(&spr[0], seqs_Cur, spr->_seqEnd[seqs_Cur] - 1);
+                break;
+
+            case 'z':
+                if(framelayerCur > 0)
+                {
+                    framelayerCur--;
+                }
+                break;
+            case 'x':
+                if(framelayerCur < spr->frames-1)
+                {
+                    framelayerCur++;
+                }
+                break;
+
+            case 's':
+                spr->seqData[seqs_Cur][seqFrameCur] = framelayerCur;
+                break;
+
+
+
+            case 'c':
+                seqs_Cur = zse_rtC_getint();
+                seqs_Cur = (seqs_Cur >= spr->seqMax || seqs_Cur < 0 ? 0 : seqs_Cur);
+
+                break;
+            case '`':
+                return 0;
+            default:break;
+        }
+        wclear(stdscr);
+
+        _zse_tools_spritesEditor_render_showframesSequences(stdscr, 0, getmaxy(stdscr) - 3, seqFrameCur, spr->_seqEnd[seqs_Cur], spr->seqData[seqs_Cur]);
+        mvwprintw(stdscr, getmaxy(stdscr)-2, 0, "Frame : %d  SeqN : %d", framelayerCur, seqFrameCur);
+        zse_rtC_spritePrintf(stdscr, 0, 0, spr, framelayerCur);
+
+        wrefresh(stdscr);
+    }
+}
+
 static int _zse_sprites_edtior(SPRITES_t *spr)
 {
 
@@ -208,10 +345,10 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
                 break;
             case 'd':if(brush.x +1 < spr->X)brush.x++;
                 break;
-            case 'z':
+            case 'x':
                 if(brush.z +1 < spr->frames){brush.z++;}
                 break;
-            case 'x':
+            case 'z':
                 if(brush.z -1 >= 0){brush.z--;}
                 break;
 
@@ -253,7 +390,7 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
                 if(brush_colo > COLORS){brush_colo = 0;}
                 break;
             case '_':
-                brush_colo += 6;
+                brush_colo -= 6;
                 if(brush_colo < 0){brush_colo = COLORS -1;}
                 break;
             case '+':
@@ -320,6 +457,12 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
                     wgetch(stdscr);
                 }
 
+                // Sequence Edit
+                if (tmp_op == 'S')
+                {
+                    _zse_tools_spriteEditor_createSequence(spr, r_options);
+                }
+
                 break;
 
 
@@ -329,10 +472,14 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
                 //spr = realloc(spr, sessions);
 
                 break;
+            case '4':
+                _zse_tools_spriteEditor_spriteTest(spr);
+                getch();
+                break;
 
             // Exit
             case '`':
-                zse_delete_sprites_ptr(spr, sessions);
+                zse_delete_sprites_ptr(spr);
                 return 0;
                 break;
             default:
@@ -368,7 +515,6 @@ static int _zse_sprites_edtior(SPRITES_t *spr)
     return 0;
 }
 
-
 static int _zse_sprite_newCreateMenu(SPRITES_t *spr)
 {
     
@@ -399,14 +545,23 @@ static int _zse_sprite_newCreateMenu(SPRITES_t *spr)
 
 
             spr->plot = malloc(sizeof(sprite_data_t) * spr->X * spr->Y * spr->frames);
-
-            for (int i = 0; i < spr->X * spr->Y * spr->frames; ++i)
+            
+            for (int i = 0; i < spr->X*spr->Y*spr->frames; ++i)
             {
                 spr->plot[i] = ' ';
             }
+            
 
-            spr->sequences[0] = malloc(sizeof(sequence_data_t) * spr->seqMax);
-            spr->sequences[1] = malloc(sizeof(sequence_data_t) * spr->seqMax);
+            spr->_seqEnd = malloc(sizeof(sequence_data_t) * spr->seqMax);
+            
+            for (int i = 0; i < spr->seqMax; ++i)
+            {
+                spr->_seqEnd[i] = 2;
+            }
+                
+
+            spr->seqData = zse_sprite_malloc_sequence_data(spr->_seqEnd, spr->seqMax);
+
 
             return 0;
         }
@@ -414,17 +569,22 @@ static int _zse_sprite_newCreateMenu(SPRITES_t *spr)
         {
 
             char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE + sizeof(SPRITES_SINGLE_EXT));
-            sprintf(name, "bloc");
+            
 
             int items;
             char **fnames = zse_dir_getfnames(SPRITES_PARENTDIR, &items);
+
             zse_rtC_selectListS(stdscr, 0, 0, fnames, items, name);
             zse_free2dchar(fnames, items);
 
-            strncat(name, SPRITES_SINGLE_EXT, ZSE_MAX_FILENAME_SIZE+sizeof(SPRITES_SINGLE_EXT));
+            
+
 
             *spr = zse_sprites_sin_load(name);
             free(name);
+
+            _zse_tools_spriteEditor_spriteTest(spr);
+            getch();
 
             return 0;
         }
@@ -436,6 +596,8 @@ static int _zse_sprite_newCreateMenu(SPRITES_t *spr)
 
 
 }
+
+
 
 
 int zse_tool_spriteEditor_main()

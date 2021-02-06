@@ -2,7 +2,7 @@
 
 CCF=gcc
 CFLAGS='-Wall -Ofast'
-LDFLAGS='-lncurses -lm -lvulkan -lglfw -Wl,-rpath -Wl,/usr/local/lib'
+LDFLAGS='-lncurses -lraylib -lm -lvulkan -Wl,-rpath -Wl,/usr/local/lib'
 ZENGINE='zse/*'
 
 OUTEX_FILE='z'
@@ -13,7 +13,7 @@ tar -xf data.tar
 read CFILES
 
 
-$CCF -std=$1 -c $CFILES ztorg.c
+$CCF -std=$1 -c $CFILES
 $CCF $LDFLAGS -o data/$OUTEX_FILE *.o
 
 rm -rf *.o

@@ -1,6 +1,6 @@
 
-#include "../zse.h"
-#include "../r_curses/r_sprite.h"
+#include "demo.h"
+#include "../../zse/r_curses/r_sprite.h"
 
 static int ren(WINDOW *win, SPRITES_t *spr, TILESET_t *ts, ST_WORLD_t * map, ENTT_t *p)
 {

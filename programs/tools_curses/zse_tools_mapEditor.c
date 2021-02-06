@@ -91,6 +91,7 @@ static int _zse_editworld_st(ST_WORLD_t* map, TILESET_t* t, char name[])
 				mvwprintw(status, 4, 0, "Size >>");
 				mvwscanw(status, 4, 8 ,"%hhd" , &brush.size);
 				noecho();
+				break;
 			case 'v':
 				brush.toggle ^= 1;
 				break;

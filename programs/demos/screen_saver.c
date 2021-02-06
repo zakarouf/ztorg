@@ -1,4 +1,4 @@
-#include "../zse.h"
+#include "demo.h"
 #include <unistd.h>
 
 static int printTime(SPRITES_t *sprNumbers, SPRITES_t *sprColon )

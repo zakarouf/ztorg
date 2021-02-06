@@ -1,4 +1,4 @@
-#include "../zse.h"
+#include "demo.h"
 
 static int _checkifall_true(char c[], int size)
 {

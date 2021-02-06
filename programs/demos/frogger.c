@@ -1,4 +1,4 @@
-#include "../zse.h"
+#include "demo.h"
 
 typedef struct entttt_
 {
@@ -168,7 +168,7 @@ int demo_frogger()
             getch();
 
             zse_map_delete_st(map);
-            zse_delete_sprites_ptr(spr, 2);
+            zse_delete_sprites_ptr(spr);
 
             return 0;
         }

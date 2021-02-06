@@ -28,7 +28,7 @@
 #define Z_TURN_FREELOOK DEGREE_1 * 3.0f
 
 // Render
-#define RAY_DISTANCE_INCREMENT 0.1f
+#define RAY_DISTANCE_INCREMENT 0.05f
 #define DEPTH      40
 #define FOV DEGREE_90
 

@@ -15,35 +15,46 @@
 
 #include <string.h>
 
-#define ATTR_TXT_RAW "//////Attributes//////\n\n INVI\n WALL\n MOVE\n DEST\n FLUD\n TOXI\n WALK\n FUNC\n"
+#define ATTR_TXT_RAW \
+	"//////Attributes//////\n\
+	\n \
+	 INVI\n \
+	 WALL\n \
+	 MOVE\n \
+	 DEST\n \
+	 FLUD\n \
+	 TOXI\n \
+	 WALK\n \
+	 FUNC\n"
 
 #define ZSE_T_TILEEDIT_HELPTXT \
 	""
-
+#define ZSE_T_TILEEDIT_ATTRIBUTE_NAMES \
+	{\
+		"Invisble",\
+		"Impassable",\
+		"Movable",\
+		"Destructable",\
+		"Fluid",\
+		"Toxic",\
+		"Floor",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+		"NOTSET",\
+	}
 
 static int _t_edit_attribute (TILE_t *tile, int current_tile)
 {
 	clear();
 	int y = getmaxy(stdscr);
 	char tf[2][6] = {"False", "True"};
-	char attr_name[MAX_ATTRIBUTE][16] = {
-		"Invisble",
-		"Impassable",
-		"Movable",
-		"Destructable",
-		"Fluid",
-		"Toxic",
-		"Floor",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-		"NOTSET",
-	};
+	char attr_name[MAX_ATTRIBUTE][16] = ZSE_T_TILEEDIT_ATTRIBUTE_NAMES;
 
 	mvaddstr(1, 1, "//////Edit Atributes//////");
 

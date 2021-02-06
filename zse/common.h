@@ -27,6 +27,11 @@ typedef int16_t zse_i16_t;
 typedef int32_t zse_i32_t;
 typedef int64_t zse_i64_t;
 
+typedef struct _ZSE_Vint2
+{
+	zse_int x, y;
+}zse_Vi2;
+
 typedef struct _map_editor_brush_t
 {
 

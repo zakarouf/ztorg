@@ -5,10 +5,6 @@ folderIgnore={"data", "doc" ,"stdio", ".git", "SDL", "tisk", "vulkan", "opengl"}
 IgnoreNames={"cave_hunter.c"}
 
 
-
-def makeConfig():
-    return 0
-
 def checkIfNameFound(name, nArray):
     for i in nArray:
         if fnmatch.fnmatch(name, "*"+i):
@@ -39,3 +35,4 @@ if __name__ == '__main__':
                     outstr += elem + " "
         
     print(outstr)
+a

@@ -1,4 +1,4 @@
-#include "zse/zse_all/zse_all.h"
+#include "../zse/zse_all/zse_all.h"
 
 #ifdef Z_FREE_ROTATION
 #define TURN_SPEED Z_TURN_FREELOOK

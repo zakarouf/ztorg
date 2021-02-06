@@ -95,7 +95,7 @@ int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, ch
                 mvwscanw(win ,scr_y-1, 3, "%d", &tmpr);
                 noecho();
                 tmpr = tmpr >= listsize ? listsize-1: tmpr;
-                sprintf(getname, "%s", list[tmpr]);
+                //sprintf(getname, "%s", list[tmpr]); <- Wanted to return the string too, but not working :(
 
                 return tmpr;
                 break;
