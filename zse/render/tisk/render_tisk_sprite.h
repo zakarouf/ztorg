@@ -1,7 +1,0 @@
-#ifndef ZSE_RENDER_STDIO_SPRITES_H
-#define ZSE_RENDER_STDIO_SPRITES_H
-
-
-
-
-#endif
