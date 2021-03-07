@@ -10,11 +10,13 @@
 
 -----------------------------------------------------*/
 
-
-#include "zse_tools.h"
-
 #include <string.h>
 #include <stdlib.h>
+
+#include "zse_tools.h"
+#include "../../zse/io/curses/curses.h"
+
+
 
 #define ATTR_TXT_RAW \
 	"//////Attributes//////\n\
@@ -131,14 +133,14 @@ static void _t_main_scr (TILE_t *tile, int c_tile, int tile_size)
 
 static int _t_selectile_raw (TILE_t *tile, int t_size)
 {
-	char **tname = zse_malloc_2D_array_char(ZSE_MAX_FILENAME_SIZE, t_size);
+	StringLines_t tname = z__StringLines_createEmpty(ZSE_MAX_FILENAME_SIZE, t_size);
 	for (int i = 0; i < t_size; ++i)
 	{
-		sscanf(tile[i].name_id, "%s", tname[i]);
+		sscanf(tile[i].name_id, "%s", tname.lines[i]);
 	}
 	char a[ZSE_MAX_FILENAME_SIZE];
-	int return1 = zse_rtC_selectListS(stdscr, 0, 0, tname, t_size, a);
-	zse_free2dchar(tname, t_size);
+	int return1 = zse_rtC_selectListS(stdscr, 0, 0, tname.lines, tname.y, a);
+	z__StringLines_destroy(&tname);
 	return return1;
 
 }

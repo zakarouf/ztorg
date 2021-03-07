@@ -3,15 +3,6 @@
 
 #include "sys/sys.h"
 #include "map/map_lib.h"
-#include "render/curses/curses.h"
-#undef KEY_END
-#undef KEY_HOME
-#undef KEY_LEFT
-#undef KEY_UP
-#undef KEY_DOWN
-#undef KEY_RIGHT
-#undef KEY_BACKSPACE
-#undef KEY_ENTER
 #include "tile/tile_lib.h"
 #include "sprite/sprite_lib.h"
 #include "entity/entity.h"

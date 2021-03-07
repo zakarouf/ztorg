@@ -1,5 +1,7 @@
 #include "demo.h"
 
+#include "../../zse/io/curses/curses.h"
+
 #define ZSE_DEMO_INIFINIY_SCR_X 16
 #define ZSE_DEMO_INIFINIY_SCR_Y 16
 

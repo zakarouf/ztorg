@@ -3,8 +3,8 @@
 
 #include "curses.h"
 
-#define zse_setcolor(x) attron(COLOR_PAIR(x))
-#define zse_createcolor(at, r, g, b) init_color(at, r, g, b)
+#define zse_rtC__setcolor_MF(x) attron(COLOR_PAIR(x))
+#define zse_rtC__createcolor_MF(at, r, g, b) init_color(at, r, g, b)
 
 
 int zse_rtC_colors_test_showall(WINDOW *win, int atx, int aty);

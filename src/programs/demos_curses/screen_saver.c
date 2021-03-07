@@ -1,6 +1,7 @@
 #include "demo.h"
 #include <unistd.h>
 #include <stdlib.h>
+#include "../../zse/io/curses/curses.h"
 
 static int printTime(SPRITES_t *sprNumbers, SPRITES_t *sprColon )
 {

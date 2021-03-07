@@ -11,8 +11,11 @@
     
 -----------------------------------------------------*/
 
-#include "zse_tools.h"
 #include <stdlib.h>
+
+#include "zse_tools.h"
+#include "../../zse/io/curses/curses.h"
+
 
 #define ZSE_T_SPRSR_OP_COLORS    0x1
 #define ZSE_T_SPRSR_OP_TRANSENAB 0x2
@@ -571,14 +574,11 @@ static int _zse_sprite_newCreateMenu(SPRITES_t *spr)
 
             char *name = malloc(sizeof(char) * ZSE_MAX_FILENAME_SIZE + sizeof(SPRITES_SINGLE_EXT));
             
-
-            int items;
-            char **fnames = zse_dir_getfnames(SPRITES_PARENTDIR, &items);
-
-            zse_rtC_selectListS(stdscr, 0, 0, fnames, items, name);
-            zse_free2dchar(fnames, items);
-
             
+            StringLines_t fnames = zse_dir_getfnames(SPRITES_PARENTDIR);
+
+            zse_rtC_selectListS(stdscr, 0, 0, fnames.lines, fnames.y, name);
+            z__StringLines_destroy(&fnames);
 
 
             *spr = zse_sprites_sin_load(name);

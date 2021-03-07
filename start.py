@@ -4,8 +4,8 @@ from subprocess import Popen
 from datetime import datetime
 
 
-folderIgnore={"data", "doc" ,"stdio", ".git", "SDL", "tisk", "vulkan", "opengl"}
-IgnoreNames={"cave_hunter.c", "ztorg-raylib.c"}
+folderIgnore={"data", "doc" , ".git", "SDL", "vulkan", "opengl"}
+IgnoreNames={"cave_hunter.c"}
 
 ignorePatternFront = ["."]
 ignorePatternEnd = []
@@ -13,8 +13,13 @@ onlyTakePatternEnd = [".c"]
 
 CC="clang"
 CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"]
-LDFLAGS=["-lm", "-lncurses", "-Wl,-rpath", "-Wl,/usr/local/lib"]
+LDFLAGS=["-lm", "-lncurses", "-lraylib", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
+
+#-----G-END-----#
+
+
+TREE_SYNTX = {'E':'├', 'C':'│', 'S':'─', 'N':'└'}
 
 def run(commands):
     Popen(commands).wait()
@@ -59,18 +64,36 @@ def getallFiles(dirName):
 
     return listOfFiles
 
+def drawTree(outstr):
+    lso = outstr.split(" ")
+    prev = ""
+    for i in lso:
+        sin = i.split("/")
+        
+        try:
+            now = sin[-2]
+            if prev == now:
+                log('\t')
+            prev = sin[-2]
+        except:
+            pass
+
+        log("\n\t\tGot: " + sin[-1])
+        
 
 def filterListintoFile(ls):
 
     log("Filtering Files...")
-    outstr = "" 
+    outstr = ""
+    prev = ""
     for elem in ls:
         if elem[2] != ".":
             if elem[-1] == "c":
                 if checkIfNameFound(elem, IgnoreNames) != 1:
                     outstr += elem + " "
-                    log("\n\t\tGot: " + elem)
+                    #log("\n\t\tGot: " + elem)
 
+    drawTree(outstr)
     log("\nCOMPLETED\n\n")
     return outstr
 
@@ -134,12 +157,14 @@ def argp(arg):
                 testEnabled = 0
             elif i[1:] == "-testCommands" or i[1:] == 'm':
                 testCommands = arg[count+1::]
+                main(source, cleanEnabled, testCommands)
+                return
             else:
                 pass
     count += 1
 
     main(source, cleanEnabled, testCommands)
-    
+    return
 
 
 if __name__ == '__main__':

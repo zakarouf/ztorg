@@ -1,5 +1,8 @@
-#include "demo.h"
 #include <stdlib.h>
+
+#include "demo.h"
+#include "../../zse/io/curses/curses.h"
+
 
 static int _checkifall_true(char c[], int size)
 {

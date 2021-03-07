@@ -10,6 +10,7 @@
 #include <math.h>
 
 #include "config.h"
+#include "common/common_string.h"
 
 typedef uint8_t  zse_u8;
 typedef uint16_t zse_u16;
@@ -69,5 +70,6 @@ typedef struct _Standart_brush_t
 
 }BRUSH_t;
 
+#define frinl __attribute__((always_inline)) inline
 
 #endif

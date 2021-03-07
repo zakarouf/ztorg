@@ -1,4 +1,12 @@
 #include "../zse/zse_all/zse_all.h"
+#undef KEY_END
+#undef KEY_HOME
+#undef KEY_LEFT
+#undef KEY_UP
+#undef KEY_DOWN
+#undef KEY_RIGHT
+#undef KEY_BACKSPACE
+#undef KEY_ENTER
 #include <raylib3.5/raylib.h>
 #include <stdlib.h>
 
@@ -163,7 +171,7 @@ static void drawmap (ST_WORLD_t *map, Vector2 at, Vector3 p)
 	DrawRectangle((int)(at.x +p.x*recSize), (int)(at.y +p.y*recSize), recSize, recSize, BLACK);
 }
 
-static int init(void)
+static int _init(void)
 {
 	InitWindow(WINDOW_X, WINDOW_Y, "Raytest");
 	
@@ -356,7 +364,7 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 
 int ztorg_ray (char name[])
 {
-	init();
+	_init();
 	char *returntilesetname = malloc(ZSE_MAX_FILENAME_SIZE);
 
 	ST_WORLD_t *map = zse_map_load_st(name , returntilesetname);

@@ -1,5 +1,7 @@
-#include "demo.h"
 #include <stdlib.h>
+
+#include "demo.h"
+#include "../../zse/io/curses/curses.h"
 
 typedef struct entttt_
 {

@@ -1,4 +1,5 @@
 #include "zse_all.h"
+#include <ncurses/ncurses.h>
 
 void zse_r_render_world_raycast (WINDOW *win, ENTT_t *player, ST_WORLD_t *map, TILE_t *tile)
 {

@@ -1,6 +1,8 @@
-#include "zse_tools.h"
-
 #include <stdlib.h>
+
+#include "zse_tools.h"
+#include "../../zse/io/curses/curses.h"
+
 
 typedef struct _TEXT_FILE_RAW
 {
@@ -22,19 +24,17 @@ typedef struct _TEXT_FILE_CURSOR
 }ZSE_Cursor_t;
 
 static FileData_t zse_tools_textEditor_CreateNewFile()
-{
-	FileData_t f;
+{	
+	return (FileData_t) {
+		.size = 1000,
+		.bytes_written = 0,
+		.filedata = malloc(sizeof(char)* 1000),
 
-	f.size = 1000;
-	f.bytes_written = 0;
-	f.filedata = malloc(sizeof(char)*f.size);
-
-	f.EOL_max = 100;
-	f.EOL_count = 1;
-	f.EOL_pos = malloc(sizeof(int)*f.EOL_max);
-	f.EOL_pos[0] = 0;
-
-	return f;
+		.EOL_max = 100,
+		.EOL_count = 1,
+		.EOL_pos = calloc(100,  sizeof(int)),
+		
+ 	};
 }
 
 static int zse_tools_textEditor_resize(FileData_t *f, int16_t by)

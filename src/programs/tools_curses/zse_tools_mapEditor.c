@@ -9,7 +9,7 @@
 -----------------------------------------------------*/
 
 #include "zse_tools.h"
-
+#include "../../zse/io/curses/curses.h"
 
 #define EDITOR_LOG_X_START(stdscrXsize) (stdscrXsize) - 48
 
@@ -37,16 +37,16 @@ static int _zse_t_ed_getbrush(TILESET_t *t)
 {
 	WINDOW *tmpw = newwin(getmaxy(stdscr) -1, getmaxx(stdscr), 0, getmaxx(stdscr)/3);
 
-	char **n = zse_malloc_2D_array_char(ZSE_MAX_FILENAME_SIZE, t->tsize);
+	StringLines_t n = z__StringLines_createEmpty(ZSE_MAX_FILENAME_SIZE, t->tsize);
 	for (int i = 0; i < t->tsize; ++i)
 	{
-		sscanf(t->tile[i].name_id, "%s", n[i]);
+		sscanf(t->tile[i].name_id, "%s", n.lines[i]);
 	}
 
 	char tmp[12];
-	int r = zse_rtC_selectListS(tmpw, 0, 0, n, t->tsize, tmp);
+	int r = zse_rtC_selectListS(tmpw, 0, 0, n.lines, t->tsize, tmp);
 	delwin(tmpw);
-	zse_free2dchar(n, t->tsize);
+	z__StringLines_destroy(&n);
 
 	return r;
 }
