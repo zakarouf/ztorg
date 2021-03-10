@@ -1,15 +1,19 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "zse/zse.h"
-#include "zse/io/curses/curses.h"
 
-#include "programs/tools_curses/zse_tools.h"
-#include "programs/demos_curses/demo.h"
+#ifdef BUILD__WITH__TOOLS_CURSES
+#  include "programs/tools_curses/zse_tools.h"
+#endif
+#ifdef BUILD__WITH__DEMOS_CURSES
+#  include "programs/demos_curses/demo.h"
+#endif
 
 int zse_demo_screenSaver();
-int ztorg(char name[]);
-int ztorg_ray (char name[]);
-int zse_tools_textEditor();
+//int ztorg(char name[]);
+//int ztorg_ray (char name[]);
+
 
 #define ZSE_ARG_COMMANDS_HELP \
 	"Ztorg (c) Zakarouf 2020\n"\
@@ -33,10 +37,11 @@ static int zse_main_arg_pha(int arc, char const *ar[])
 			switch(ar[i][1])
 			{
 				case 'c':
-					zse_rtC_colors_test_showall(stdscr, 0, 0);
-					getch();
+					//zse_rtC_colors_test_showall(stdscr, 0, 0);
+					//getch();
 					return 0;
 					break;
+				#ifdef BUILD__WITH__TOOLS_CURSES
 				case 't':
 					if (ar[i][2] == 'm')
 						zse_tool_mapEditor_st_main();
@@ -48,29 +53,32 @@ static int zse_main_arg_pha(int arc, char const *ar[])
 						zse_tools_textEditor();
 					return 0;
 					break;
-				case 'd':
-					if (ar[i][2] == 'f')
-						demo_frogger();
-					else if (ar[i][2] == 'c')
-						;//demo_cave_hunter();
-					else if (ar[i][2] == '2')
-						demo_2048();
-					else if (ar[i][2] == 'p')
-						demo_perlin();
-					else if (ar[i][2] == 's')
-						zse_demo_screenSaver();
-					return 0;
-					break;
+				#endif
+				#ifdef BUILD__WITH__DEMOS_CURSES
+					case 'd':
+						if (ar[i][2] == 'f')
+							demo_frogger();
+						else if (ar[i][2] == 'c')
+							;//demo_cave_hunter();
+						else if (ar[i][2] == '2')
+							demo_2048();
+						else if (ar[i][2] == 'p')
+							demo_perlin();
+						else if (ar[i][2] == 's')
+							zse_demo_screenSaver();
+						return 0;
+						break;
+				#endif
 				case 'z':
-					ztorg((char *)ar[i+1]);
+					//ztorg((char *)ar[i+1]);
 					return 0;
 					break;
 				case 'x':
-					ztorg_ray((char*)ar[i+1]);
+					//ztorg_ray((char*)ar[i+1]);
 					return 0;
 					break;
 				case 'h':
-					zse_rtC_exit();
+					//zse_rtC_exit();
 					fprintf(stdout ,ZSE_ARG_COMMANDS_HELP);
 					return 0;
 					break;
@@ -84,7 +92,7 @@ static int zse_main_arg_pha(int arc, char const *ar[])
 
 	return 0;
 }
-
+/*
 int zse_initMainScreen_curses()
 {
 	if(zse_rtC_init())
@@ -97,7 +105,7 @@ int zse_initMainScreen_curses()
 	return 0;
 
 }
-
+*/
 #ifdef ZSE_CONFIG_SDL_ENABLE
 int zse_initMainScreen_SDL()
 {
@@ -123,15 +131,15 @@ int main(int argc, char const *argv[])
 
 	//void zse_rtT_tiskTest();
 	//zse_rtT_tiskTest();
-	//void zse_render_vulkanInitTEST();	
-	//	zse_render_vulkanInitTEST();
+	void zse_render_vulkanInitTEST();	
+		zse_render_vulkanInitTEST();
 	srandom(clock());
-;
+
 
 	//zse_main_arg_pha(argc, argv);
 	
-	int ztorg_tisk();
-	ztorg_tisk();
+	//int ztorg_tisk();
+	//ztorg_tisk();
 #ifdef ZSE_CONFIG_CURSES_ENABLE
 	zse_rtC_exit();
 #endif
