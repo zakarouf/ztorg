@@ -20,4 +20,9 @@ int zse_sys_getLocalTime(int *h, int *m, int *s);
     for (int i = 0; i < len; ++i)\
         array[i] = val;\
 
+
+
+// Looger
+void zse_sys_log(void * fileStream ,const char * restrict, ...);
+
 #endif
