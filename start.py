@@ -4,16 +4,17 @@ from subprocess import Popen
 from datetime import datetime
 
 
-folderIgnore={"data", "doc" , ".git", "SDL", "vulkan", "opengl"}
-IgnoreNames={"cave_hunter.c"}
+folderIgnore={"data", "doc" , ".git", "curses", "SDL", "opengl", "demos_curses", "tools_curses", "zse_all", "logic"}
+IgnoreNames={"cave_hunter.c", "ztorg.c", "ztorg-raylib.c", "zse.c"}
 
 ignorePatternFront = ["."]
 ignorePatternEnd = []
 onlyTakePatternEnd = [".c"]
 
 CC="clang"
-CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"]
-LDFLAGS=["-lm", "-lncurses", "-lraylib", "-Wl,-rpath", "-Wl,/usr/local/lib"]
+CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Wall", "-pedantic", "-Os", "-O2"]
+#LDFLAGS=["-lm", "-lncurses", "-lraylib"]
+LDFLAGS=["-lm", "-lvulkan", "-lglfw", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
 
 #-----G-END-----#
