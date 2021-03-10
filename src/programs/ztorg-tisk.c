@@ -1,44 +1,84 @@
-#include "../zse/zse.h"
-
-#include "../zse/io/tisk/tisk.h"
-#include "../zse/io/tisk/tisk_intra.h"
-
 #include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+#include "../zse/zse.h"
+#include "../zse/io/tisk/tisk.h"
+
 
 #ifdef Z_FREE_ROTATION
-#define TURN_SPEED Z_TURN_FREELOOK
-#define playermoveX(angle, spd) sinf(angle) * spd
-#define playermoveY(angle, spd) cosf(angle) * spd
-
+	#define TURN_SPEED Z_TURN_FREELOOK
+	#define playermoveX(angle, spd) sinf(angle) * spd
+	#define playermoveY(angle, spd) cosf(angle) * spd
 
 #else
-#define TURN_SPEED Z_TURN_NORMAL
-#define playermoveX(angle, spd) (int)sinf(angle) * spd
-#define playermoveY(angle, spd) (int)cosf(angle) * spd
-
-#define getmaxy() 42
-#define getmaxx() 127
+	#define TURN_SPEED Z_TURN_NORMAL
+	#define playermoveX(angle, spd) (int)sinf(angle) * spd
+	#define playermoveY(angle, spd) (int)cosf(angle) * spd
 
 #endif
 
-#include <string.h>
+#define ZSE_rtT_COLORSTR_TMPL_SIZE sizeof("\x1b[38;5;000m|")
+
+static char screen[(zse_rtT_getmaxy() * zse_rtT_getmaxx()) + 1];
+static char colorPool[256][ZSE_rtT_COLORSTR_TMPL_SIZE];
+static char colormap[zse_rtT_getmaxx()];
+
+
+void zse_rtT_initscr()
+{
+
+	for (int i = 0; i < 256; ++i)
+	{
+		snprintf(colorPool[i], ZSE_rtT_COLORSTR_TMPL_SIZE, "\x1b[38;5;%dm", i);
+	}
+
+	memset(colormap, 0, zse_rtT_getmaxx());
+}
+
+void zse_rtT_endscr()
+{
+
+}
+
+static void showminmap_render_tisk (ENTT_t *player, ST_WORLD_t *map, TILE_t *tile)
+{
+	printf("\n%.1f, %.1f, z->%.0f, A->%.3f\n", player->X, player->Y, player->Z,player->A);
+
+	for (int i = 0; i < map->Ysize; ++i)
+	{
+		for (int j = 0; j < map->Xsize; ++j)
+		{
+			if (player->X == j && player->Y == i)
+			{
+				putc('@', stdout);
+			} else {
+				putc( tile[map->chunk[zse_xyz3Dto1D(j, i, (int)player->Z, map->Xsize, map->Ysize)]].symb, stdout);	
+			}
+			
+		}
+		putchar('\n');
+	}
+	putc('\n', stdout);
+}
 
 static void raycast_render_tisk (ENTT_t *player, ST_WORLD_t *map, TILE_t *tile)
 {
-	static char screen[getmaxx() * getmaxy()];
-	memset(screen, ' ', getmaxy() * getmaxx());
-
-	int color_txt = 1;
-	#define SHADEMAX 12
+	#define SHADEMAX 11
 	char shades[SHADEMAX] = {
-		' ', '.', ',', '"', ':', '+', '=', '#', '$', '$', '$', '$'
-		//'@', '$', '#', '\\', ':', '.', ' '
+		//' ', '.', ',', '"', ':', '+', '=', '#', '$', '$', '$', '$'
+		  '@', 'M', 'h', 'h', ':', ':', '.', '.', '.', ' ', ' '
+		// 1.   2.   3.   4.   5.   6.   7.   8.   9.   10.  11.  12
 	};
-	char shade = ' ';
+	int shade = 0;
+	char * scrptr;
+	
+	memset(screen, ' ', sizeof(char) * zse_rtT_getmaxx()*zse_rtT_getmaxy() +1);
 
-	for (int x = 0; x < getmaxx(); x++) 
+	for (int x = 0; x < zse_rtT_getmaxx(); x++) 
 	{
-		float ray_angle = (player->A - FOV / 2.0f) + ((float)x / (float)getmaxx() * FOV);
+		scrptr = &screen[x];
+		float ray_angle = (player->A - FOV / 2.0f) + ((float)x / (float)zse_rtT_getmaxx() * FOV);
 
 		float ray_distance = 0;
 		int chech_if_hitwall = 0;
@@ -61,70 +101,43 @@ static void raycast_render_tisk (ENTT_t *player, ST_WORLD_t *map, TILE_t *tile)
 				ray_distance = DEPTH;
 			}
 			else {
-				if((tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISBLOC) && !(tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISINVI)) 
+				if((     tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISBLOC) 
+					&& !(tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].attr & TILE_ISINVI)) 
 				{
 					chech_if_hitwall = 1;
-					color_txt = tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].coloc;
+					colormap[x] = tile[map->chunk[zse_xyz3Dto1D(testX, testY, (int)player->Z, map->Xsize, map->Ysize)]].coloc;
 				}
 			}	
-		} // WHILE LOOP END
+		}
 
-		int ceiling = (getmaxy() / 2) - getmaxy() / (ray_distance);
-		int floor = getmaxy() - ceiling;
+		int ceiling = (zse_rtT_getmaxy() / 2) - zse_rtT_getmaxy() / (ray_distance);
+		int floor = zse_rtT_getmaxy() - ceiling;
 
 
-		shade = (int)((ray_distance/DEPTH) * SHADEMAX);
-
-		if(ray_distance <= DEPTH / 4 ) {shade = '#';}
-		else if(ray_distance <= DEPTH / 3)  {shade = '=';}
-		else if(ray_distance <= DEPTH / 2 ) {shade = '\"';}
-		else if(ray_distance <= DEPTH)	 {shade = '.';}
-		else{shade = ' ';}
+		shade = (int)((ray_distance/DEPTH) * SHADEMAX + 0.5);
 
 		
-
-
-		for (int y = 0; y < getmaxy(); y++)
+		for (int y = 0; y < zse_rtT_getmaxy(); y++)
 		{
 			if(y > ceiling && y <= floor){
-				
-				screen[zse_xyz3Dto1D(x, y, 0, getmaxx(), getmaxy())] = shade;//shades[(int)shade];
-
+				*scrptr = shades[shade];
 			}
-
+			scrptr += zse_rtT_getmaxx();
 		}
 
 	}
 
+
+	for (int i = 0; i < zse_rtT_getmaxy(); ++i)
+	{
+		screen[i*zse_rtT_getmaxx()] = '\n';		
+	}
+
+
+	// Draw Screen
 	zse_rtT__set00();
-	for (int i = 0; i < getmaxy()*getmaxx(); ++i)
-	{
-			putc(screen[i], stdout);
-		
-		if (i % getmaxx() == 0)
-		{
-			putc('\n', stdout);
-		}
-		
-	}
+	fwrite(screen, sizeof(char) * zse_rtT_getmaxx()*zse_rtT_getmaxy() +1, 1, stdout);
 
-	printf("\n%.1f, %.1f, z->%.0f, A->%.3f\n", player->X, player->Y, player->Z,player->A);
-
-	for (int i = 0; i < map->Ysize; ++i)
-	{
-		for (int j = 0; j < map->Xsize; ++j)
-		{
-			if (player->X == j && player->Y == i)
-			{
-				putc('@', stdout);
-			} else {
-				putc((map->chunk[zse_xyz3Dto1D(j, i, (int)player->Z, getmaxx(), getmaxy())] & 0xff ) + '0', stdout);	
-			}
-			
-		}
-		zse_rtT__setCur(i+getmaxy(), 0);
-	}
-	putc('\n', stdout);
 	fflush(stdout);
 
 }
@@ -134,10 +147,6 @@ static void raycast_render_tisk (ENTT_t *player, ST_WORLD_t *map, TILE_t *tile)
 
 static void zt_tisk_main(ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 {
-	zse_rtT_init();
-	zse_rtT__set00();
-
-
 	char quit = 0;
 
 	float px, py, pz;
@@ -148,12 +157,6 @@ static void zt_tisk_main(ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 	p1->Z = 0.0f;
 
 	uint8_t key = ' ';
-	char dire[5][7]={
-		{"North"},
-		{"West"},
-		{"South"},
-		{"East"}
-	};
 
 	int8_t lkdst = 2;
 		
@@ -249,20 +252,18 @@ static void zt_tisk_main(ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 
 
 		
-		//r_map_2D_win(hud[ST_SHOW_MINI_MAP], p1, map, tile, lookdir[lkdst][0], lookdir[lkdst][1]);
-		
 		raycast_render_tisk(p1, map, tileset->tile);
-		//printw(" %d %d", lookdir[lkdst][0], lookdir[lkdst][1]);
-		scanf("%c", &key);
+		showminmap_render_tisk(p1, map, tileset->tile);
+		
+		key = zse_rtT_getkey();
 	}
-
-
-
 	
 }
 
 int ztorg_tisk()
 {
+	zse_rtT_initscr();
+
 	char name[] = "zak";
 	String_t returntilesetname = z__String_create(ZSE_MAX_FILENAME_SIZE);
 
@@ -274,7 +275,14 @@ int ztorg_tisk()
 	p->Y = 10;
 
 
+	zse_rtT_init();
+	zse_rtT_hideCursor();
+	zse_rtT__set00();
+	zse_rtT_showCursor();
+
+
 	zt_tisk_main (p, map, &tileset);
+
 	zse_rtT_exit();
 
 	zse_map_delete_st(map);
@@ -282,6 +290,3 @@ int ztorg_tisk()
 
 	return 0;	
 }
-
-#undef getmaxx
-#undef getmaxy
