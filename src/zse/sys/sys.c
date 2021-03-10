@@ -8,6 +8,30 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef WIN32
+#include <windows.h>
+#elif _POSIX_C_SOURCE >= 199309L
+#include <time.h>   // for nanosleep
+#else
+#include <unistd.h> // for usleep
+#endif
+
+void zse_sys_msleep(int milliseconds)
+{ // cross-platform sleep function
+#ifdef WIN32
+    Sleep(milliseconds);
+#elif _POSIX_C_SOURCE >= 199309L
+    struct timespec ts;
+    ts.tv_sec = milliseconds / 1000;
+    ts.tv_nsec = (milliseconds % 1000) * 1000000;
+    nanosleep(&ts, NULL);
+#else
+    if (milliseconds >= 1000)
+      sleep(milliseconds / 1000);
+    usleep((milliseconds % 1000) * 1000);
+#endif
+}
+
 long zse_sys_getRamUsage(void)
 {
     struct rusage usage;
@@ -45,11 +69,6 @@ StringLines_t zse_dir_getfnames(char path[])
 zse_int zse_sswitch(zse_int i)
 {
     return i* -1;
-}
-
-zse_int zse_sswitchS(zse_int i)
-{
-    return (0b11111111111111111111111111111111 ^ i) + 1;
 }
 
 int zse_sys_formatCheck(char version[])
