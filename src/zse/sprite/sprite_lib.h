@@ -90,3 +90,4 @@ void zse_sprite_swapColors(SPRITES_t *spr, int targetColo, int colorCode);
 sequence_data_t** zse_sprite_malloc_sequence_data(sequence_data_t *seqEnd, int seqMax);
 
 #endif
+

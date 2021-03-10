@@ -62,7 +62,7 @@ typedef struct _ENT_ENTTIESPACK
 }ENTTP_t;
 
 
-ENTT_t *zse_entt_init_ENTT_t (ENTCLASS class);
+ENTT_t *zse_entt_init_ENTT_t (ENTCLASS);
 void zse_entt_delete (ENTT_t *ent);
 
 #endif
