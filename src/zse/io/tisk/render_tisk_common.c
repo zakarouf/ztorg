@@ -1,7 +1,6 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <stdio.h>
-#include "../../common/common_string.h"
 #include "tisk.h"
 
 
