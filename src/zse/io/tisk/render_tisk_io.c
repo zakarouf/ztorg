@@ -10,7 +10,7 @@
 
 void zse_rtT_io_printString(String_t *s)
 {
-    write(STDOUT_FILENO, s->str, s->size);
+    write(STDOUT_FILENO, s->data, s->size);
 }
 
 /*INPUTS*/

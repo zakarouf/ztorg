@@ -53,7 +53,7 @@ StringLines_t zse_dir_getfnames(char path[])
 
     while((dp = readdir(drip)) != NULL)
     {
-        sscanf(dp->d_name, "%s", fnames.lines[i]);
+        sscanf(dp->d_name, "%s", fnames.data[i]);
         i++;
         if(i >= items)
         {
