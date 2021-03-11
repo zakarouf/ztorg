@@ -8,7 +8,7 @@ StringLines_t zse_dir_getfnames(char path[]);
 int zse_sys_formatCheck(char version[]);
 long zse_sys_getRamUsage(void);
 
-zse_int zse_sswitch(zse_int i);
+z__int zse_sswitch(z__int i);
 
 #define zse_sswitch_M(i) i* -1
 

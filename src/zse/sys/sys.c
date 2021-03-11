@@ -66,7 +66,7 @@ StringLines_t zse_dir_getfnames(char path[])
     return fnames;
 }
 
-zse_int zse_sswitch(zse_int i)
+z__int zse_sswitch(z__int i)
 {
     return i* -1;
 }
