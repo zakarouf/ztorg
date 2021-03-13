@@ -34,7 +34,7 @@
     #define NOTPUB_log_error(format , ...)\
         zse_sys_log(stdout,"\x1b[38;5;1m" "rVK:ERROR:" format "\x1b[0m", ##__VA_ARGS__ )
     #define NOTPUB_log_distinct(color ,format, ...)\
-        zse_sys_log(stdout, "\x1b[38;5;%dmrVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
+        zse_sys_log(stdout, "\x1b[38;5;%dm" "rVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
 
 #else
     #define NOTPUB_log_normal(...)\
@@ -161,10 +161,10 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL _zse_rVK_debugCallback
 
     
     #ifndef ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
-        NOTPUB_log_normal(":ValidationLayer: %s\n", pCallbackData->pMessage);
+        NOTPUB_log_distinct(6 ,":ValidationLayer: %s\n", pCallbackData->pMessage);
     #else
         if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-            NOTPUB_log_error(":ValidationLayer: %s\n", pCallbackData->pMessage);
+            NOTPUB_log_distinct(7 ,":ValidationLayer: %s\n", pCallbackData->pMessage);
         }
     #endif
 
