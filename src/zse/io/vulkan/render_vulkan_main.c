@@ -287,7 +287,16 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
     return instance;
 }
 
-int zse_rVK_initVulkan()
+static VkSurfaceKHR _zse_rVK_createSurface(int *errorCode, VkInstance instance, GLFWwindow *window)
+{
+    VkSurfaceKHR surface;
+    if (glfwCreateWindowSurface(instance, window, NULL, &surface) != VK_SUCCESS) {
+        NOTPUB_log_error("failed to create window surface!");
+        *errorCode = 1;
+    }
+
+    return surface;
+}
     , VkDebugUtilsMessengerEXT *debugMessenger
     if (enableValidationLayers) {
         _zse_rVK_DestroyDebugUtilsMessengerEXT(*instance, *debugMessenger, NULL);
