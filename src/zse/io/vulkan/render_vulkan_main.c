@@ -44,12 +44,37 @@
 #endif
 
 
+typedef struct _zse_rvk_ts_QueueFamilyIndices {
+    uint32_t graphicsFamily;
+    uint32_t presentFamily;
+    bool graphicsFamily_hasValue;
+    bool presentFamily_hasValue;
+}zse_rVK__t_QueueFamilyIndices;
+
+static int _zse_rVK_t_QueueFamilyIndices_isComplete(zse_rVK__t_QueueFamilyIndices indices)
+{
+    return (indices.presentFamily_hasValue & indices.graphicsFamily_hasValue);
+}
 
 
-static GLFWwindow* GLOBAL_rVK_window;
-static VkInstance GLOBAL_rVK_vulkan_instance;
+typedef struct _zse_rVK_ESSENTIAL_HANDLERS
+{
 
-static const char * GLOBAL_rVK_validationLayers = "VK_LAYER_KHRONOS_validation";
+    GLFWwindow*      _rVK_window;
+
+    VkInstance       _rVK_vulkan_instance;
+
+    VkPhysicalDevice _rVK_physicalDevice;
+    VkDevice         _rVK_device;
+    VkQueue          _rVK_graphicsQueue;
+    VkQueue          _rVK_presentQueue;
+
+    VkSurfaceKHR     _rVK_surface;
+
+
+    VkDebugUtilsMessengerEXT _rVK_debugMessenger;
+
+}_zse_rVK_HANDLERS;
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
 
@@ -223,10 +248,32 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
 }
 
 int zse_rVK_initVulkan()
+static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
 {
     int errorCode;
-    GLOBAL_rVK_window = _zse_rVK_windowInit(1000, 800);
-    GLOBAL_rVK_vulkan_instance = _zse_rVK_createInstance(&errorCode);
+    
+    Handles->_rVK_vulkan_instance = _zse_rVK_createInstance(&errorCode);
+    _zse_rVK_setupDebugMessenger(Handles->_rVK_vulkan_instance, &Handles->_rVK_debugMessenger);
+
+    Handles->_rVK_surface = _zse_rVK_createSurface(
+          &errorCode
+        , Handles->_rVK_vulkan_instance
+        , Handles->_rVK_window);
+
+    Handles->_rVK_physicalDevice = _zse_rVK_pickPhysicalDevice(
+          &errorCode
+        , Handles->_rVK_vulkan_instance
+        , Handles->_rVK_surface
+    );
+
+    _zse_rVK_cld_createLogicalDevice(
+          &errorCode
+        , &Handles->_rVK_physicalDevice
+        , &Handles->_rVK_device
+        , &Handles->_rVK_graphicsQueue
+        , &Handles->_rVK_presentQueue
+        , Handles->_rVK_surface
+    );
 
     return errorCode;
 }
@@ -239,18 +286,43 @@ static void _zse_rVK_mainLoop(GLFWwindow* window)
     }
 }
 
-void zse_render_vulkanInitTEST()
+static _zse_rVK_HANDLERS *_zse_rVK_initHANDLES(void)
 {
-	if(zse_rVK_initVulkan() != 0)
+    _zse_rVK_HANDLERS *h = calloc(sizeof(_zse_rVK_HANDLERS), 1);
+    h->_rVK_physicalDevice = VK_NULL_HANDLE;
+    h->_rVK_device = 0;
+    h->_rVK_vulkan_instance = 0;
+    h->_rVK_debugMessenger = 0;
+
+    return h;
+}
+
+int zse_rVK_init(void)
+{
+    _zse_rVK_HANDLERS *HANDLES = _zse_rVK_initHANDLES();
+
+    HANDLES->_rVK_window = _zse_rVK_windowInit(1000, 800);
+
+    if(zse_rVK_initVulkan(HANDLES) != 0)
     {
         NOTPUB_log_error("CANT init Vulkan\n");
+        return 1;
     };
 
-	_zse_rVK_mainLoop(GLOBAL_rVK_window);
 
-	_zse_rVK_destroy(GLOBAL_rVK_window, GLOBAL_rVK_vulkan_instance);
+    _zse_rVK_mainLoop(HANDLES->_rVK_window);
 
+    _zse_rVK_destroy( 
+          HANDLES->_rVK_window
+        , &HANDLES->_rVK_surface
+        , &HANDLES->_rVK_vulkan_instance
+        , &HANDLES->_rVK_debugMessenger
+        , &HANDLES->_rVK_device
+    );
+
+    return 0;
 }
 
 // undefs
 #undef NOTPUB_log_normal
+#undef NOTPUB_log_error
