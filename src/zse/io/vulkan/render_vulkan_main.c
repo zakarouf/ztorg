@@ -328,6 +328,7 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
         return false;
     
 }
+
 static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface)
 {
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
@@ -367,6 +368,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
     return physicalDevice;
 
 }
+
 
 static StringLines_t _zse_rVK_getRequiredExtentions()
 {
@@ -409,6 +411,8 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
         }
         
     #endif
+
+        
 
     VkInstance instance;
 
@@ -490,6 +494,7 @@ static VkSurfaceKHR _zse_rVK_createSurface(int *errorCode, VkInstance instance, 
 
     return surface;
 }
+
 static GLFWwindow* _zse_rVK_windowInit(uint32_t x, uint32_t y)
 {
     glfwInit();
@@ -499,10 +504,31 @@ static GLFWwindow* _zse_rVK_windowInit(uint32_t x, uint32_t y)
 
     return glfwCreateWindow(x, y, "ZSE", NULL, NULL);
 }
+
+static int _zse_rVK_destroy
+(
+      GLFWwindow *window
+    , VkSurfaceKHR *surface
+    , VkInstance *instance
     , VkDebugUtilsMessengerEXT *debugMessenger
+    , VkDevice *device
+)
+{
+    vkDestroyDevice(*device, NULL);
+
     if (enableValidationLayers) {
         _zse_rVK_DestroyDebugUtilsMessengerEXT(*instance, *debugMessenger, NULL);
     }
+
+    vkDestroySurfaceKHR(*instance, *surface, NULL);
+    vkDestroyInstance(*instance, NULL);
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    return 0;
+}
+
 static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
 {
     int errorCode;
