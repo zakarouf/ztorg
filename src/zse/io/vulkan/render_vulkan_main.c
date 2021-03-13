@@ -1,16 +1,22 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-#include <cglm/cglm.h>
+//#include <cglm/cglm.h>
 
 #include "../../sys/sys.h"
 #include "vulkan.h"
 
+#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
 //#define ZSE_CONFIG__rVK__MINIATURE
 #define ZSE_CONFIG__rVK__NDEBUG
+
+
+#define ZSE_CONFIG__rVK__OVERRIDE__physicalDevice 1
+
 
 #ifndef ZSE_CONFIG__rVK__MINIATURE
     #ifdef ZSE_CONFIG__rVK__NDEBUG
