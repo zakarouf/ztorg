@@ -193,6 +193,46 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
     }
 }
 
+static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface)
+{
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+
+    uint32_t deviceCount = 0;
+    vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
+
+    if (deviceCount == 0)
+    {
+        NOTPUB_log_error(":PhysicalDevice: Failed To Get GPU with Vulkan Support\n");
+        *errorCode = -1;
+        return physicalDevice;
+    }
+
+    VkPhysicalDevice *devices = calloc(sizeof(VkPhysicalDevice), deviceCount);
+    vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
+
+    
+    // Fillter out devices
+    for (int i = 0; i < deviceCount; ++i)
+    {
+        
+        if (_zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(devices[i], surface))
+        {
+            //NOTPUB_log_error("AS");
+            physicalDevice = devices[i];
+            break;
+        }
+        
+        
+    }
+    if (physicalDevice == VK_NULL_HANDLE) {
+        NOTPUB_log_error(":PhysicalDevice: Failed To Get GPU with Suitable Requirements\n");
+        *errorCode = -1;
+    }
+
+    return physicalDevice;
+
+}
+
 static StringLines_t _zse_rVK_getRequiredExtentions()
 {
     NOTPUB_log_normal("\n%s -> %d\n", VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));
