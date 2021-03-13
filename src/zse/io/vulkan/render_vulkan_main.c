@@ -158,7 +158,6 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL _zse_rVK_debugCallback
     , const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData
     , void* pUserData) 
 {
-    glfwInit();
 
     
     #ifndef ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
@@ -490,6 +489,15 @@ static VkSurfaceKHR _zse_rVK_createSurface(int *errorCode, VkInstance instance, 
     }
 
     return surface;
+}
+static GLFWwindow* _zse_rVK_windowInit(uint32_t x, uint32_t y)
+{
+    glfwInit();
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+    return glfwCreateWindow(x, y, "ZSE", NULL, NULL);
 }
     , VkDebugUtilsMessengerEXT *debugMessenger
     if (enableValidationLayers) {
