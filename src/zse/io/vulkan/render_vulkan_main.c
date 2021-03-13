@@ -23,11 +23,18 @@
 
 #ifdef ZSE_CONFIG_LOGS__USE_VARDIC_MACROS
     #define NOTPUB_log_normal(format , ...)\
-        zse_sys_log(stdout,"rVK:" format, ##__VA_ARGS__ )
+        zse_sys_log(stdout,"\x1b[38;5;3m" "rVK:" format "\x1b[0m", ##__VA_ARGS__ )
 
     #define NOTPUB_log_error(format , ...)\
-        zse_sys_log(stderr,"rVK:ERROR:" format, ##__VA_ARGS__ )
+        zse_sys_log(stdout,"\x1b[38;5;1m" "rVK:ERROR:" format "\x1b[0m", ##__VA_ARGS__ )
+    #define NOTPUB_log_distinct(color ,format, ...)\
+        zse_sys_log(stdout, "\x1b[38;5;%dmrVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
 
+#else
+    #define NOTPUB_log_normal(...)\
+        {__VA_ARGS__;}
+    #define NOTPUB_log_error(...)\
+        {__VA_ARGS__;}
 #endif
 
 
