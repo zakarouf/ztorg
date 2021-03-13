@@ -17,8 +17,10 @@ typedef int64_t z__i64;
 
 typedef int z__int;
 
-typedef float z__float32;
-typedef double z__float64;
+typedef float z__f32;
+typedef double z__f64;
+
+typedef bool z__bool;
 
 typedef struct _ZSE_Vint2
 {
@@ -38,17 +40,17 @@ typedef struct _ZSE_Vint4
 
 typedef struct _ZSE_Vector2
 {
-	z__float32 x, y;
+	z__f32 x, y;
 }z__Vector2;
 
 typedef struct _ZSE_Vector3
 {
-	z__float32 x, y, z;
+	z__f32 x, y, z;
 }z__Vector3;
 
 typedef struct _ZSE_Vector4
 {
-	z__float32 x, y, z, w;
+	z__f32 x, y, z, w;
 }z__Vector4;
 
 
