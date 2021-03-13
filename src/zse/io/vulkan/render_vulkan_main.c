@@ -193,20 +193,32 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
 
 static StringLines_t _zse_rVK_getRequiredExtentions()
 {
-    StringLines_t extentions;
+    NOTPUB_log_normal("\n%s -> %d\n", VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));
 
+    StringLines_t strLines = z__StringLines_createEmpty(32, 5);
+
+    // Extentions
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-    extentions = z__StringLines_createEmpty(128, glfwExtensionCount+2);
-
     for (int i = 0; i < glfwExtensionCount; ++i)
     {
-        
+        strcpy(strLines.data[i], glfwExtensions[i]);
+        strLines.linesUsed+=1;
     }
 
+    z__StringLines_pushString(&strLines, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+    NOTPUB_log_normal("%d\n", strLines.linesUsed);
+
+    for (int i = 0; i < strLines.linesUsed; ++i)
+    {
+        NOTPUB_log_normal("%s\n", strLines.data[i]);        
+    }
+
+    return strLines;
 }
 
 static VkInstance _zse_rVK_createInstance(int *errorCode)
@@ -274,15 +286,19 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
         *errorCode = 4;
     }
 
+    
+
     // LOG Extentions
     vkEnumerateInstanceExtensionProperties(NULL, &extensionCount, Extentions);
-    NOTPUB_log_normal("rVK:Extentions Avaliable >>\n");
+    NOTPUB_log_normal("Extentions Avaliable >>\n");
     for (int i = 0; i < extensionCount; ++i)
     {
         NOTPUB_log_normal("\t\t%s\n", Extentions[i].extensionName);
     }
 
     *errorCode = 0;
+
+
 
     return instance;
 }
