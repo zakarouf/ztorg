@@ -80,7 +80,7 @@ String_t z__String_MakeCopy(const String_t str)
 {
 
     String_t str2 = {
-        .data = malloc(sizeof(z__char_t) * str.size),
+        .data = calloc(sizeof(z__char_t) , str.size),
         .size = str.size,
         .used = str.used
     };
@@ -225,10 +225,10 @@ StringLines_t z__String_spiltChar (String_t buffer, const char *restrict breaker
 }
 
 
-StringLineArr_t z__StringLinesArr_createEmpty(int size, int x, int y)
+StringLinesArr_t z__StringLinesArr_createEmpty(int size, int x, int y)
 {
-    StringLineArr_t lns = {
-        .Sldata = malloc(sizeof(StringLines_t) * size),
+    StringLinesArr_t lns = {
+        .Sldata = calloc(sizeof(StringLines_t), size),
         .size = size,
         .used = 0
     };
