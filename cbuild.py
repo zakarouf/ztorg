@@ -11,11 +11,18 @@ ignorePatternFront = ["."]
 ignorePatternEnd = []
 onlyTakePatternEnd = [".c"]
 
-CC="clang"
-CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Wall", "-pedantic", "-Os", "-O2"]
+CC="clang-mp-9.0"
+ERRFLAGS = ["-Wall"]
+CFLAGS=["-std=c2x", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
 #LDFLAGS=["-lm", "-lncurses", "-lraylib"]
 LDFLAGS=["-lm", "-lvulkan", "-lglfw", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
+
+
+gSource = "./"
+gCleanEnabled = 0
+gTestEnabled = 1
+gTestCommands = ["-i" ,"./examples/helloworld.zintfile"]
 
 #-----G-END-----#
 
@@ -92,9 +99,10 @@ def filterListintoFile(ls):
             if elem[-1] == "c":
                 if checkIfNameFound(elem, IgnoreNames) != 1:
                     outstr += elem + " "
-                    #log("\n\t\tGot: " + elem)
+                    log("\n\t\tGot: " + elem)
 
-    drawTree(outstr)
+    #drawTree(outstr)
+
     log("\nCOMPLETED\n\n")
     return outstr
 
@@ -113,7 +121,7 @@ def checkforfileExistance(source):
         return False
     
 
-def main(source, clean, testCommands):
+def main(source, clean, TestEnabled, testCommands):
     if clean:
         do_clean()
         return
@@ -134,37 +142,40 @@ def main(source, clean, testCommands):
 
     log("Executable: " + OUTEXE + "\n\n")
 
-    log("Testing...\n")
-    try:
-        run([ "./"+OUTEXE] + testCommands)
-    except:
-        log("FAILED\n")
-        return
-    log("\nSUCCESS\n")
+
+    if TestEnabled:
+        log("Testing...\n")
+        try:
+            run([ "./"+OUTEXE] + testCommands)
+            log("\nSUCCESS\n")
+        except:
+            log("FAILED\n")
+            return
+    
+
 
 def argp(arg):
-    source = "./"
-    cleanEnabled = 0
-    testEnabled = 1
-    testCommands = ["-i" ,"./examples/helloworld.zintfile"]
+
+    global gSource, gCleanEnabled, gTestCommands, gTestEnabled
+
     count = 1
     for i in arg:
         if i[0] == '-':
             if i[1:] == "-clean" or i[1:] == 'c':
-                cleanEnabled= 1
+                gCleanEnabled= 1
             elif i[1:] == "-build" or i[1:] == 'b':
-                source = arg[count+1]
+                gSource = arg[count+1]
             elif i[1:] == "-testdisable" or i[1:] == 't':
-                testEnabled = 0
+                gTestEnabled = 0
             elif i[1:] == "-testCommands" or i[1:] == 'm':
-                testCommands = arg[count+1::]
-                main(source, cleanEnabled, testCommands)
+                gTestCommands = arg[count+1::]
+                main(gSource, gCleanEnabled, gTestEnabled ,gTestCommands)
                 return
             else:
                 pass
     count += 1
 
-    main(source, cleanEnabled, testCommands)
+    main(gSource, gCleanEnabled, gTestEnabled ,gTestCommands)
     return
 
 
