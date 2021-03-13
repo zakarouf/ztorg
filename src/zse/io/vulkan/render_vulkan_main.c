@@ -74,12 +74,13 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
+
+    StringLines_t _rVK_deviceExtentions;
+
 }_zse_rVK_HANDLERS;
 
 static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
-
-static StringLines_t GLOBAL_rVK_deviceExtensions;
 
 static void _zse_rVK_init_deviceExtentions(StringLines_t *dE)
 {
@@ -214,6 +215,7 @@ static void _zse_rVK_cld_createLogicalDevice
     , VkQueue *graphicsQueue
     , VkQueue *presentQueue
     , VkSurfaceKHR surface
+    , StringLines_t *deviceExtensions
 )
 {
     zse_rVK__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(*physicalDevice, surface);
@@ -260,7 +262,8 @@ static void _zse_rVK_cld_createLogicalDevice
     createInfo.pEnabledFeatures = &deviceFeatures;
 
 
-    createInfo.enabledExtensionCount = 0;
+    createInfo.enabledExtensionCount = deviceExtensions->lines;
+    createInfo.ppEnabledExtensionNames = (const char *const *)deviceExtensions->data;
 
     if (enableValidationLayers) {
         createInfo.enabledLayerCount = GLOBAL_rVK_validationLayersCount;
@@ -313,7 +316,7 @@ static zse_rVK__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalD
     return indices;
 }
 
-static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device) {
+static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, StringLines_t *deviceExtensions) {
 
     uint32_t extensionCount;
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, NULL);
@@ -322,10 +325,10 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device) {
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
 
 
-    StringLines_t requiredExtensions = z__StringLines_createEmpty(96, GLOBAL_rVK_deviceExtensions.lines);
+    StringLines_t requiredExtensions = z__StringLines_createEmpty(96, deviceExtensions->lines);
     for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
     {
-        z__StringLines_pushString(&requiredExtensions, 96, GLOBAL_rVK_deviceExtensions.data[i]);
+        z__StringLines_pushString(&requiredExtensions, 96, deviceExtensions->data[i]);
     }
 
     const uint32_t TotalExtentionsRequired = requiredExtensions.linesUsed;
@@ -349,11 +352,11 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device) {
     return TotalExtentionsRequired & ExtentionsFound;    
 }
 
-static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, StringLines_t *deviceExtensions)
 {
     zse_rVK__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
 
-    int extensionsSupported = _zse_rVK__phd_checkDeviceExtensionSupport(physicalDevice);
+    int extensionsSupported = _zse_rVK__phd_checkDeviceExtensionSupport(physicalDevice, deviceExtensions);
     int indiceComplete = _zse_rVK_t_QueueFamilyIndices_isComplete(indices);
 
     if (extensionsSupported  && indiceComplete){
@@ -367,7 +370,7 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
     
 }
 
-static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface)
+static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface, StringLines_t *deviceExtensions)
 {
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
@@ -389,7 +392,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
     for (int i = 0; i < deviceCount; ++i)
     {
         
-        if (_zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(devices[i], surface))
+        if (_zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(devices[i], surface, deviceExtensions))
         {
             //NOTPUB_log_error("AS");
             physicalDevice = devices[i];
@@ -582,6 +585,7 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
           &errorCode
         , Handles->_rVK_vulkan_instance
         , Handles->_rVK_surface
+        , &Handles->_rVK_deviceExtentions
     );
 
     _zse_rVK_cld_createLogicalDevice(
@@ -591,6 +595,7 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
         , &Handles->_rVK_graphicsQueue
         , &Handles->_rVK_presentQueue
         , Handles->_rVK_surface
+        , &Handles->_rVK_deviceExtentions
     );
 
     return errorCode;
@@ -612,12 +617,13 @@ static _zse_rVK_HANDLERS *_zse_rVK_initHANDLES(void)
     h->_rVK_vulkan_instance = 0;
     h->_rVK_debugMessenger = 0;
 
+    _zse_rVK_init_deviceExtentions(&h->_rVK_deviceExtentions);
+
     return h;
 }
 
 int zse_rVK_init(void)
 {
-    _zse_rVK_init_deviceExtentions(&GLOBAL_rVK_deviceExtensions);
 
     _zse_rVK_HANDLERS *HANDLES = _zse_rVK_initHANDLES();
 
