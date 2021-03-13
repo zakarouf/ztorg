@@ -82,6 +82,7 @@ static const int GLOBAL_rVK_validationLayersCount = 1;
 static const char *GLOBAL_rVK_deviceExtensions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 static const int GLOBAL_rVK_deviceExtensionsCount = 1;
 
+
 static VkResult _zse_rVK_createDebugUtilsMessengerEXT
 (
     VkInstance instance
@@ -95,6 +96,7 @@ static VkResult _zse_rVK_createDebugUtilsMessengerEXT
     } else {
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
+
 }
 
 static void _zse_rVK_DestroyDebugUtilsMessengerEXT
@@ -193,6 +195,32 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
     }
 }
 
+static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device) {
+
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, NULL);
+
+    VkExtensionProperties * availableExtensions = calloc(sizeof(VkExtensionProperties) ,extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
+
+
+    free (availableExtensions);
+    return true;
+}
+
+static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+{
+    zse_rVK__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
+
+    int extensionsSupported = _zse_rVK__phd_checkDeviceExtensionSupport(physicalDevice);
+    int indiceComplete = _zse_rVK_t_QueueFamilyIndices_isComplete(indices);
+
+    if (extensionsSupported  && indiceComplete)
+        return true;
+    else
+        return false;
+    
+}
 static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface)
 {
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
