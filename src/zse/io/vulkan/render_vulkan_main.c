@@ -166,10 +166,16 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL _zse_rVK_debugCallback
 
     
     #ifndef ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
-        NOTPUB_log_distinct(6 ,":ValidationLayer: %s\n", pCallbackData->pMessage);
+        if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+            NOTPUB_log_distinct(1 ,":ValidationLayer:ERROR: %s\n", pCallbackData->pMessage);
+        }
+        else
+        {
+            NOTPUB_log_distinct(8 ,":ValidationLayer: %s\n", pCallbackData->pMessage);
+        }
     #else
         if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
-            NOTPUB_log_distinct(7 ,":ValidationLayer: %s\n", pCallbackData->pMessage);
+            NOTPUB_log_distinct(1 ,":ValidationLayer: %s\n", pCallbackData->pMessage);
         }
     #endif
 
@@ -316,8 +322,31 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device) {
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
 
 
+    StringLines_t requiredExtensions = z__StringLines_createEmpty(96, GLOBAL_rVK_deviceExtensions.lines);
+    for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
+    {
+        z__StringLines_pushString(&requiredExtensions, 96, GLOBAL_rVK_deviceExtensions.data[i]);
+    }
+
+    const uint32_t TotalExtentionsRequired = requiredExtensions.linesUsed;
+    uint32_t ExtentionsFound = 0;
+
+    for (int i = 0; i < extensionCount; ++i)
+    {
+        for (int j = 0; j < TotalExtentionsRequired; ++j)
+        {
+            if (strncmp(requiredExtensions.data[j], availableExtensions[i].extensionName, 96) == 0)
+            {
+                ExtentionsFound += 1;
+            }
+        }
+    }
+
+
     free (availableExtensions);
-    return true;
+    z__StringLines_delete(&requiredExtensions);
+
+    return TotalExtentionsRequired & ExtentionsFound;    
 }
 
 static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
@@ -327,10 +356,14 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
     int extensionsSupported = _zse_rVK__phd_checkDeviceExtensionSupport(physicalDevice);
     int indiceComplete = _zse_rVK_t_QueueFamilyIndices_isComplete(indices);
 
-    if (extensionsSupported  && indiceComplete)
+    if (extensionsSupported  && indiceComplete){
+        NOTPUB_log_normal("Physical Device is Suitable For Vulkan\n");
         return true;
-    else
+    }
+    else{
+        NOTPUB_log_error("Physical Device is NOT Suitable For Vulkan\n");
         return false;
+    }
     
 }
 
@@ -377,7 +410,6 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 
 static StringLines_t _zse_rVK_getRequiredExtentions()
 {
-    NOTPUB_log_normal("\n%s -> %d\n", VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME));
 
     StringLines_t strLines = z__StringLines_createEmpty(32, 5);
 
