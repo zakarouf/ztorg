@@ -14,8 +14,8 @@ typedef struct ZINT_STRING
 typedef struct
 {
     z__char_t **data;
-    unsigned int x;
-    unsigned int y;
+    unsigned int sizeofString;
+    unsigned int length;
     unsigned linesUsed;
 }StringLines_t;
 
@@ -24,7 +24,7 @@ typedef struct
     StringLines_t *Sldata;
     int size;
     int used;
-}StringLineArr_t;
+}StringLinesArr_t;
 
 
 #define z__fillString_MF(String, val)\

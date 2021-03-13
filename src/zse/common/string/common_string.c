@@ -212,7 +212,7 @@ StringLines_t z__String_spiltChar (String_t buffer, const char *restrict breaker
 
     StringLines_t returnVal = z__StringLines_createEmpty(128, ycount);
 
-    for (int i = 0; i < returnVal.y && token != NULL; ++i)
+    for (int i = 0; i < returnVal.length && token != NULL; ++i)
     {
         strcpy(returnVal.data[i], token);
         token = strtok_r(lastbuff, breaker, &lastbuff);
@@ -256,7 +256,7 @@ StringLinesArr_t z__StringLinesArr_createEmpty(int size, int x, int y)
     return lns;
 }
 
-void z__StringLinesArr_delete(StringLineArr_t *lns)
+void z__StringLinesArr_delete(StringLinesArr_t *lns)
 {
     for (int i = 0; i < lns->size; ++i)
     {
@@ -265,7 +265,7 @@ void z__StringLinesArr_delete(StringLineArr_t *lns)
     lns->size = 0;
 }
 
-void z__StringLinesArr_resize(StringLineArr_t *lns, int newsize)
+void z__StringLinesArr_resize(StringLinesArr_t *lns, int newsize)
 {
     if (newsize < lns->size)
     {
@@ -273,16 +273,16 @@ void z__StringLinesArr_resize(StringLineArr_t *lns, int newsize)
         {
             z__StringLines_delete(&lns->Sldata[i]);
         }
-        lns->Sldata = realloc(lns->Sldata, sizeof(StringLines_t) * newsize);
+        lns->Sldata = safe_realloc(lns->Sldata, sizeof(StringLines_t) * newsize);
         lns->size = newsize;
     }
     else if (newsize > lns->size)
     {
-        lns->Sldata = realloc(lns->Sldata, sizeof(StringLines_t) * newsize);
+        lns->Sldata = safe_realloc(lns->Sldata, sizeof(StringLines_t) * newsize);
         lns->size = newsize;
         for (int i = lns->size; i < newsize; ++i)
         {
-            lns->Sldata[i] = z__StringLines_createEmpty(lns->Sldata[0].x, lns->Sldata[0].y);
+            lns->Sldata[i] = z__StringLines_createEmpty(lns->Sldata[0].sizeofString, lns->Sldata[0].length);
         }
     }
 }
