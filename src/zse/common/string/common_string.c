@@ -224,6 +224,21 @@ StringLines_t z__String_spiltChar (String_t buffer, const char *restrict breaker
 
 }
 
+void z__StringLines_pushString(StringLines_t *strLines, int len, const z__char_t *string)
+{
+    if (strLines->length <= strLines->linesUsed )
+    {
+        z__StringLines_Resize_Y(strLines, strLines->linesUsed+8);
+    }
+    int linesUsed = strLines->linesUsed;
+
+    if (len >= strLines->sizeofString)
+    {
+        z__StringLines_Resize_X(strLines, len+8);
+    }    
+    memcpy(strLines->data[linesUsed], string, len);
+    strLines->linesUsed++;
+}
 
 StringLinesArr_t z__StringLinesArr_createEmpty(int size, int x, int y)
 {

@@ -48,17 +48,19 @@ void z__Strint_append(String_t *str, const z__char_t* src, int length);
 void z__String_join(String_t *dest, String_t *src, unsigned int extraSpace);
 
 
+
 StringLines_t z__StringLines_createEmpty(int x, int y);
 void z__StringLines_delete(StringLines_t *strLines);
 void z__StringLines_Resize_Y (StringLines_t *ln , unsigned int newsize);
 void z__StringLines_Resize_X (StringLines_t *ln, unsigned int newsize);
 StringLines_t z__StringLines_MakeCopy(StringLines_t strLines);
-StringLines_t z__String_spiltChar(String_t buffer, const char * restrict breaker);
+StringLines_t z__String_spiltChar(String_t buffer, const char * breaker);
+void z__StringLines_pushString(StringLines_t *strLines, int len, const char *string);
 
 
-StringLineArr_t z__StringLinesArr_createEmpty(int size, int x, int y);
-void z__StringLinesArr_delete(StringLineArr_t *lns);
-void z__StringLinesArr_resize(StringLineArr_t *lns, int newsize);
+StringLinesArr_t z__StringLinesArr_createEmpty(int size, int x, int y);
+void z__StringLinesArr_delete(StringLinesArr_t *lns);
+void z__StringLinesArr_resize(StringLinesArr_t *lns, int newsize);
 
 
 
