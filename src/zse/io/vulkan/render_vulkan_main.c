@@ -79,9 +79,14 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
-static const char *GLOBAL_rVK_deviceExtensions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
-static const int GLOBAL_rVK_deviceExtensionsCount = 1;
+static StringLines_t GLOBAL_rVK_deviceExtensions;
 
+static void _zse_rVK_init_deviceExtentions(StringLines_t *dE)
+{
+    int device = 1;
+    *dE = z__StringLines_createEmpty(96, device);
+    z__StringLines_pushString(dE, 96, VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+}
 
 static VkResult _zse_rVK_createDebugUtilsMessengerEXT
 (
@@ -580,6 +585,8 @@ static _zse_rVK_HANDLERS *_zse_rVK_initHANDLES(void)
 
 int zse_rVK_init(void)
 {
+    _zse_rVK_init_deviceExtentions(&GLOBAL_rVK_deviceExtensions);
+
     _zse_rVK_HANDLERS *HANDLES = _zse_rVK_initHANDLES();
 
     HANDLES->_rVK_window = _zse_rVK_windowInit(1000, 800);
