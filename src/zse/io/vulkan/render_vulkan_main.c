@@ -75,6 +75,8 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
 }_zse_rVK_HANDLERS;
+
+static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
 
@@ -106,7 +108,7 @@ static void _zse_rVK_DestroyDebugUtilsMessengerEXT
 }
 
 #ifndef ZSE_CONFIG__rVK__MINIATURE
-static bool checkValidationLayerSupport(const char *validationLayers, const int validationLayersCount) {
+static bool _zse_rVK_DEBUG_checkValidationLayerSupport(const char *validationLayers, const int validationLayersCount) {
     uint32_t layerCount;
     vkEnumerateInstanceLayerProperties(&layerCount, NULL);
 
@@ -116,10 +118,8 @@ static bool checkValidationLayerSupport(const char *validationLayers, const int 
 
     for (int i = 0; i < layerCount; ++i)
     {
-        NOTPUB_log_normal("%s\n", availableLayers[i].layerName);
+        NOTPUB_log_normal(" LAYER AVALIABLE :> %s\n", availableLayers[i].layerName);
     }
-    free(availableLayers);
-    return 0;
 
     #define checkValdition(val, aval)\
     {\
@@ -127,6 +127,7 @@ static bool checkValidationLayerSupport(const char *validationLayers, const int 
         for (int i = 0; i < layerCount; i++) {\
             if (strcmp(val, aval[i].layerName) == 0) {\
                     layerFound = true;\
+                    NOTPUB_log_normal(" ValidationLayer Found\n");\
                     break;\
             }\
         }\
@@ -188,9 +189,12 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
 {
 
     #ifndef ZSE_CONFIG__rVK__MINIATURE
-        if (enableValidationLayers && !checkValidationLayerSupport(GLOBAL_rVK_validationLayers, GLOBAL_rVK_validationLayersCount)) {
-            NOTPUB_log_error(" validation layers requested, but not available!");
+        if (enableValidationLayers) {
+            if( !_zse_rVK_DEBUG_checkValidationLayerSupport(GLOBAL_rVK_validationLayers, GLOBAL_rVK_validationLayersCount)) {
+                NOTPUB_log_error(" validation layers requested, but not available!\n");
+            }
         }
+        
     #endif
 
     VkInstance instance;
@@ -204,26 +208,38 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
     appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    VkInstanceCreateInfo createInfo;
+    VkInstanceCreateInfo createInfo = {0};
     createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     createInfo.pApplicationInfo = &appInfo;
 
 
+    
+
     // Extentions
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
+    StringLines_t ExtentionsLayer = _zse_rVK_getRequiredExtentions();
 
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-
-    createInfo.enabledExtensionCount = glfwExtensionCount;
-    createInfo.ppEnabledExtensionNames = glfwExtensions;
+    createInfo.enabledExtensionCount = ExtentionsLayer.linesUsed;
+    createInfo.ppEnabledExtensionNames = (const char *const *) ExtentionsLayer.data;
 
 
-    // Get Vulkan Instance Info
-    createInfo.enabledLayerCount = 0;
+    VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = {0};
+    if (enableValidationLayers) 
+    {
+        createInfo.enabledLayerCount = GLOBAL_rVK_validationLayersCount;
+        createInfo.ppEnabledLayerNames = &GLOBAL_rVK_validationLayers;
+
+        _zse_rVK__populateDebugMessengerCreateInfo(&debugCreateInfo);
+        createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*) &debugCreateInfo;
+
+    } else {
+        createInfo.enabledLayerCount = 0;
+        createInfo.pNext = NULL;
+    }
+
     if(vkCreateInstance(&createInfo, NULL, &instance) != VK_SUCCESS)
         *errorCode = 1;
+
+
 
     uint32_t extensionCount;
     vkEnumerateInstanceExtensionProperties(NULL, &extensionCount, NULL);
