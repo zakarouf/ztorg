@@ -12,4 +12,6 @@ void zse_sys_log(void * fileStream ,const char * restrict format, ...)
     vfprintf(fileStream, format, args);
     va_end(args);
 
+    fflush(fileStream);
+
 }
