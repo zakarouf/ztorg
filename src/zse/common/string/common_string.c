@@ -142,21 +142,21 @@ StringLines_t z__StringLines_createEmpty(int x, int y)
     return (StringLines_t){
         .data = zse_calloc_2D_array_char(x, y),
         .sizeofString = x,
-        .length = y,
+        .lines = y,
         .linesUsed = 0
     };
 }
 void z__StringLines_delete(StringLines_t *strLines)
 {
-    zse_free2dchar(strLines->data, strLines->length);
+    zse_free2dchar(strLines->data, strLines->lines);
     strLines->sizeofString = 0;
-    strLines->length = 0;
+    strLines->lines = 0;
 }
 
 StringLines_t z__StringLines_MakeCopy(StringLines_t strLines)
 {
-    StringLines_t tmp = z__StringLines_createEmpty(strLines.sizeofString, strLines.length);
-    for (int i = 0; i < tmp.length; ++i)
+    StringLines_t tmp = z__StringLines_createEmpty(strLines.sizeofString, strLines.lines);
+    for (int i = 0; i < tmp.lines; ++i)
     {
         memcpy(tmp.data[i], strLines.data[i], tmp.sizeofString);
     }
@@ -165,29 +165,29 @@ StringLines_t z__StringLines_MakeCopy(StringLines_t strLines)
 
 void z__StringLines_Resize_Y (StringLines_t *ln , unsigned int newsize)
 {
-    if (ln->length > newsize)
+    if (ln->lines > newsize)
     {
-        for (int i = newsize; i < ln->length; ++i)
+        for (int i = newsize; i < ln->lines; ++i)
         {
             free(ln->data[i]);
         }
         ln->data = safe_realloc(ln->data, sizeof(z__char_t*)*newsize);
         
     }
-    else if (ln->length < newsize)
+    else if (ln->lines < newsize)
     {
         ln->data = safe_realloc(ln->data, newsize);
-        for (int i = ln->length; i < newsize; ++i)
+        for (int i = ln->lines; i < newsize; ++i)
         {
             ln->data[i] = calloc(sizeof(z__char_t), ln->sizeofString);
         }
     }
 
-    ln->length = newsize;
+    ln->lines = newsize;
 }
 void z__StringLines_Resize_X (StringLines_t *ln, unsigned int newsize)
 {
-    for (int i = 0; i < ln->length; ++i)
+    for (int i = 0; i < ln->lines; ++i)
     {
         ln->data[i] = reallocf(ln->data[i], sizeof(z__char_t) * newsize);
     }
@@ -212,7 +212,7 @@ StringLines_t z__String_spiltChar (String_t buffer, const char *restrict breaker
 
     StringLines_t returnVal = z__StringLines_createEmpty(128, ycount);
 
-    for (int i = 0; i < returnVal.length && token != NULL; ++i)
+    for (int i = 0; i < returnVal.lines && token != NULL; ++i)
     {
         strcpy(returnVal.data[i], token);
         token = strtok_r(lastbuff, breaker, &lastbuff);
@@ -226,7 +226,7 @@ StringLines_t z__String_spiltChar (String_t buffer, const char *restrict breaker
 
 void z__StringLines_pushString(StringLines_t *strLines, int len, const z__char_t *string)
 {
-    if (strLines->length <= strLines->linesUsed )
+    if (strLines->lines <= strLines->linesUsed )
     {
         z__StringLines_Resize_Y(strLines, strLines->linesUsed+8);
     }
@@ -282,7 +282,7 @@ void z__StringLinesArr_resize(StringLinesArr_t *lns, int newsize)
         lns->size = newsize;
         for (int i = lns->size; i < newsize; ++i)
         {
-            lns->Sldata[i] = z__StringLines_createEmpty(lns->Sldata[0].sizeofString, lns->Sldata[0].length);
+            lns->Sldata[i] = z__StringLines_createEmpty(lns->Sldata[0].sizeofString, lns->Sldata[0].lines);
         }
     }
 }

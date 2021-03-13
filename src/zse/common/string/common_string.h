@@ -15,7 +15,7 @@ typedef struct
 {
     z__char_t **data;
     unsigned int sizeofString;
-    unsigned int length;
+    unsigned int lines;
     unsigned linesUsed;
 }StringLines_t;
 
