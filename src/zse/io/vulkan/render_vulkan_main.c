@@ -147,24 +147,48 @@ static bool _zse_rVK_DEBUG_checkValidationLayerSupport(const char *validationLay
 }
 #endif
 
-static GLFWwindow* _zse_rVK_windowInit(uint32_t x, uint32_t y)
+static VKAPI_ATTR VkBool32 VKAPI_CALL _zse_rVK_debugCallback
+(
+      VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity
+    , VkDebugUtilsMessageTypeFlagsEXT messageType
+    , const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData
+    , void* pUserData) 
 {
     glfwInit();
 
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    
+    #ifndef ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
+        NOTPUB_log_normal(":ValidationLayer: %s\n", pCallbackData->pMessage);
+    #else
+        if (messageSeverity >= VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT) {
+            NOTPUB_log_error(":ValidationLayer: %s\n", pCallbackData->pMessage);
+        }
+    #endif
 
-    return glfwCreateWindow(x, y, "ZSE", NULL, NULL);
+    return VK_FALSE;
 }
 
-static int _zse_rVK_destroy(GLFWwindow *window, VkInstance instance)
+static void _zse_rVK__populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT* createInfo) {
+
+    createInfo->sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+    createInfo->messageSeverity = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+    createInfo->messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+    createInfo->pfnUserCallback = _zse_rVK_debugCallback;
+    createInfo->pUserData = NULL;
+}
+
+
+static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessengerEXT *debugMessenger)
 {
-    vkDestroyInstance(instance, NULL);
+    if (!enableValidationLayers) 
+        return;
 
-    glfwDestroyWindow(window);
-    glfwTerminate();
+    VkDebugUtilsMessengerCreateInfoEXT createInfo = {0};
+    _zse_rVK__populateDebugMessengerCreateInfo(&createInfo);
 
-    return 0;
+    if ( _zse_rVK_createDebugUtilsMessengerEXT(instance, &createInfo, NULL, debugMessenger) != VK_SUCCESS) {
+        NOTPUB_log_error("Failed To Set Up Debug Messenger!");
+    }
 }
 
 static StringLines_t _zse_rVK_getRequiredExtentions()
@@ -264,6 +288,10 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
 }
 
 int zse_rVK_initVulkan()
+    , VkDebugUtilsMessengerEXT *debugMessenger
+    if (enableValidationLayers) {
+        _zse_rVK_DestroyDebugUtilsMessengerEXT(*instance, *debugMessenger, NULL);
+    }
 static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
 {
     int errorCode;
