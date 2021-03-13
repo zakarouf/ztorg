@@ -79,6 +79,8 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
+static const char *GLOBAL_rVK_deviceExtensions = VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+static const int GLOBAL_rVK_deviceExtensionsCount = 1;
 
 static VkResult _zse_rVK_createDebugUtilsMessengerEXT
 (
