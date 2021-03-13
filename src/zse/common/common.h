@@ -11,6 +11,6 @@
 
 #include "common_defs.h"
 #include "string/common_string.h"
-
+#include "common_macrofunc.h"
 
 #endif
