@@ -51,6 +51,17 @@ typedef struct _zse_rvk_ts_QueueFamilyIndices {
     bool presentFamily_hasValue;
 }zse_rVK__t_QueueFamilyIndices;
 
+typedef struct _zse_rvk_ts_SwapChainSupportDetails {
+    VkSurfaceCapabilitiesKHR capabilities;
+
+    VkSurfaceFormatKHR *formats;
+    uint32_t formatsSize;
+
+    VkPresentModeKHR *presentModes;
+    uint32_t presentModesSize;
+}zse_rvk__t_SwapChainSupportDetails;
+
+
 static int _zse_rVK_t_QueueFamilyIndices_isComplete(zse_rVK__t_QueueFamilyIndices indices)
 {
     return (indices.presentFamily_hasValue & indices.graphicsFamily_hasValue);
@@ -206,6 +217,43 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
     }
 }
 
+zse_rvk__t_SwapChainSupportDetails _zse_rVK_t_querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
+    zse_rvk__t_SwapChainSupportDetails details = {
+        {0},
+        0,
+        0,
+        0
+    };
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, NULL);
+
+    if (formatCount)
+    {
+        details.formatsSize = formatCount;
+        details.formats = calloc(sizeof(VkSurfaceFormatKHR), formatCount);
+
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats);
+    }
+
+
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, NULL);
+
+    if (presentModeCount) {
+        details.presentModesSize = presentModeCount;
+        details.presentModes = calloc(sizeof(VkSurfaceFormatKHR), presentModeCount);
+
+        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes);
+    }
+
+    return details;
+}
+
+
+
 static zse_rVK__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
 static void _zse_rVK_cld_createLogicalDevice
 (
@@ -359,7 +407,13 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
     int extensionsSupported = _zse_rVK__phd_checkDeviceExtensionSupport(physicalDevice, deviceExtensions);
     int indiceComplete = _zse_rVK_t_QueueFamilyIndices_isComplete(indices);
 
-    if (extensionsSupported  && indiceComplete){
+    bool swapChainAdequate = false;
+    if (extensionsSupported) {
+        zse_rvk__t_SwapChainSupportDetails swapChainSupport = _zse_rVK_t_querySwapChainSupport(physicalDevice, surface);
+        swapChainAdequate = swapChainSupport.formatsSize && swapChainSupport.presentModesSize;
+    }
+
+    if (extensionsSupported  && indiceComplete && swapChainAdequate){
         NOTPUB_log_normal("Physical Device is Suitable For Vulkan\n");
         return true;
     }
