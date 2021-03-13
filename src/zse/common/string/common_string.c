@@ -4,13 +4,51 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+// Malloc And Free 2d Char, Orginally were Part of Ztorg (https://github.com/zakarouf/ztorg)
+// Now Moved to Common String
+static z__char_t **zse_calloc_2D_array_char (unsigned int x, unsigned int y) {
+
+    z__char_t **arr = calloc(sizeof(z__char_t*), y);
+    for (int i = 0; i < y; ++i)
+    {
+        arr[i] = calloc(sizeof(z__char_t), x);
+    }
+
+    return arr;
+
+}
+static void zse_free2dchar(z__char_t **mem, int size)
+{
+    for (int i = 0; i < size; ++i)
+    {
+        free(mem[i]);
+    }
+    free(mem);
+
+}
+
+
+static void *safe_realloc(void * data, size_t size)
+{
+    void *tmpdata = realloc(data, size);
+    if (tmpdata != NULL)
+    {
+        if (tmpdata != data)
+        {
+            return tmpdata;
+        }
+    }
+    return data;
+}
+
 // Strings
 
 String_t z__String_create(int size)
 {
     return (String_t){
 
-        .data = malloc(sizeof(z__char_t) * size),
+        .data = calloc(sizeof(z__char_t) , size),
         .size = size,
         .used = 0
     };
@@ -26,15 +64,7 @@ inline void z__String_delete(String_t * s)
 inline void z__String_resize(String_t *str, int newsize)
 {
     str->size = newsize;
-    z__char_t *tmpdata = realloc(str->data, newsize);
-
-    if (tmpdata != NULL)
-    {
-        if (tmpdata != str->data)
-        {
-            str->data = tmpdata;
-        }
-    }
+    str->data = safe_realloc(str->data, newsize);
 }
 
 void z__String_Copy(String_t *dest, const String_t val)
@@ -107,86 +137,62 @@ int z_findCharInStr(String_t str, z__char_t c, int fromIndex)
     return -1;
 }
 
-
-// Malloc And Free 2d Char, Taken from Ztorg (https://github.com/zakarouf/ztorg)
-static z__char_t **zse_malloc_2D_array_char (unsigned int x, unsigned int y) {
-
-    z__char_t **arr = malloc(y * sizeof(z__char_t*));
-    for (int i = 0; i < y; ++i)
-    {
-        arr[i] = malloc(x * sizeof(z__char_t));
-    }
-
-    return arr;
-
-}
-static void zse_free2dchar(z__char_t **mem, int size)
-{
-    for (int i = 0; i < size; ++i)
-    {
-        free(mem[i]);
-    }
-    free(mem);
-
-}
-
-
 StringLines_t z__StringLines_createEmpty(int x, int y)
 {
     return (StringLines_t){
-        .data = zse_malloc_2D_array_char(x, y),
-        .x = x,
-        .y = y,
+        .data = zse_calloc_2D_array_char(x, y),
+        .sizeofString = x,
+        .length = y,
         .linesUsed = 0
     };
 }
 void z__StringLines_delete(StringLines_t *strLines)
 {
-    zse_free2dchar(strLines->data, strLines->y);
-    strLines->x = 0;
-    strLines->y = 0;
+    zse_free2dchar(strLines->data, strLines->length);
+    strLines->sizeofString = 0;
+    strLines->length = 0;
 }
 
 StringLines_t z__StringLines_MakeCopy(StringLines_t strLines)
 {
-    StringLines_t tmp = z__StringLines_createEmpty(strLines.x, strLines.y);
-    for (int i = 0; i < tmp.y; ++i)
+    StringLines_t tmp = z__StringLines_createEmpty(strLines.sizeofString, strLines.length);
+    for (int i = 0; i < tmp.length; ++i)
     {
-        memcpy(tmp.data[i], strLines.data[i], tmp.x);
+        memcpy(tmp.data[i], strLines.data[i], tmp.sizeofString);
     }
     return tmp;
 }
 
 void z__StringLines_Resize_Y (StringLines_t *ln , unsigned int newsize)
 {
-    if (ln->y > newsize)
+    if (ln->length > newsize)
     {
-        for (int i = newsize; i < ln->y; ++i)
+        for (int i = newsize; i < ln->length; ++i)
         {
             free(ln->data[i]);
         }
-        ln->data = realloc(ln->data, sizeof(z__char_t*)*newsize);
+        ln->data = safe_realloc(ln->data, sizeof(z__char_t*)*newsize);
         
     }
-    else if (ln->y < newsize)
+    else if (ln->length < newsize)
     {
-        ln->data = realloc(ln->data, newsize);
-        for (int i = ln->y; i < newsize; ++i)
+        ln->data = safe_realloc(ln->data, newsize);
+        for (int i = ln->length; i < newsize; ++i)
         {
-            ln->data[i] = malloc(sizeof(z__char_t) * ln->x);
+            ln->data[i] = calloc(sizeof(z__char_t), ln->sizeofString);
         }
     }
 
-    ln->y = newsize;
+    ln->length = newsize;
 }
 void z__StringLines_Resize_X (StringLines_t *ln, unsigned int newsize)
 {
-    for (int i = 0; i < ln->y; ++i)
+    for (int i = 0; i < ln->length; ++i)
     {
-        ln->data[i] = realloc(ln->data[i], sizeof(z__char_t) * newsize);
+        ln->data[i] = reallocf(ln->data[i], sizeof(z__char_t) * newsize);
     }
 
-    ln->x = newsize;   
+    ln->sizeofString = newsize;   
 }
 
 StringLines_t z__String_spiltChar (String_t buffer, const char *restrict breaker)
