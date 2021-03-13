@@ -49,7 +49,7 @@ typedef struct _zse_rvk_ts_QueueFamilyIndices {
     uint32_t presentFamily;
     bool graphicsFamily_hasValue;
     bool presentFamily_hasValue;
-}zse_rVK__t_QueueFamilyIndices;
+}zse_rvk__t_QueueFamilyIndices;
 
 typedef struct _zse_rvk_ts_SwapChainSupportDetails {
     VkSurfaceCapabilitiesKHR capabilities;
@@ -62,12 +62,18 @@ typedef struct _zse_rvk_ts_SwapChainSupportDetails {
 }zse_rvk__t_SwapChainSupportDetails;
 
 
-static int _zse_rVK_t_QueueFamilyIndices_isComplete(zse_rVK__t_QueueFamilyIndices indices)
+static int _zse_rVK_t_QueueFamilyIndices_isComplete(zse_rvk__t_QueueFamilyIndices indices)
 {
     return (indices.presentFamily_hasValue & indices.graphicsFamily_hasValue);
 }
 
 
+typedef struct _zse_rVK_swapChainImages_T
+{
+    VkImage *SC_Image;
+    uint32_t used;
+    uint32_t size;
+}_zse_rVK_swapChainImages;
 typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 {
 
@@ -82,6 +88,9 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 
     VkSurfaceKHR     _rVK_surface;
 
+    VkSwapchainKHR   _rVK_swapChain;
+
+    _zse_rVK_swapChainImages _rVK_swapChainImages;
 
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
@@ -217,7 +226,97 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
     }
 }
 
-zse_rvk__t_SwapChainSupportDetails _zse_rVK_t_querySwapChainSupport(VkPhysicalDevice device, VkSurfaceKHR surface) {
+// DEBUGER END
+
+
+
+
+static VkExtent2D _zse_rVK__swap_chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities, GLFWwindow *window)
+{
+    if (capabilities->currentExtent.width != UINT32_MAX)
+    {
+        return capabilities->currentExtent;
+
+    } else {
+
+        int width, height;
+        glfwGetFramebufferSize(window, &width, &height);
+
+        VkExtent2D actualExtent = {
+            .width = width,
+            .height = height
+        };
+
+        actualExtent.width  = z__MAX(capabilities->minImageExtent.width, z__MIN(capabilities->maxImageExtent.width, actualExtent.width));
+        actualExtent.height = z__MAX(capabilities->minImageExtent.height, z__MIN(capabilities->maxImageExtent.height, actualExtent.height));
+
+        return actualExtent;
+
+    }
+}
+
+static VkPresentModeKHR _zse_rVK__swap_chooseSwapPresentMode(const VkPresentModeKHR *availablePresentModes, const uint32_t availablePresentModesCount )
+{
+    for (int i = 0; i < availablePresentModesCount; ++i)
+    {
+        if (availablePresentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
+        {
+            return availablePresentModes[i];
+        }
+    }
+
+    return VK_PRESENT_MODE_FIFO_KHR;
+}
+
+static VkSurfaceFormatKHR _zse_rVK__swap_chooseSwapSurfaceFormat(const VkSurfaceFormatKHR *availableFormats, const uint32_t availableFormatsCount)
+{
+    for (int i = 0; i < availableFormatsCount; ++i)
+    {
+        if (    availableFormats[i].format == VK_FORMAT_B8G8R8A8_SRGB
+             && availableFormats[i].colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+        {
+            return availableFormats[i];
+        }
+    }
+
+/*
+
+The presentation mode is arguably the most important setting for the swap chain, 
+because it represents the actual conditions for showing images to the screen.
+There are four possible modes available in Vulkan:
+
+    VK_PRESENT_MODE_IMMEDIATE_KHR:
+        Images submitted by your application are transferred to the screen right away,
+        which may result in tearing.
+
+    VK_PRESENT_MODE_FIFO_KHR:
+        The swap chain is a queue where the display takes an image from the front of 
+        the queue when the display is refreshed and the program inserts rendered images 
+        at the back of the queue. If the queue is full then the program has to wait.
+        This is most similar to vertical sync as found in modern games. The moment that
+        the display is refreshed is known as "vertical blank".
+
+    VK_PRESENT_MODE_FIFO_RELAXED_KHR: 
+        This mode only differs from the previous one if
+    the application is late and the queue was empty at the last vertical blank. Instead
+    of waiting for the next vertical blank, the image is transferred right away when it
+    finally arrives. This may result in visible tearing.
+
+    VK_PRESENT_MODE_MAILBOX_KHR: 
+        This is another variation of the second mode. Instead
+    of blocking the application when the queue is full, the images that are already
+    queued are simply replaced with the newer ones. This mode can be used to implement
+    triple buffering, which allows you to avoid tearing with significantly less latency
+    issues than standard vertical sync that uses double buffering.
+
+*/
+
+
+    return availableFormats[0];
+}
+
+
+static zse_rvk__t_SwapChainSupportDetails _zse_rVK_t_querySwapChainSupport(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface) {
     zse_rvk__t_SwapChainSupportDetails details = {
         {0},
         0,
@@ -225,36 +324,94 @@ zse_rvk__t_SwapChainSupportDetails _zse_rVK_t_querySwapChainSupport(VkPhysicalDe
         0
     };
 
-    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &details.capabilities);
 
     uint32_t formatCount;
-    vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, NULL);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, NULL);
 
     if (formatCount)
     {
         details.formatsSize = formatCount;
         details.formats = calloc(sizeof(VkSurfaceFormatKHR), formatCount);
 
-        vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, details.formats);
     }
 
 
     uint32_t presentModeCount;
-    vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, NULL);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, NULL);
 
     if (presentModeCount) {
         details.presentModesSize = presentModeCount;
         details.presentModes = calloc(sizeof(VkSurfaceFormatKHR), presentModeCount);
 
-        vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, details.presentModes);
     }
 
     return details;
 }
 
+static zse_rvk__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+static VkSwapchainKHR _zse_rVK_createSwapChain(VkDevice device ,VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow *window )
+{
+    zse_rvk__t_SwapChainSupportDetails swapChainSupport = _zse_rVK_t_querySwapChainSupport(physicalDevice, surface);
+
+    VkSurfaceFormatKHR surfaceFormat = _zse_rVK__swap_chooseSwapSurfaceFormat(swapChainSupport.formats, swapChainSupport.formatsSize);
+    VkPresentModeKHR presentMode = _zse_rVK__swap_chooseSwapPresentMode(swapChainSupport.presentModes, swapChainSupport.presentModesSize);
+    VkExtent2D extent = _zse_rVK__swap_chooseSwapExtent(&swapChainSupport.capabilities, window );
+
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+        imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
 
 
-static zse_rVK__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+    VkSwapchainCreateInfoKHR createInfo = {0};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = surface;
+
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1;
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
+
+    uint32_t queueFamilyIndices[] = {indices.graphicsFamily, indices.presentFamily};
+
+    if (indices.graphicsFamily != indices.presentFamily) {
+        createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+        createInfo.queueFamilyIndexCount = 2;
+        createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    } else {
+        createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        createInfo.queueFamilyIndexCount = 0; // Optional
+        createInfo.pQueueFamilyIndices = NULL; // Optional
+    }
+
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE;
+
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+    VkSwapchainKHR swapChain;
+
+    if (vkCreateSwapchainKHR(device, &createInfo, NULL, &swapChain) != VK_SUCCESS) {
+        NOTPUB_log_error("Failed to create Swap Chain");
+    }
+
+    return swapChain;
+
+}
+
+
 static void _zse_rVK_cld_createLogicalDevice
 (
       int *errorCode
@@ -266,7 +423,7 @@ static void _zse_rVK_cld_createLogicalDevice
     , StringLines_t *deviceExtensions
 )
 {
-    zse_rVK__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(*physicalDevice, surface);
+    zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(*physicalDevice, surface);
 
 
     uint32_t uniqueQueueFamiliesUsed = 0;
@@ -330,9 +487,9 @@ static void _zse_rVK_cld_createLogicalDevice
 }
 
 
-static zse_rVK__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+static zse_rvk__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
 {
-    zse_rVK__t_QueueFamilyIndices indices = {0};
+    zse_rvk__t_QueueFamilyIndices indices = {0};
     
     uint32_t queueFamilyCount = 0;
     vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, NULL);
@@ -402,7 +559,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, S
 
 static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, StringLines_t *deviceExtensions)
 {
-    zse_rVK__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
+    zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
 
     int extensionsSupported = _zse_rVK__phd_checkDeviceExtensionSupport(physicalDevice, deviceExtensions);
     int indiceComplete = _zse_rVK_t_QueueFamilyIndices_isComplete(indices);
@@ -606,8 +763,10 @@ static int _zse_rVK_destroy
     , VkInstance *instance
     , VkDebugUtilsMessengerEXT *debugMessenger
     , VkDevice *device
+    , VkSwapchainKHR *swapChain
 )
 {
+    vkDestroySwapchainKHR(*device, *swapChain, NULL);
     vkDestroyDevice(*device, NULL);
 
     if (enableValidationLayers) {
@@ -650,6 +809,14 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
         , &Handles->_rVK_presentQueue
         , Handles->_rVK_surface
         , &Handles->_rVK_deviceExtentions
+    );
+
+    Handles->_rVK_swapChain = _zse_rVK_createSwapChain(
+          Handles->_rVK_device
+        , Handles->_rVK_physicalDevice
+        , Handles->_rVK_surface
+        , Handles->_rVK_window
+
     );
 
     return errorCode;
@@ -698,6 +865,7 @@ int zse_rVK_init(void)
         , &HANDLES->_rVK_vulkan_instance
         , &HANDLES->_rVK_debugMessenger
         , &HANDLES->_rVK_device
+        , &HANDLES->_rVK_swapChain
     );
 
     return 0;
