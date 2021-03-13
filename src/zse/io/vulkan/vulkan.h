@@ -10,7 +10,7 @@
 #ifndef ZSE_RENDER_VULKAN_H
 #define ZSE_RENDER_VULKAN_H
 
-
+int zse_rVK_init();
 
 
 #endif

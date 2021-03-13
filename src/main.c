@@ -131,8 +131,8 @@ int main(int argc, char const *argv[])
 
 	//void zse_rtT_tiskTest();
 	//zse_rtT_tiskTest();
-	void zse_render_vulkanInitTEST();	
-		zse_render_vulkanInitTEST();
+	void zse_rVK_init();	
+		zse_rVK_init();
 	srandom(clock());
 
 
