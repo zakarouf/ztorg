@@ -195,6 +195,114 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
     }
 }
 
+static zse_rVK__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
+static void _zse_rVK_cld_createLogicalDevice
+(
+      int *errorCode
+    , VkPhysicalDevice *physicalDevice
+    , VkDevice *device
+    , VkQueue *graphicsQueue
+    , VkQueue *presentQueue
+    , VkSurfaceKHR surface
+)
+{
+    zse_rVK__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(*physicalDevice, surface);
+
+
+    uint32_t uniqueQueueFamiliesUsed = 0;
+    //uint32_t uniqueQueueFamiliesSize = 2;
+    uint32_t uniqueQueueFamilies[2];
+    
+    if (indices.presentFamily == indices.graphicsFamily)
+    {
+        uniqueQueueFamiliesUsed = 1;
+        uniqueQueueFamilies[0] = indices.presentFamily;
+        NOTPUB_log_normal(":createLogicalDevice:Using Same `presentFamily`:%d and `graphicsFamily`:%d\n", indices.presentFamily, indices.graphicsFamily);
+    } else {
+        uniqueQueueFamiliesUsed = 2;
+        uniqueQueueFamilies[0] = indices.presentFamily;
+        uniqueQueueFamilies[1] = indices.graphicsFamily;
+        NOTPUB_log_normal(":createLogicalDevice:Using Different `presentFamily`:%d and `graphicsFamily`:%d\n", indices.presentFamily, indices.graphicsFamily);
+    }
+    
+
+    VkDeviceQueueCreateInfo *queueCreateInfos = calloc(sizeof(VkDeviceQueueCreateInfo) , uniqueQueueFamiliesUsed);
+
+    float queuePriority = 1.0f;
+    for (int i = 0; i < uniqueQueueFamiliesUsed; ++i)
+    {
+        queueCreateInfos[i].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfos[i].queueFamilyIndex = uniqueQueueFamilies[i];
+        queueCreateInfos[i].queueCount = 1;
+        queueCreateInfos[i].pQueuePriorities = &queuePriority;
+    }
+
+
+
+    VkPhysicalDeviceFeatures deviceFeatures = {0};
+
+    VkDeviceCreateInfo createInfo = {0};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+    createInfo.queueCreateInfoCount = uniqueQueueFamiliesUsed;
+    createInfo.pQueueCreateInfos = queueCreateInfos;
+
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+
+    createInfo.enabledExtensionCount = 0;
+
+    if (enableValidationLayers) {
+        createInfo.enabledLayerCount = GLOBAL_rVK_validationLayersCount;
+        createInfo.ppEnabledLayerNames = &GLOBAL_rVK_validationLayers;
+    } else {
+        createInfo.enabledLayerCount = 0;
+    }
+
+    if (vkCreateDevice(*physicalDevice, &createInfo, NULL, device) != VK_SUCCESS) {
+        NOTPUB_log_error("Failed to create logical device!");
+    }
+
+    vkGetDeviceQueue(*device, indices.graphicsFamily, 0, graphicsQueue);
+    vkGetDeviceQueue(*device, indices.presentFamily, 0, presentQueue);
+
+}
+
+
+static zse_rVK__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)
+{
+    zse_rVK__t_QueueFamilyIndices indices = {0};
+    
+    uint32_t queueFamilyCount = 0;
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, NULL);
+
+    VkQueueFamilyProperties *queueFamilies = malloc(sizeof(VkQueueFamilyProperties) * queueFamilyCount);
+    vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilies);
+
+    
+    for (int i = 0; (i < queueFamilyCount) || !_zse_rVK_t_QueueFamilyIndices_isComplete(indices); ++i)
+    {
+        if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+        {
+            indices.graphicsFamily = i;
+            indices.graphicsFamily_hasValue = true;
+        }
+
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &presentSupport);
+
+        if (presentSupport)
+        {
+            indices.presentFamily = i;
+            indices.presentFamily_hasValue = true;
+        }
+
+    }
+
+    free(queueFamilies);
+    return indices;
+}
+
 static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device) {
 
     uint32_t extensionCount;
