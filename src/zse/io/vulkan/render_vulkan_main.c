@@ -10,9 +10,9 @@
 #include "../../sys/sys.h"
 #include "vulkan.h"
 
-#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
+//#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
 //#define ZSE_CONFIG__rVK__MINIATURE
-#define ZSE_CONFIG__rVK__NDEBUG
+//#define ZSE_CONFIG__rVK__NDEBUG
 
 
 #define ZSE_CONFIG__rVK__OVERRIDE__physicalDevice 1
@@ -95,14 +95,14 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
 
-    StringLines_t _rVK_deviceExtentions;
+    z__StringLines _rVK_deviceExtentions;
 
 }_zse_rVK_HANDLERS;
 
 static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
-static void _zse_rVK_init_deviceExtentions(StringLines_t *dE)
+static void _zse_rVK_init_deviceExtentions(z__StringLines *dE)
 {
     int device = 1;
     *dE = z__StringLines_createEmpty(96, device);
@@ -420,7 +420,7 @@ static void _zse_rVK_cld_createLogicalDevice
     , VkQueue *graphicsQueue
     , VkQueue *presentQueue
     , VkSurfaceKHR surface
-    , StringLines_t *deviceExtensions
+    , z__StringLines *deviceExtensions
 )
 {
     zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(*physicalDevice, surface);
@@ -521,7 +521,7 @@ static zse_rvk__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalD
     return indices;
 }
 
-static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, StringLines_t *deviceExtensions) {
+static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z__StringLines *deviceExtensions) {
 
     uint32_t extensionCount;
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, NULL);
@@ -530,7 +530,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, S
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
 
 
-    StringLines_t requiredExtensions = z__StringLines_createEmpty(96, deviceExtensions->lines);
+    z__StringLines requiredExtensions = z__StringLines_createEmpty(96, deviceExtensions->lines);
     for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
     {
         z__StringLines_pushString(&requiredExtensions, 96, deviceExtensions->data[i]);
@@ -557,7 +557,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, S
     return TotalExtentionsRequired & ExtentionsFound;    
 }
 
-static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, StringLines_t *deviceExtensions)
+static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, z__StringLines *deviceExtensions)
 {
     zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
 
@@ -581,7 +581,7 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
     
 }
 
-static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface, StringLines_t *deviceExtensions)
+static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface, z__StringLines *deviceExtensions)
 {
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
@@ -622,10 +622,10 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 }
 
 
-static StringLines_t _zse_rVK_getRequiredExtentions()
+static z__StringLines _zse_rVK_getRequiredExtentions()
 {
 
-    StringLines_t strLines = z__StringLines_createEmpty(32, 5);
+    z__StringLines strLines = z__StringLines_createEmpty(32, 5);
 
     // Extentions
     uint32_t glfwExtensionCount = 0;
@@ -684,7 +684,7 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
     
 
     // Extentions
-    StringLines_t ExtentionsLayer = _zse_rVK_getRequiredExtentions();
+    z__StringLines ExtentionsLayer = _zse_rVK_getRequiredExtentions();
 
     createInfo.enabledExtensionCount = ExtentionsLayer.linesUsed;
     createInfo.ppEnabledExtensionNames = (const char *const *) ExtentionsLayer.data;

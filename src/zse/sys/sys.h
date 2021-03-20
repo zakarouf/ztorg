@@ -3,7 +3,7 @@
 
 #include "../common.h"
 
-StringLines_t zse_dir_getfnames(char path[]);
+z__StringLines zse_dir_getfnames(char path[]);
 
 int zse_sys_formatCheck(char version[]);
 long zse_sys_getRamUsage(void);

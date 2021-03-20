@@ -40,16 +40,16 @@ long zse_sys_getRamUsage(void)
     return usage.ru_maxrss;
 }
 
-StringLines_t zse_dir_getfnames(char path[])
+z__StringLines zse_dir_getfnames(char path[])
 {
     DIR * drip = opendir(path);
-    if(drip == NULL) return (StringLines_t){0} ;
+    if(drip == NULL) return (z__StringLines){0} ;
     struct dirent* dp;
 
 
     int items = 8;
     int i = 0;
-    StringLines_t fnames = z__StringLines_createEmpty(ZSE_MAX_FILENAME_SIZE, items);
+    z__StringLines fnames = z__StringLines_createEmpty(ZSE_MAX_FILENAME_SIZE, items);
 
     while((dp = readdir(drip)) != NULL)
     {
