@@ -7,18 +7,18 @@
 
 // Malloc And Free 2d Char, Orginally were Part of Ztorg (https://github.com/zakarouf/ztorg)
 // Now Moved to Common String
-static z__char_t **zse_calloc_2D_array_char (unsigned int x, unsigned int y) {
+static z__char **zse_calloc_2D_array_char (unsigned int x, unsigned int y) {
 
-    z__char_t **arr = calloc(sizeof(z__char_t*), y);
+    z__char **arr = calloc(sizeof(z__char*), y);
     for (int i = 0; i < y; ++i)
     {
-        arr[i] = calloc(sizeof(z__char_t), x);
+        arr[i] = calloc(sizeof(z__char), x);
     }
 
     return arr;
 
 }
-static void zse_free2dchar(z__char_t **mem, int size)
+static void zse_free2dchar(z__char **mem, int size)
 {
     for (int i = 0; i < size; ++i)
     {
@@ -48,7 +48,7 @@ z__String z__String_create(int size)
 {
     return (z__String){
 
-        .data = calloc(sizeof(z__char_t) , size),
+        .data = calloc(sizeof(z__char) , size),
         .size = size,
         .used = 0
     };
@@ -80,7 +80,7 @@ z__String z__String_MakeCopy(const z__String str)
 {
 
     z__String str2 = {
-        .data = calloc(sizeof(z__char_t) , str.size),
+        .data = calloc(sizeof(z__char) , str.size),
         .size = str.size,
         .used = str.used
     };
@@ -99,7 +99,7 @@ z__String z__String_Link(const z__String str)
     };
 }
 
-inline void z__Strint_append(z__String *str, const z__char_t* src, int length)
+inline void z__Strint_append(z__String *str, const z__char *src, int length)
 {
     if (length > 0)
     {
@@ -113,7 +113,7 @@ inline void z__Strint_append(z__String *str, const z__char_t* src, int length)
     }
 }
 
-inline void z__String_write(z__String *s, const z__char_t *st)
+inline void z__String_write(z__String *s, const z__char *st)
 {
     memcpy(s->data, st, s->size);
 }
@@ -127,7 +127,7 @@ inline void z__String_join(z__String *dest, z__String *src, unsigned int extraSp
 }
 
 /* See if `Char` exist in a string */
-int z_findCharInStr(z__String str, z__char_t c, int fromIndex)
+int z_findCharInStr(z__String str, z__char c, int fromIndex)
 {
     for (int i = fromIndex; i < str.size; ++i)
     {
@@ -171,7 +171,7 @@ void z__StringLines_Resize_Y (z__StringLines *ln , unsigned int newsize)
         {
             free(ln->data[i]);
         }
-        ln->data = safe_realloc(ln->data, sizeof(z__char_t*)*newsize);
+        ln->data = safe_realloc(ln->data, sizeof(z__char*)*newsize);
         
     }
     else if (ln->lines < newsize)
@@ -179,7 +179,7 @@ void z__StringLines_Resize_Y (z__StringLines *ln , unsigned int newsize)
         ln->data = safe_realloc(ln->data, newsize);
         for (int i = ln->lines; i < newsize; ++i)
         {
-            ln->data[i] = calloc(sizeof(z__char_t), ln->sizeofString);
+            ln->data[i] = calloc(sizeof(z__char), ln->sizeofString);
         }
     }
 
@@ -189,7 +189,7 @@ void z__StringLines_Resize_X (z__StringLines *ln, unsigned int newsize)
 {
     for (int i = 0; i < ln->lines; ++i)
     {
-        ln->data[i] = reallocf(ln->data[i], sizeof(z__char_t) * newsize);
+        ln->data[i] = reallocf(ln->data[i], sizeof(z__char) * newsize);
     }
 
     ln->sizeofString = newsize;   
@@ -224,7 +224,7 @@ z__StringLines z__String_spiltChar (z__String buffer, const char *restrict break
 
 }
 
-void z__StringLines_pushString(z__StringLines *strLines, int len, const z__char_t *string)
+void z__StringLines_pushString(z__StringLines *strLines, int len, const z__char *string)
 {
     if (strLines->lines <= strLines->linesUsed )
     {

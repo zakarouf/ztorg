@@ -1,11 +1,11 @@
 #ifndef ZAKAROUF__Z_TYPE_STRING_H
 #define ZAKAROUF__Z_TYPE_STRING_H
 
-typedef char z__char_t;
+typedef char z__char;
 
 typedef struct ZINT_STRING
 {
-    z__char_t * data;
+    z__char * data;
     int size;
     int used;
 
@@ -13,7 +13,7 @@ typedef struct ZINT_STRING
 
 typedef struct
 {
-    z__char_t **data;
+    z__char **data;
     unsigned int sizeofString;
     unsigned int lines;
     unsigned linesUsed;
@@ -36,7 +36,7 @@ typedef struct
 #define z__StringGetUsed_MF(String)\
     (z__String)String.used;    
 
-int z_findCharInStr(z__String str, z__char_t c, int fromIndex);
+int z_findCharInStr(z__String str, z__char c, int fromIndex);
 
 z__String z__String_create(int size);
 void z__String_delete(z__String * s);
@@ -44,7 +44,7 @@ void z__String_resize(z__String *str, int newsize);
 void z__String_Copy(z__String *str, const z__String val);
 z__String z__String_MakeCopy(const z__String str);
 z__String z__String_Link(const z__String str);
-void z__Strint_append(z__String *str, const z__char_t* src, int length);
+void z__Strint_append(z__String *str, const z__char* src, int length);
 void z__String_join(z__String *dest, z__String *src, unsigned int extraSpace);
 
 

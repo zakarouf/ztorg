@@ -10,7 +10,7 @@
 #include <math.h>
 
 #include "common_defs.h"
-#include "string/common_string.h"
+#include "string/zstring.h"
 #include "common_macrofunc.h"
 
 #endif
