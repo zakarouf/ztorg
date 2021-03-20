@@ -874,3 +874,4 @@ int zse_rVK_init(void)
 // undefs
 #undef NOTPUB_log_normal
 #undef NOTPUB_log_error
+#undef NOTPUB_log_distinct
