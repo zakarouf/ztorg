@@ -37,5 +37,5 @@ Just change to whatever your liking
 ```
 git clone https://github/zakarouf/ztorg
 cd ztorg
-python3 files.py ./ | ./install
+python3 cbuild.py
 ```
