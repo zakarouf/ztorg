@@ -265,7 +265,7 @@ int ztorg_tisk()
 	zse_rtT_initscr();
 
 	char name[] = "zak";
-	String_t returntilesetname = z__String_create(ZSE_MAX_FILENAME_SIZE);
+	z__String returntilesetname = z__String_create(ZSE_MAX_FILENAME_SIZE);
 
 	ST_WORLD_t *map = zse_map_load_st(name , returntilesetname.data);
 	TILESET_t tileset = zse_tileset_get(returntilesetname.data);

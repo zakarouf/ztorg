@@ -4,7 +4,7 @@
 #include "../../common.h"
 
 /* OUT */
-void zse_rtT_io_printString(String_t *s);
+void zse_rtT_io_printString(z__String *s);
 
 
 /* IN */

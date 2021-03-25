@@ -9,8 +9,9 @@
 #include <time.h>
 #include <math.h>
 
-#include "common_defs.h"
-#include "string/zstring.h"
+#include "zklib/ztypes.h"
 #include "common_macrofunc.h"
+
+#define frinl __attribute__((always_inline)) inline
 
 #endif
