@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <vulkan/vulkan_core.h>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -38,9 +39,11 @@
 
 #else
     #define NOTPUB_log_normal(...)\
-        {__VA_ARGS__;}
+        {;}
     #define NOTPUB_log_error(...)\
-        {__VA_ARGS__;}
+        {;}
+    #define NOTNOTPUB_log_distinct(...)\
+        {;}
 #endif
 
 
@@ -67,13 +70,7 @@ static int _zse_rVK_t_QueueFamilyIndices_isComplete(zse_rvk__t_QueueFamilyIndice
     return (indices.presentFamily_hasValue & indices.graphicsFamily_hasValue);
 }
 
-
-typedef struct _zse_rVK_swapChainImages_T
-{
-    VkImage *SC_Image;
-    uint32_t used;
-    uint32_t size;
-}_zse_rVK_swapChainImages;
+typedef z__Arr(VkImage) _zse_rVK_type__swapChainImages;
 typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 {
 
@@ -89,8 +86,9 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
     VkSurfaceKHR     _rVK_surface;
 
     VkSwapchainKHR   _rVK_swapChain;
-
-    _zse_rVK_swapChainImages _rVK_swapChainImages;
+    _zse_rVK_type__swapChainImages _rVK_swapChainImages;
+    VkFormat _rVK_swapChainImageFormat;
+    VkExtent2D _rVK_swapChainExtent;
 
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
@@ -352,7 +350,7 @@ static zse_rvk__t_SwapChainSupportDetails _zse_rVK_t_querySwapChainSupport(VkPhy
 }
 
 static zse_rvk__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
-static VkSwapchainKHR _zse_rVK_createSwapChain(VkDevice device ,VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, GLFWwindow *window )
+static VkSwapchainKHR _zse_rVK_createSwapChain(VkDevice device ,VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, _zse_rVK_type__swapChainImages *swapChainImages ,GLFWwindow *window )
 {
     zse_rvk__t_SwapChainSupportDetails swapChainSupport = _zse_rVK_t_querySwapChainSupport(physicalDevice, surface);
 
@@ -406,6 +404,12 @@ static VkSwapchainKHR _zse_rVK_createSwapChain(VkDevice device ,VkPhysicalDevice
     if (vkCreateSwapchainKHR(device, &createInfo, NULL, &swapChain) != VK_SUCCESS) {
         NOTPUB_log_error("Failed to create Swap Chain");
     }
+
+    vkGetSwapchainImagesKHR(device, swapChain, &imageCount, NULL);
+    z__Arr_resize(swapChainImages, imageCount+1);
+    vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages->data);
+    swapChainImages->lenUsed = imageCount;
+
 
     return swapChain;
 
@@ -815,6 +819,7 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
           Handles->_rVK_device
         , Handles->_rVK_physicalDevice
         , Handles->_rVK_surface
+        , &Handles->_rVK_swapChainImages
         , Handles->_rVK_window
 
     );
