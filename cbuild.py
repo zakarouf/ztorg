@@ -11,9 +11,9 @@ ignorePatternFront = ["."]
 ignorePatternEnd = []
 onlyTakePatternEnd = [".c"]
 
-CC="clang-mp-9.0"
+CC="gcc"
 ERRFLAGS = ["-Wall"]
-CFLAGS=["-std=c2x", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
+CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
 #LDFLAGS=["-lm", "-lncurses", "-lraylib"]
 LDFLAGS=["-lm", "-lvulkan", "-lglfw", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
