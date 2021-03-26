@@ -91,7 +91,7 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
     VkFormat _rVK_swapChainImageFormat;
     VkExtent2D _rVK_swapChainExtent;
 
-    _zse_rVK_type__swapChainImageViews _rVK_swapChainImagesViews;
+    _zse_rVK_type__swapChainImageViews _rVK_swapChainImageViews;
 
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
@@ -234,18 +234,43 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
 
 static void _zse_rVK_createImageViews(_zse_rVK_HANDLERS *Handle)
 {
-    z__Arr_create(&Handle->_rVK_swapChainImagesViews, Handle->_rVK_swapChainImages.lenUsed);
+    z__Arr_create(&Handle->_rVK_swapChainImageViews, Handle->_rVK_swapChainImages.lenUsed);
 
+    NOTPUB_log_normal("Creating Image Views: %d\n", Handle->_rVK_swapChainImages.lenUsed);
 
-    for (int i; i < Handle->_rVK_swapChainImages.lenUsed; i++) {
-        VkImageViewCreateInfo createInfo = {0};
+    Handle->_rVK_swapChainImageViews.lenUsed = 0;
+
+    for (int i = 0; i < Handle->_rVK_swapChainImages.lenUsed; i++) {
+        VkImageViewCreateInfo createInfo = {};
+
+        createInfo.flags = 0;
+        createInfo.pNext = NULL;
+        createInfo.subresourceRange.baseMipLevel = 0;
+        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.baseArrayLayer = 0;
+        createInfo.subresourceRange.layerCount = 1;
+        createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-
+        
         createInfo.image = Handle->_rVK_swapChainImages.data[i];
         createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
 
         createInfo.format = Handle->_rVK_swapChainImageFormat;
+
+        createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+        createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+
+        if (vkCreateImageView(Handle->_rVK_device, &createInfo, NULL, &Handle->_rVK_swapChainImageViews.data[i]) != VK_SUCCESS) {
+            NOTPUB_log_error("failed to create image views!");
+        }
+
+        Handle->_rVK_swapChainImageViews.lenUsed += 1;
     }
+
+
 
 
 
@@ -803,8 +828,15 @@ static int _zse_rVK_destroy
     , VkDebugUtilsMessengerEXT *debugMessenger
     , VkDevice *device
     , VkSwapchainKHR *swapChain
+    , _zse_rVK_type__swapChainImageViews *swapChainImageViews
 )
 {
+    for (int i = 0; i < swapChainImageViews->lenUsed; i++) 
+    {
+        vkDestroyImageView(*device, swapChainImageViews->data[i], NULL);
+    }
+    z__Arr_delete(swapChainImageViews);
+
     vkDestroySwapchainKHR(*device, *swapChain, NULL);
     vkDestroyDevice(*device, NULL);
 
@@ -861,6 +893,8 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
 
     );
 
+    _zse_rVK_createImageViews(Handles);
+
     return errorCode;
 }
 
@@ -909,6 +943,7 @@ int zse_rVK_init(void)
         , &HANDLES->_rVK_debugMessenger
         , &HANDLES->_rVK_device
         , &HANDLES->_rVK_swapChain
+        , &HANDLES->_rVK_swapChainImageViews
     );
 
     return 0;
