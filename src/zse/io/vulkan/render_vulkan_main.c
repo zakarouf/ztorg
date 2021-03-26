@@ -71,6 +71,7 @@ static int _zse_rVK_t_QueueFamilyIndices_isComplete(zse_rvk__t_QueueFamilyIndice
 }
 
 typedef z__Arr(VkImage) _zse_rVK_type__swapChainImages;
+typedef z__Arr(VkImageView) _zse_rVK_type__swapChainImageViews;
 typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 {
 
@@ -89,6 +90,8 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
     _zse_rVK_type__swapChainImages _rVK_swapChainImages;
     VkFormat _rVK_swapChainImageFormat;
     VkExtent2D _rVK_swapChainExtent;
+
+    _zse_rVK_type__swapChainImageViews _rVK_swapChainImagesViews;
 
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
@@ -227,7 +230,30 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
 // DEBUGER END
 
 
+/// IMAGE
 
+static void _zse_rVK_createImageViews(_zse_rVK_HANDLERS *Handle)
+{
+    z__Arr_create(&Handle->_rVK_swapChainImagesViews, Handle->_rVK_swapChainImages.lenUsed);
+
+
+    for (int i; i < Handle->_rVK_swapChainImages.lenUsed; i++) {
+        VkImageViewCreateInfo createInfo = {0};
+        createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+
+        createInfo.image = Handle->_rVK_swapChainImages.data[i];
+        createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+
+        createInfo.format = Handle->_rVK_swapChainImageFormat;
+    }
+
+
+
+}
+
+
+
+///////
 
 static VkExtent2D _zse_rVK__swap_chooseSwapExtent(const VkSurfaceCapabilitiesKHR* capabilities, GLFWwindow *window)
 {
