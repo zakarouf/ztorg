@@ -350,7 +350,14 @@ static zse_rvk__t_SwapChainSupportDetails _zse_rVK_t_querySwapChainSupport(VkPhy
 }
 
 static zse_rvk__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface);
-static VkSwapchainKHR _zse_rVK_createSwapChain(VkDevice device ,VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, _zse_rVK_type__swapChainImages *swapChainImages ,GLFWwindow *window )
+static VkSwapchainKHR _zse_rVK_createSwapChain
+(     VkDevice device
+    , VkPhysicalDevice physicalDevice
+    , VkSurfaceKHR surface
+    , _zse_rVK_type__swapChainImages *swapChainImages
+    , VkFormat *swapChainImageFormat
+    , VkExtent2D *swapChainExtent
+    , GLFWwindow *window )
 {
     zse_rvk__t_SwapChainSupportDetails swapChainSupport = _zse_rVK_t_querySwapChainSupport(physicalDevice, surface);
 
@@ -406,10 +413,12 @@ static VkSwapchainKHR _zse_rVK_createSwapChain(VkDevice device ,VkPhysicalDevice
     }
 
     vkGetSwapchainImagesKHR(device, swapChain, &imageCount, NULL);
-    z__Arr_resize(swapChainImages, imageCount+1);
+    z__Arr_create(swapChainImages, imageCount+1);
     vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages->data);
     swapChainImages->lenUsed = imageCount;
 
+    *swapChainImageFormat = surfaceFormat.format;
+    *swapChainExtent = extent;
 
     return swapChain;
 
@@ -820,6 +829,8 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
         , Handles->_rVK_physicalDevice
         , Handles->_rVK_surface
         , &Handles->_rVK_swapChainImages
+        , &Handles->_rVK_swapChainImageFormat
+        , &Handles->_rVK_swapChainExtent
         , Handles->_rVK_window
 
     );
@@ -842,6 +853,7 @@ static _zse_rVK_HANDLERS *_zse_rVK_initHANDLES(void)
     h->_rVK_device = 0;
     h->_rVK_vulkan_instance = 0;
     h->_rVK_debugMessenger = 0;
+
 
     _zse_rVK_init_deviceExtentions(&h->_rVK_deviceExtentions);
 
