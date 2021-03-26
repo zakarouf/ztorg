@@ -20,8 +20,9 @@ void zse_sys_msleep(int milliseconds);
         array[i] = val;\
 
 
+z__i8Arr zse_sys_readFile(char filename[]);
 
-// Looger
+// Logger
 void zse_sys_log(void * fileStream ,const char * restrict, ...);
 
 #endif

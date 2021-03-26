@@ -95,3 +95,27 @@ int zse_sys_getLocalTime(int *h, int *m, int *s)
 
     return 0;
 }
+
+z__i8Arr zse_sys_readFile(char filename[])
+{
+    FILE *fp;
+    if ((fp = fopen(filename, "rb")) == NULL)
+    {
+        return (z__i8Arr){NULL, -1, -1};
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);  /* same as rewind(f); */
+
+    void *data = malloc(fsize + 1);
+    fread(data, 1, fsize, fp);
+    fclose(fp);
+
+    return (z__i8Arr) {
+        .data = data,
+        .len = fsize +1,
+        .lenUsed = fsize +1
+    };
+
+}
