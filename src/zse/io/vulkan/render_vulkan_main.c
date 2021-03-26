@@ -230,6 +230,12 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
 // DEBUGER END
 
 
+void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
+{
+
+}
+
+
 /// IMAGE
 
 static void _zse_rVK_createImageViews(_zse_rVK_HANDLERS *Handle)
@@ -894,6 +900,8 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
     );
 
     _zse_rVK_createImageViews(Handles);
+
+    _zse_rVK_createGraphicsPipeline(Handles);
 
     return errorCode;
 }
