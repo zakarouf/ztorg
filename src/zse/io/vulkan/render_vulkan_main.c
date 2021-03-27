@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <vulkan/vulkan_core.h>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -11,7 +10,7 @@
 #include "../../sys/sys.h"
 #include "vulkan.h"
 
-//#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
+#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
 //#define ZSE_CONFIG__rVK__MINIATURE
 //#define ZSE_CONFIG__rVK__NDEBUG
 
@@ -93,7 +92,9 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 
     _zse_rVK_type__swapChainImageViews _rVK_swapChainImageViews;
 
+    VkRenderPass _rVK_renderPass;
     VkPipelineLayout _rVK_pipelineLayout;
+    VkPipeline _rVK_graphicsPipeline;
 
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
@@ -231,7 +232,74 @@ static void _zse_rVK_setupDebugMessenger(VkInstance instance, VkDebugUtilsMessen
 
 // DEBUGER END
 
-static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__i8Arr code)
+static void _zse_rVK_createRenderPass(_zse_rVK_HANDLERS *Handles)
+{
+    // Creating Color Attachment
+    VkAttachmentDescription colorAttachment = {};
+    colorAttachment.format = Handles->_rVK_swapChainImageFormat;
+    colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+    colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+
+    colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    colorAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+
+    // Creating Reference
+    VkAttachmentReference colorAttachmentRef = {};
+    colorAttachmentRef.attachment = 0;
+    colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+
+    // Creating Subpass
+    VkSubpassDescription subpass = {};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &colorAttachmentRef;
+
+
+    VkRenderPassCreateInfo renderPassInfo = {};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassInfo.attachmentCount = 1;
+    renderPassInfo.pAttachments = &colorAttachment;
+    renderPassInfo.subpassCount = 1;
+    renderPassInfo.pSubpasses = &subpass;
+
+    if (vkCreateRenderPass(Handles->_rVK_device, &renderPassInfo, NULL, &Handles->_rVK_renderPass) != VK_SUCCESS) {
+        NOTPUB_log_error("failed to create render pass!");
+    }
+
+};
+
+static z__Dynt _zse_rVK_readFile_SPV(char filename[], const char *comment, const z__i32 commentLen)
+{
+    FILE *fp;
+    if ((fp = fopen(filename, "rb")) == NULL)
+    {
+        return (z__Dynt){NULL};
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    fsize += 1;
+    fseek(fp, 0, SEEK_SET);  /* same as rewind(f); */
+
+    z__Dynt Object = z__Dynt_create(1, fsize, comment, commentLen, 0);
+    memset(Object.data, 0, fsize);
+
+    fread(Object.data, 1, (fsize-1), fp);
+
+    fclose(fp);
+
+    return Object;
+
+}
+
+static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__Dynt code)
 {
     VkShaderModuleCreateInfo createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -251,7 +319,7 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
     VkShaderModule shaderModule;
 
     if (vkCreateShaderModule(Handle->_rVK_device, &createInfo, NULL, &shaderModule) != VK_SUCCESS) {
-        NOTPUB_log_error("Failed to create shader module!");
+        NOTPUB_log_error("Failed to create shader module!\n");
     }
 
     return shaderModule;
@@ -259,8 +327,8 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
 
 static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 {
-    z__i8Arr vertShaderCode = zse_sys_readFile("shaders/vert.spv");
-    z__i8Arr fragShaderCode = zse_sys_readFile("shaders/frag.spv");
+    z__Dynt vertShaderCode = _zse_rVK_readFile_SPV("shaders/src/shader_test.vert.spv", "Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
+    z__Dynt fragShaderCode = _zse_rVK_readFile_SPV("shaders/src/shader_test.frag.spv", "Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
 
     if (vertShaderCode.data == NULL)
     {
@@ -410,14 +478,45 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     pipelineLayoutInfo.pPushConstantRanges = NULL; // Optional
 
     if (vkCreatePipelineLayout(Handle->_rVK_device, &pipelineLayoutInfo, NULL, &Handle->_rVK_pipelineLayout) != VK_SUCCESS) {
-        NOTPUB_log_error("failed to create pipeline layout!");
+        NOTPUB_log_error("Failed to create pipeline layout!");
     }
 
 
+
+    VkGraphicsPipelineCreateInfo pipelineInfo = {};
+
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.stageCount = 2;
+    pipelineInfo.pStages = shaderStages;
+
+    pipelineInfo.pVertexInputState = &vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &rasterizer;
+    pipelineInfo.pMultisampleState = &multisampling;
+    pipelineInfo.pDepthStencilState = NULL; // Optional
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDynamicState = NULL; // Optional
+
+    pipelineInfo.layout = Handle->_rVK_pipelineLayout;
+    pipelineInfo.renderPass = Handle->_rVK_renderPass;
+    pipelineInfo.subpass = 0;
+
+    pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
+    pipelineInfo.basePipelineIndex = -1; // Optional
+
+
+
+    if (vkCreateGraphicsPipelines(Handle->_rVK_device, VK_NULL_HANDLE, 1, &pipelineInfo, NULL, &Handle->_rVK_graphicsPipeline) != VK_SUCCESS) {
+       NOTPUB_log_error("Failed to create graphics pipeline!\n");
+    }
+
     // Clean up
 
-    z__Arr_delete(&vertShaderCode);
-    z__Arr_delete(&fragShaderCode);
+    z__Dynt_delete(&vertShaderCode, true);
+    z__Dynt_delete(&fragShaderCode, true);
     vkDestroyShaderModule(Handle->_rVK_device, fragShaderModule, NULL);
     vkDestroyShaderModule(Handle->_rVK_device, vertShaderModule, NULL);
 }
@@ -1022,10 +1121,14 @@ static int _zse_rVK_destroy
     , VkDevice *device
     , VkSwapchainKHR *swapChain
     , _zse_rVK_type__swapChainImageViews *swapChainImageViews
+    , VkRenderPass *renderPass
     , VkPipelineLayout *pipelineLayout
+    , VkPipeline *graphicsPipeline
 )
 {
+    vkDestroyPipeline(*device, *graphicsPipeline, NULL);
     vkDestroyPipelineLayout(*device, *pipelineLayout, NULL);
+    vkDestroyRenderPass(*device, *renderPass, NULL);
 
     for (int i = 0; i < swapChainImageViews->lenUsed; i++) 
     {
@@ -1053,14 +1156,17 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
 {
     int errorCode;
     
+    NOTPUB_log_distinct(6, "Initialization::Creating Vulkan Instatance\n");
     Handles->_rVK_vulkan_instance = _zse_rVK_createInstance(&errorCode);
     _zse_rVK_setupDebugMessenger(Handles->_rVK_vulkan_instance, &Handles->_rVK_debugMessenger);
 
+    NOTPUB_log_distinct(6, "Initialization::Creating Vulkan Surface\n");
     Handles->_rVK_surface = _zse_rVK_createSurface(
           &errorCode
         , Handles->_rVK_vulkan_instance
         , Handles->_rVK_window);
 
+    NOTPUB_log_distinct(6, "Initialization::Picking Physical Device\n");
     Handles->_rVK_physicalDevice = _zse_rVK_pickPhysicalDevice(
           &errorCode
         , Handles->_rVK_vulkan_instance
@@ -1068,6 +1174,7 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
         , &Handles->_rVK_deviceExtentions
     );
 
+    NOTPUB_log_distinct(6, "Initialization::Creating Logical Device\n");
     _zse_rVK_cld_createLogicalDevice(
           &errorCode
         , &Handles->_rVK_physicalDevice
@@ -1078,6 +1185,7 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
         , &Handles->_rVK_deviceExtentions
     );
 
+    NOTPUB_log_distinct(6, "Initialization::Creating Swap Chain\n");
     Handles->_rVK_swapChain = _zse_rVK_createSwapChain(
           Handles->_rVK_device
         , Handles->_rVK_physicalDevice
@@ -1089,8 +1197,13 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
 
     );
 
+    NOTPUB_log_distinct(6, "Initialization::Creating Image Views\n");
     _zse_rVK_createImageViews(Handles);
 
+    NOTPUB_log_distinct(6, "Initialization::Creating Render Pass\n");
+    _zse_rVK_createRenderPass(Handles);
+
+    NOTPUB_log_distinct(6, "Initialization::Creating Graphics Pipe\n");
     _zse_rVK_createGraphicsPipeline(Handles);
 
     return errorCode;
@@ -1142,7 +1255,9 @@ int zse_rVK_init(void)
         , &HANDLES->_rVK_device
         , &HANDLES->_rVK_swapChain
         , &HANDLES->_rVK_swapChainImageViews
+        , &HANDLES->_rVK_renderPass
         , &HANDLES->_rVK_pipelineLayout
+        , &HANDLES->_rVK_graphicsPipeline
     );
 
     return 0;
