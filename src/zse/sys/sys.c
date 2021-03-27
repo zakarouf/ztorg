@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <string.h>
+
 #ifdef WIN32
 #include <windows.h>
 #elif _POSIX_C_SOURCE >= 199309L
@@ -117,5 +119,30 @@ z__i8Arr zse_sys_readFile(char filename[])
         .len = fsize +1,
         .lenUsed = fsize +1
     };
+
+}
+
+z__Dynt zse_sys__Dynt_readFile(const char filename[],const z__size subDiv,const char *comment, const z__i32 commentLen)
+{
+    FILE *fp;
+    if ((fp = fopen(filename, "rb")) == NULL)
+    {
+        return (z__Dynt){NULL};
+    }
+
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    fsize += 1;
+
+    fseek(fp, 0, SEEK_SET);  /* same as rewind(f); */
+
+    z__Dynt Object = z__Dynt_create(subDiv, fsize/subDiv, comment, commentLen, 0);
+    memset(Object.data, 0, fsize);
+
+    fread(Object.data, 1, (fsize-1), fp);
+
+    fclose(fp);
+
+    return Object;
 
 }

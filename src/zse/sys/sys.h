@@ -21,6 +21,7 @@ void zse_sys_msleep(int milliseconds);
 
 
 z__i8Arr zse_sys_readFile(char filename[]);
+z__Dynt zse_sys__Dynt_readFile(const char filename[],const z__size subDiv,const char *comment, const z__i32 commentLen);
 
 // Logger
 void zse_sys_log(void * fileStream ,const char * restrict, ...);
