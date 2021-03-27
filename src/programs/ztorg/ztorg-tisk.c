@@ -2,8 +2,8 @@
 #include <string.h>
 #include <math.h>
 
-#include "../zse/zse.h"
-#include "../zse/io/tisk/tisk.h"
+#include "../../zse/zse.h"
+#include "../../zse/io/tisk/tisk.h"
 
 
 #ifdef Z_FREE_ROTATION
