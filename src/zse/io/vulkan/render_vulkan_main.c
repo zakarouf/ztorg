@@ -275,33 +275,10 @@ static void _zse_rVK_createRenderPass(_zse_rVK_HANDLERS *Handles)
 
 };
 
-static z__Dynt _zse_rVK_readFile_SPV(char filename[], const char *comment, const z__i32 commentLen)
-{
-    FILE *fp;
-    if ((fp = fopen(filename, "rb")) == NULL)
-    {
-        return (z__Dynt){NULL};
-    }
-
-    fseek(fp, 0, SEEK_END);
-    long fsize = ftell(fp);
-    fsize += 1;
-    fseek(fp, 0, SEEK_SET);  /* same as rewind(f); */
-
-    z__Dynt Object = z__Dynt_create(1, fsize, comment, commentLen, 0);
-    memset(Object.data, 0, fsize);
-
-    fread(Object.data, 1, (fsize-1), fp);
-
-    fclose(fp);
-
-    return Object;
-
-}
-
 static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__Dynt code)
 {
-    VkShaderModuleCreateInfo createInfo = {};
+    VkShaderModuleCreateInfo createInfo;
+
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 
     /*
@@ -311,8 +288,7 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
      * This is probably the worst way to do so.
      * -------------------------------------------------------------
      */
-    const int CodeSize_offset = code.len%sizeof(z__u32);
-    createInfo.codeSize = code.len - CodeSize_offset;
+    createInfo.codeSize = code.len * code.size;
 
     createInfo.pCode = (z__u32*)code.data;
 
@@ -327,8 +303,8 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
 
 static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 {
-    z__Dynt vertShaderCode = _zse_rVK_readFile_SPV("shaders/vert.spv", "Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
-    z__Dynt fragShaderCode = _zse_rVK_readFile_SPV("shaders/frag.spv", "Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
+    z__Dynt vertShaderCode = zse_sys__Dynt_readFile("shaders/vert.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
+    z__Dynt fragShaderCode = zse_sys__Dynt_readFile("shaders/frag.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
 
     if (vertShaderCode.data == NULL)
     {
@@ -343,6 +319,7 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     VkShaderModule vertShaderModule = _zse_rVK_createShaderModule(Handle, vertShaderCode);
     VkShaderModule fragShaderModule = _zse_rVK_createShaderModule(Handle, fragShaderCode);
 
+    NOTPUB_log_normal("Shader: Compilation Process:: DONE!\n");
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -356,7 +333,7 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     fragShaderStageInfo.module = fragShaderModule;
     fragShaderStageInfo.pName = "main";
 
-    VkPipelineShaderStageCreateInfo shaderStages[] = {vertShaderStageInfo, fragShaderStageInfo};
+    VkPipelineShaderStageCreateInfo shaderStages[2] = {vertShaderStageInfo, fragShaderStageInfo};
 
     /* Do Stuff with Shader */
 
@@ -477,6 +454,7 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
     pipelineLayoutInfo.pPushConstantRanges = NULL; // Optional
 
+
     if (vkCreatePipelineLayout(Handle->_rVK_device, &pipelineLayoutInfo, NULL, &Handle->_rVK_pipelineLayout) != VK_SUCCESS) {
         NOTPUB_log_error("Failed to create pipeline layout!");
     }
@@ -519,6 +497,8 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     z__Dynt_delete(&fragShaderCode, true);
     vkDestroyShaderModule(Handle->_rVK_device, fragShaderModule, NULL);
     vkDestroyShaderModule(Handle->_rVK_device, vertShaderModule, NULL);
+
+
 }
 
 
@@ -1085,7 +1065,6 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
     }
 
     *errorCode = 0;
-
 
 
     return instance;
