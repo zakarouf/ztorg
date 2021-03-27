@@ -1,3 +1,4 @@
+#include <ncurses/ncurses.h>
 #include "render_curses_sprite.h"
 
 int zse_rtC_spritePrintAll
@@ -55,7 +56,7 @@ FUNTION_END:
 	return 0;
 }
 
-int zse_rtC_spriteSmooth(float pos, float slength)
+__attribute__((always_inline)) inline int zse_rtC_spriteSmooth(float pos, float slength)
 {
 	return (pos * slength)+(pos*1/slength) -slength;
 }

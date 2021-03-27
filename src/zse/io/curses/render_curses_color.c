@@ -1,4 +1,5 @@
 #include "curses.h"
+#include <ncurses/ncurses.h>
 
 int zse_rtC_color_initpairs(void)
 {

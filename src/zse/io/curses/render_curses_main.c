@@ -1,3 +1,5 @@
+#include <ncurses/ncurses.h>
+
 #include "curses.h"
 
 int zse_rtC_init()
