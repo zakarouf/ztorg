@@ -133,8 +133,7 @@ void mainpgm(int argc, char const *argv[])
 
     //void zse_rtT_tiskTest();
     //zse_rtT_tiskTest();
-    void zse_rVK_init();    
-        //zse_rVK_init();
+
     srandom(clock());
 
 
@@ -154,8 +153,12 @@ void mainpgm(int argc, char const *argv[])
 
 int main(int argc, char const *argv[])
 {
-    mainpgm(argc, argv);
+    //mainpgm(argc, argv);
 
+    void zse_rVK_init(void);    
+    //zse_rVK_init();
+    void zse_rGL_init(void);
+    zse_rGL_init();
 
     return 0;
 }

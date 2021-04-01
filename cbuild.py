@@ -4,7 +4,7 @@ from subprocess import Popen
 from datetime import datetime
 
 
-folderIgnore={"data", "doc" , ".git", "SDL", "opengl", "demos_curses", "tools_curses", "logic", "shader", "ztorg"}
+folderIgnore={"data", "doc" , ".git", "SDL", "demos_curses", "tools_curses", "logic", "shader", "ztorg"}
 IgnoreNames={"cave_hunter.c", "ztorg-raylib.c", "zse.c"}
 
 ignorePatternFront = ["."]
@@ -15,14 +15,14 @@ CC="gcc"
 ERRFLAGS = ["-Wall"]
 CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
 #LDFLAGS=["-lm", "-lncurses", "-lraylib"]
-LDFLAGS=["-lm", "-lvulkan", "-lglfw", "-lncurses", "-Wl,-rpath", "-Wl,/usr/local/lib"]
+LDFLAGS=["-lm", "-lvulkan", "-lglfw", "-lncurses", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
 
 
 gSource = "./"
 gCleanEnabled = 0
 gTestEnabled = 1
-gTestCommands = ["-i" ,"./examples/helloworld.zintfile"]
+gTestCommands = [""]
 
 #-----G-END-----#
 
