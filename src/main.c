@@ -2,7 +2,9 @@
 #include <stdio.h>
 
 #include "zse/zse.h"
-#include "zse/io/curses/curses.h"
+//#include "zse/io/curses/curses.h"
+
+#if 0
 
 #ifdef BUILD__WITH__TOOLS_CURSES
 #  include "programs/tools_curses/zse_tools.h"
@@ -150,15 +152,20 @@ void mainpgm(int argc, char const *argv[])
 
 }
 
+#endif
 
 int main(int argc, char const *argv[])
 {
     //mainpgm(argc, argv);
 
+    /* Vulkan */
     void zse_rVK_init(void);    
     //zse_rVK_init();
+
+
+    /* OpenGL */
     void zse_rGL_init(void);
-    zse_rGL_init();
+    //zse_rGL_init();
 
     #define ZSE___TEST___ON
     #ifdef ZSE___TEST___ON
