@@ -1,4 +1,4 @@
-#include "../zse/zse_all/zse_all.h"
+#include "../../zse/zse_all/zse_all.h"
 #undef KEY_END
 #undef KEY_HOME
 #undef KEY_LEFT
@@ -222,15 +222,8 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
     // 0 is Floor
     // 1 is Wall
 
-    Camera cam3d = {0};
 
-    cam3d.position = (Vector3){ 4.0f, 2.0f, 4.0f };
-    cam3d.target = player;
-    cam3d.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-    cam3d.fovy = 60.0f;
-    cam3d.type = CAMERA_PERSPECTIVE;
-
-    SetCameraMode(cam3d, CAMERA_FIRST_PERSON); // Set a first person camera mode
+//    SetCameraMode(cam3d, CAMERA_FIRST_PERSON); // Set a first person camera mode
 
     while(!WindowShouldClose())
     {
