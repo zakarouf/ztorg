@@ -160,5 +160,13 @@ int main(int argc, char const *argv[])
     void zse_rGL_init(void);
     zse_rGL_init();
 
+    #define ZSE___TEST___ON
+    #ifdef ZSE___TEST___ON
+
+        int zse___TEST(void);
+        zse___TEST();
+
+    #endif
+
     return 0;
 }
