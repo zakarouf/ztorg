@@ -9,8 +9,8 @@
 #include "render_tisk_io.h"
 
 
-#define zse_rtT_getmaxx() 1390
-#define zse_rtT_getmaxy() 800
+#define zse_rtT_getmaxx() 300
+#define zse_rtT_getmaxy() 90
 
 void zse_rtT_init(void);
 void zse_rtT_exit(void);
