@@ -23,6 +23,10 @@ void zse_map__ch_load_singleChunk(const char mapname[] ,zset__mapCh *map, z__u32
 	char file[128];
 	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
 	FILE *fp = fopen(file, "rb");
+	if (fp == NULL) {
+		map->chunks[chunk] = NULL;
+		return;
+	}
 
 	fread(map->chunks[chunk], sizeof(**map->chunks), map->size.x * map->size.z * map->size.y, fp);
 

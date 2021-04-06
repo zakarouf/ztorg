@@ -1,40 +1,35 @@
-#include "map_lib.h"
+#include "map_ch.h"
 
-
-void zse_map_draw_circle (ST_WORLD_t *map, int x, int y, int z ,int r , plotdata_t tile)
+void zse_map__draw_circle (zset__mapChPlot *chunk, z__Vint3 on , z__Vint2 bounds , z__i32 r, zset__mapChPlot plot)
 {
+	z__i32 i = on.y - r;
+	z__i32 end_i = on.y + r + 1;
+	z__i32 end_j = on.x + r + 1;
 
-	int i = y - r;
-	int end_i = y + r + 1;
-	int end_j = x + r + 1;
-
-	if(i < 0)
-	{
+	if(i < 0) {
 		i = 0;
 	}
-	if (end_i >= map->Ysize)
-	{
-		end_i = map->Ysize;
+	if (end_i >= bounds.y) {
+		end_i = bounds.y;
 	}
-	if(end_j >= map->Xsize)
-	{
-		end_j = map->Xsize;
+	if(end_j >= bounds.x) {
+		end_j = bounds.x;
 	}
 	
-	int tmp_j = (x-r < 0)? 0:x-r;
+	z__i32 tmp_j = (on.x - r < 0)? 0: on.x - r;
 
     for (; i < end_i; ++i) {
     	int j = tmp_j;
 
         for (; j < end_j ; ++j) {
 
-            if( ((j - x) * (j - x) + (i - y) * (i - y)) <= r * r ) {
-                	map->chunk[zse_xyz3Dto1D(j, i, z, map->Xsize, map->Ysize)] = tile;
+            if( ((j - on.x) * (j - on.x) + (i - on.y) * (i - on.y)) <= r * r ) {
+                	chunk[zse_xyz3Dto1D(j, i, on.z, bounds.x, bounds.y)] = plot;
             }
         }
     }
 }
-
+/*
 void zse_map_fillupchunk_in(IN_WORLD_t *mapIN, int ChunkNo, int atChunkX, int atChunkY)
 {
 	int w = (atChunkX * mapIN->ChunkSizeXY);
@@ -60,3 +55,4 @@ void zse_map_fillentireChunks_in(IN_WORLD_t *mapIN, int px, int py)
 		}
 	}
 }
+*/
