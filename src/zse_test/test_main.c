@@ -7,7 +7,7 @@
 #define ZSE___TEST___SUCESSS true
 
 
-static void _zse___TEST_map__draw(zset__mapCh *map)
+static void _zse___TEST_map__draw(zset__MapCh *map)
 {
 	for (int i = 0; i < map->size.y; ++i)
 	{
@@ -21,7 +21,7 @@ static void _zse___TEST_map__draw(zset__mapCh *map)
 
 static z__bool zse___TEST_map_export(void)
 {
-	zset__mapCh *map = zse_map__ch_createEmpty(10, 10, 1, 1);
+	zset__MapCh *map = zse_map__ch_createEmpty(10, 10, 1, 1);
 	memset(map->chunks[0], 0, 10*10);
 
 	zse_rtT_init();
@@ -49,7 +49,7 @@ static z__bool zse___TEST_map_export(void)
 
 static z__bool zse___TEST_map_load(void)
 {
-	zset__mapCh *map = zse_map__ch_load__st("foo");
+	zset__MapCh *map = zse_map__ch_load__st("foo");
 
 	_zse___TEST_map__draw(map);
 
