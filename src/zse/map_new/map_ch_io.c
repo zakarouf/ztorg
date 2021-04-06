@@ -18,7 +18,7 @@
  main world data file naming format 'x,y,z.bin'
 ----*/
 
-void zse_map__ch_load_singleChunk(char mapname[] ,zset__mapCh *map, z__u32 chunk, z__Vint3 Chunk_cords)
+void zse_map__ch_load_singleChunk(const char mapname[] ,zset__mapCh *map, z__u32 chunk, z__Vint3 Chunk_cords)
 {
 	char file[128];
 	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
@@ -29,7 +29,7 @@ void zse_map__ch_load_singleChunk(char mapname[] ,zset__mapCh *map, z__u32 chunk
 	fclose(fp);
 }
 
-static void zse_map__ch_load_commondata(char mapname[], zset__mapCh *map)
+static void zse_map__ch_load_commondata(const char mapname[], zset__mapCh *map)
 {
 	char file[128];
 	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s" MAP_DATAFILE_COMMON, mapname);
@@ -38,20 +38,17 @@ static void zse_map__ch_load_commondata(char mapname[], zset__mapCh *map)
 	char version[ZSE_ENGINE_VERSION_SIGN_SIZE];
 
 	fread( version, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
-	fread( &map->size.x, sizeof(map->size.x), 1, fp);
-	fread( &map->size.y, sizeof(map->size.y), 1, fp);
-	fread( &map->size.z, sizeof(map->size.z), 1, fp);
+	fread( &map->size, sizeof(map->size), 1, fp);
 
 	fclose(fp);
 }
 
-zset__mapCh *zse_map__ch_load__st(char mapname[ static 1 ])
+zset__mapCh *zse_map__ch_load__st(const char mapname[ static 1 ])
 {
 	zset__mapCh *map = z__MALLOC(sizeof(zset__mapCh));
 
 	zse_map__ch_load_commondata(mapname, map);
-	map->size.w = 1;
-	zse_map__ch_allocChunks(map, map->size);
+	zse_map__ch_allocChunks(map, map->size, 1);
 
 	zse_map__ch_load_singleChunk(mapname, map, 0, (z__Vint3){0,0,0});
 
@@ -76,9 +73,8 @@ void zse_map__ch_export_commondata(char mapname[], zset__mapCh *map)
 	FILE *fp = fopen(file, "wb");
 
 	fwrite(ZSE_ENGINE_VERSION, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
-	fwrite( &map->size.x, sizeof(map->size.x), 1, fp);
-	fwrite( &map->size.y, sizeof(map->size.y), 1, fp);
-	fwrite( &map->size.z, sizeof(map->size.z), 1, fp);
+	fwrite( &map->size, sizeof(map->size), 1, fp);
+
 
 	fclose(fp);
 }
@@ -87,7 +83,7 @@ void zse_map__ch_export_commondata(char mapname[], zset__mapCh *map)
 void zse_map__ch_export__st(char mapname[ static 1 ], zset__mapCh *map)
 {
 	char mapdir[96] = MAP_GENERAL_DIRECTORY;
-	strncat(mapdir, mapname, sizeof(mapdir)-sizeof(MAP_GENERAL_DIRECTORY));
+	strncat(mapdir, mapname, sizeof(mapdir) - sizeof(MAP_GENERAL_DIRECTORY));
 
 		mkdir(mapdir, 0755);
 
