@@ -7,6 +7,4 @@
 #include "sprite/sprite_lib.h"
 #include "entity/entity.h"
 
-int	zse_delete_all(TILESET_t *t, ST_WORLD_t *map, ENTT_t *ent);
-
 #endif
