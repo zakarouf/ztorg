@@ -10,11 +10,11 @@
 -----------------------------------------------*/
 //---------------------------------------------//
 
-#include "map_lib.h"
+#include "map_gen.h"
 
-static int SEED;
+static z__i64 _zse_mapgen_perlin_SEED;
 
-static const uint8_t  HASH[] = {
+static const z__u8  HASH[] = {
     208,34,231,213,32,248,233,56,161,78,24,140,71,48,140,254,245,255,247,247,40,
     185,248,251,245,28,124,204,204,76,36,1,107,28,234,163,202,224,245,128,167,204,
     9,92,217,54,239,174,173,102,193,189,190,121,100,108,167,44,43,77,180,204,8,81,
@@ -29,9 +29,9 @@ static const uint8_t  HASH[] = {
     114,20,218,113,154,27,127,246,250,1,8,198,250,209,92,222,173,21,88,102,219
 };
 
-static int noise2(int x, int y)
+static int _perlin_noise2(int x, int y)
 {
-    int  yindex = (y + SEED) & 0xFF;
+    int  yindex = (y + _zse_mapgen_perlin_SEED) & 0xFF;
     if (yindex < 0)
         yindex += 256;
     int  xindex = (HASH[yindex] + x) & 0xFF;
@@ -41,47 +41,47 @@ static int noise2(int x, int y)
     return result;
 }
 
-static double lin_inter(double x, double y, double s)
+static double _perlin_lin_inter(double x, double y, double s)
 {
     return x + s * (y-x);
 }
 
-static double smooth_inter(double x, double y, double s)
+static double _perlin_smooth_inter(double x, double y, double s)
 {
-    return lin_inter( x, y, s * s * (3-2*s) );
+    return _perlin_lin_inter( x, y, s * s * (3-2*s) );
 }
 
-static double noise2d(double x, double y)
+static double _perlin_noise2d(double x, double y)
 {
     const int  x_int = floor( x );
     const int  y_int = floor( y );
     const double  x_frac = x - x_int;
     const double  y_frac = y - y_int;
-    const int  s = noise2( x_int, y_int );
-    const int  t = noise2( x_int+1.0f, y_int );
-    const int  u = noise2( x_int, y_int+1.0f );
-    const int  v = noise2( x_int+1.0f, y_int+1.0f );
-    const double  low = smooth_inter( s, t, x_frac );
-    const double  high = smooth_inter( u, v, x_frac );
-    const double  result = smooth_inter( low, high, y_frac );
+    const int  s = _perlin_noise2( x_int, y_int );
+    const int  t = _perlin_noise2( x_int+1.0f, y_int );
+    const int  u = _perlin_noise2( x_int, y_int+1.0f );
+    const int  v = _perlin_noise2( x_int+1.0f, y_int+1.0f );
+    const double  low = _perlin_smooth_inter( s, t, x_frac );
+    const double  high = _perlin_smooth_inter( u, v, x_frac );
+    const double  result = _perlin_smooth_inter( low, high, y_frac );
     return result;
 }
 
 
 
-void zse_map_SetNoiseSeed(int seed)
+void zse_map__genP_SetNoiseSeed(int seed)
 {
-    SEED = seed;
+    _zse_mapgen_perlin_SEED = seed;
 }
-int zse_map_GetNoiseSeed(void)
+int zse_map__genP_GetNoiseSeed(void)
 {
-    return SEED;
+    return _zse_mapgen_perlin_SEED;
 }
 
 //----------------------------------------------------------
 // Returns single double val according to x,y cord
 // Example : foo_array[y][x] = zse_map_gen2d_get_solo(x, y, 0.1, 4)
-double zse_map_gen2d_get_solo(double x, double y, double freq, int depth)
+double zse_map__genP2d_getSolo(double x, double y, double freq, int depth)
 {
     double  xa = x*freq;
     double  ya = y*freq;
@@ -91,7 +91,7 @@ double zse_map_gen2d_get_solo(double x, double y, double freq, int depth)
     for (int i=0; i<depth; i++)
     {
         div += 256 * amp;
-        fin += noise2d( xa, ya ) * amp;
+        fin += _perlin_noise2d( xa, ya ) * amp;
         amp /= 2;
         xa *= 2;
         ya *= 2;
