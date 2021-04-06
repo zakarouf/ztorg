@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "../zse/zse.h"
-#include "../zse/map_new/map.h"
+#include "../zse/map/map.h"
 #include "../zse/io/tisk/tisk.h"
 #define ZSE___TEST___SUCESSS true
 

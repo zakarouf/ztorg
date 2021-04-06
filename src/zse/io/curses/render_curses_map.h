@@ -2,7 +2,7 @@
 #define ZSE_RENDER_MAP_H
 
 #include "curses.h"
-#include "../../map/map_lib.h"
+#include "../../map_old/map_lib.h"
 #include "../../tile/tile_lib.h"
 
 void zse_rtC_map_show2dworld
