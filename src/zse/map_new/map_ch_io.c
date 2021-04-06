@@ -50,7 +50,9 @@ zset__mapCh *zse_map__ch_load__st(char mapname[ static 1 ])
 	zset__mapCh *map = z__MALLOC(sizeof(zset__mapCh));
 
 	zse_map__ch_load_commondata(mapname, map);
+	map->size.w = 1;
 	zse_map__ch_allocChunks(map, map->size);
+
 	zse_map__ch_load_singleChunk(mapname, map, 0, (z__Vint3){0,0,0});
 
 	return map;

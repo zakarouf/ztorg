@@ -33,7 +33,7 @@ static z__bool zse___TEST_map_export(void)
 	map->chunks[0][88] = 2;
 	map->chunks[0][44] = 2;
 	zse_rtT_getkey();
-	//zse_rtT__set00();
+	zse_rtT__set00();
 	_zse___TEST_map__draw(map);
 	zse_rtT_getkey();
 
@@ -42,6 +42,8 @@ static z__bool zse___TEST_map_export(void)
 
 	zse_map__ch_export__st("foo", map);
 
+	zse_map__ch_deleteChunks(map);
+
 	return ZSE___TEST___SUCESSS;
 }
 
@@ -49,7 +51,9 @@ static z__bool zse___TEST_map_load(void)
 {
 	zset__mapCh *map = zse_map__ch_load__st("foo");
 
-	// /_zse___TEST_map__draw(map);
+	_zse___TEST_map__draw(map);
+
+	zse_map__ch_deleteChunks(map);
 
 	return ZSE___TEST___SUCESSS;
 }
