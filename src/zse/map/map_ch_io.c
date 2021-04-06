@@ -36,7 +36,7 @@ void zse_map__ch_load_singleChunk(const char mapname[] ,zset__mapCh *map, z__u32
 static void zse_map__ch_load_commondata(const char mapname[], zset__mapCh *map)
 {
 	char file[128];
-	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s" MAP_DATAFILE_COMMON, mapname);
+	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
 	FILE *fp = fopen(file, "rb");
 
 	char version[ZSE_ENGINE_VERSION_SIGN_SIZE];
@@ -50,7 +50,6 @@ static void zse_map__ch_load_commondata(const char mapname[], zset__mapCh *map)
 zset__mapCh *zse_map__ch_load__st(const char mapname[ static 1 ])
 {
 	zset__mapCh *map = z__MALLOC(sizeof(zset__mapCh));
-
 	zse_map__ch_load_commondata(mapname, map);
 	zse_map__ch_allocChunks(map, map->size, 1);
 
