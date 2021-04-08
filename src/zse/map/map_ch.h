@@ -13,7 +13,9 @@ typedef struct __ZSE_MAP__TYPE_
 {
     z__Vint3 size;              // Map size in x, y, z, w
     zset__mapChPlot **chunks;
-    z__i8 chunkCount; 
+
+    z__i8 chunkCount;
+    z__i8 chunkRadius;
 
 }zset__MapCh;
 
