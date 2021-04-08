@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.4.0] -CURRENT
+## [0.4.1] -CURRENT
 ### Added
 - Vulkan API
 - OpenGL API
@@ -11,11 +11,13 @@ All notable changes to this project will be documented in this file.
 - Tisk Terminal (My terminal Manupilation API)
 - String Library Added (Safer than char \*string)
 - System Log
+- Type Library Added
 
 ### Changed
 - Made Different IOs (Curses, Tisk, Vulkan)
 - Made Selectiong IO Optional
 - Sprite Is Currently Broken
+- Map Module, Reworked
 
 ### Fixed
 - Source Code Cleanup
