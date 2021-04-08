@@ -13,11 +13,12 @@ void zse_map__ch_allocChunks(zset__MapCh *map, const z__Vint3 sz, const z__u32 c
 	map->chunkCount = chunkCount;
 }
 
-inline zset__MapCh *zse_map__ch_createEmpty(z__u32 x, z__u32 y, z__u32 z, z__u32 chunkCount)
+inline zset__MapCh *zse_map__ch_createEmpty(z__u32 x, z__u32 y, z__u32 z, z__u32 chunkRadius)
 {
 	zset__MapCh *map = z__MALLOC(sizeof(zset__MapCh));
 
-	zse_map__ch_allocChunks(map, (z__Vint3){x, y, z}, chunkCount);
+	map->chunkRadius = chunkRadius;
+	zse_map__ch_allocChunks(map, (z__Vint3){x, y, z}, ZSE_map__CH_calcChunk_Count_fromRad(map));
 
 	return map;
 }
