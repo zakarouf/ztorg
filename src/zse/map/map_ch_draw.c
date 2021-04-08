@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "map_ch.h"
 
 void zse_map__draw_circle (zset__mapChPlot *chunk, z__Vint3 on , z__Vint2 bounds , z__i32 r, zset__mapChPlot plot)
@@ -28,6 +30,15 @@ void zse_map__draw_circle (zset__mapChPlot *chunk, z__Vint3 on , z__Vint2 bounds
             }
         }
     }
+}
+
+void zse_map__draw_rec(zset__mapChPlot *chunk, z__Vint2 bounds ,z__Vint3 from, z__Vint3 to, zset__mapChPlot plot)
+{
+	for (int y = from.y; y < to.y; ++y)
+	{
+		// It'll only work if sizeof `plot` == sizeof `char`
+		memset(&chunk[zse_xyz3Dto1D(from.x, y, from.z, bounds.x, bounds.y)], plot, sizeof(plot)*to.x);
+	}
 }
 /*
 void zse_map_fillupchunk_in(IN_WORLD_t *mapIN, int ChunkNo, int atChunkX, int atChunkY)
