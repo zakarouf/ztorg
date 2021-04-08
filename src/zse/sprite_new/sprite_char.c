@@ -12,7 +12,7 @@
 void zse_sprite__sChar_export(const zset__SpriteChar *spr ,const char filename[ static 1 ])
 {
 	char fullpath[128];
-	snprintf(fullpath, sizeof(fullpath), SPRITES_PARENTDIR "%s", filename);
+	snprintf(fullpath, sizeof(fullpath), SPRITES_PARENTDIR "%s" SPRITES_SINGLE_EXT, filename);
 
 	FILE *fp = fopen (fullpath, "wb");
 	if (!fp)
