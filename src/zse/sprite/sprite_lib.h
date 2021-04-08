@@ -1,5 +1,5 @@
-#ifndef ZSE_SPRITES_H
-#define ZSE_SPRITES_H
+#ifndef ZSE_SPRITES_OLD_H
+#define ZSE_SPRITES_OLD_H
 
 #include "../common.h"
 

@@ -16,7 +16,6 @@ SPRITES_t zse_sprites_sin_load(char name[])
     sprintf(dirpos, "%s/%s", SPRITES_PARENTDIR, name);
 
     FILE *fp;
-    #include <ncurses/ncurses.h>
     if((fp = fopen(dirpos, "rb")) == NULL)
     {
         return sprite;
