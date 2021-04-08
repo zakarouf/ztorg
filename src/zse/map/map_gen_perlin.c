@@ -41,12 +41,12 @@ static int _perlin_noise2(int x, int y)
     return result;
 }
 
-static double _perlin_lin_inter(double x, double y, double s)
+ZSE__INLINE double _perlin_lin_inter(double x, double y, double s)
 {
     return x + s * (y-x);
 }
 
-static double _perlin_smooth_inter(double x, double y, double s)
+ZSE__INLINE double _perlin_smooth_inter(double x, double y, double s)
 {
     return _perlin_lin_inter( x, y, s * s * (3-2*s) );
 }
