@@ -95,7 +95,7 @@ typedef struct __ZSE_MAP__TYPE_
  * Common Funcs/Macro
  *------------------------------------------
  */
-/* <== Old
+/* <== Old From Deprecated Map type
 #define zse_mapx(map) map->Xsize
 #define zse_mapy(map) map->Ysize
 #define zse_mapz(map) map->Zsize
@@ -125,7 +125,33 @@ typedef struct __ZSE_MAP__TYPE_
 
  // <== New
 
+#define ZSE_map__CH_DEFAULT_RADIUS_SIZE 1
+#define ZSE_map__CH_DEFAULT_X_SIZE 		32
+#define ZSE_map__CH_DEFAULT_Y_SIZE 		32
+#define ZSE_map__CH_DEFAULT_Z_SIZE 		16
 
+
+#define ZSE_map__CH_size(map)        (map)->size
+#define ZSE_map__CH_xsize(map)       (map)->size.x
+#define ZSE_map__CH_ysize(map)       (map)->size.y
+#define ZSE_map__CH_zsize(map)       (map)->size.z
+
+#define ZSE_map__CH_chunkCount(map)  (map)->chunkCount
+#define ZSE_map__CH_chunkRadius(map) (map)->chunkRadius
+
+/* (p == playerCord|xyz|, C == chunkCord|xyz|, CSize == chunkSize|xyz|) */ 
+#define ZSE_map__CH_getPlayerAbsPos(p, C, CSize) ((CSize)*(C)) + p 
+ZSE__INLINE void ZSE_map__CH_getPlot(chunkno, const z__Vint3 pos, const zset__MapCh *map, zset__mapChPlot *rval)
+{
+	*rval = map->chunks[chunkno][zse_xyz3Dto1D(pos.x, pos.y, pos.z, map->size.x, map->size.y)]
+}
+
+#define ZSE_map__CH_calcChunk_Side_fromRad(map)   (1 + (2 * ((map)->chunkRadius)))
+#define ZSE_map__CH_calcChunk_Count_fromRad(map)  ZSE_map__CH_calc_ChunkSideFromRad(map) * ZSE_map__CH_calc_ChunkSideFromRad(map)
+#define ZSE_map__CH_calcChunk_Mid_fromRad(map)    (z__int)( ((z__float)ZSE_map__CH_calcChunk_Count_fromRad(map) /2) - 0.5f )
+
+#define ZSE_map__CH_setChunk_Count_fromRad(map)   { (map)->chunkCount = ZSE_map__CH_calcChunk_Count_fromRad(map) }
+#define ZSE_map__CH_evalChunk_Count_fromRad(map)  ((map)->chunkCount == ZSE_map__CH_calcChunk_Count_fromRad(map)? true: false)
 
 
 /* ----------------------------------------- * ----------------------------------------- * ----------------------------------------- */
