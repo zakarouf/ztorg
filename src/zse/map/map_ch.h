@@ -3,6 +3,77 @@
 
 #include "../common.h"
 
+/* Main Header For Chunk Type Map. */
+
+/* Pre-requisite:
+ * 1. We Are Assuming that the Chunks Are always laid in Square Formation, No Circle or Renctangle
+ * 2. The Player Chunk; The Chunk the player is on, is always in the middle in the formation
+ * 3. Side of our square formation is always a odd number.
+ * 4. The Total Count of the Chunks will be determined by a `Radius` from the Player going outwards in each direction.
+ */
+
+/*  . . . . . 
+ *  . . . . . <- Each . is a chunk of (ChunkSizeXY * ChunkSizeXY) * ChunkSizeZ
+ *  . . @ . .  - @ is the chunk inhabitate by the player
+ *  . . . . .  - Chunk Size is 2 here
+ *  . . . . . 
+ *
+ *   /---------/
+ *      . . .
+ *      . @ . <- Chunk No. Size = 1 (DEFAULT) _MaxChunk
+ *      . . .
+ *
+ *   /---------/
+ *
+ *    . . . . . . .
+ *    . . . . . . .
+ *    . . . . . . .
+ *    . . . @ . . . 	<- Radius Set to 3, Side = 7, Total = 7*7 = 49
+ *    . . . . . . .
+ *    . . . . . . .
+ *    . . . . . . .
+ *
+ */
+
+/*
+ *    Chunk Side Length Increase by 2 per Radius :-
+ *        3, 5, 7, 9
+ *        ^  ^  ^  ^
+ *        1, 2, 3, 4 
+ *        
+ *        Chunkside(r) = (1 + 2*r)
+ *
+ *    And The Total Number of Chunk Will Always be square of side:
+ *
+ *		Chunks(r) = Chunkside(r)^2 
+ *
+ *    /-----------------------------------------/
+ *  Chunk Mid Point :-
+ *      1 5 13 
+ *
+ *      ChunksMid(r) = (int)( (float)(Chunks(r)/2) + 0.5f )
+ *
+ *  Chunk lastline First Point :-
+ *
+ */
+
+/*    Chunks File Naming Scheme :-
+ *		Cx,Cy,Cz.bin
+ *		|  |  |
+ *		|  |  |- `z` Chunk z cordinate
+ *		|  |- `y` Chunk y cordinate
+ *		|- `x` Chunk x cordinate
+ *
+ *      #EXECUTABLE DIR
+ *        |- maps
+ *          |- #MAP NAME
+ *            |- MAP_COMMON_DATA  <== Stores Map size, attributes et cetera.
+ *            |- CHUNK CORD (eg. 1,1,1.bin
+ *                               -1,1,0.bin)
+ *
+ *
+ */
+
 /*------------------------------------------------------------------------------*/
 /*---------------------------------------Types----------------------------------*/
 typedef z__u8 zset__mapChPlot;
