@@ -3,6 +3,7 @@
 
 #include "../zse/zse.h"
 #include "../zse/map/map.h"
+#include "../zse/map/map_ch_draw.h"
 #include "../zse/io/tisk/tisk.h"
 #define ZSE___TEST___SUCESSS true
 
@@ -13,7 +14,7 @@ static void _zse___TEST_map__draw(zset__MapCh *map)
 	{
 		for (int j = 0; j < map->size.x; ++j)
 		{
-			fputc(map->chunks[0][zse_xyz3Dto1D(j, i, 0, map->size.x, map->size.y)]+67, stdout);
+			fputc(map->chunks[0][zse_xyz3Dto1D(j, i, 0, map->size.x, map->size.y)]+' ', stdout);
 		}
 		fputc('\n', stdout);
 	}
@@ -21,7 +22,7 @@ static void _zse___TEST_map__draw(zset__MapCh *map)
 
 static z__bool zse___TEST_map_export(void)
 {
-	zset__MapCh *map = zse_map__ch_createEmpty(10, 10, 1, 1);
+	zset__MapCh *map = zse_map__ch_createEmpty(10, 10, 1, 0);
 	memset(map->chunks[0], 0, 10*10);
 
 	zse_rtT_init();
@@ -32,6 +33,11 @@ static z__bool zse___TEST_map_export(void)
 	map->chunks[0][2] = 2;
 	map->chunks[0][88] = 2;
 	map->chunks[0][44] = 2;
+
+	z__Vint3 from = {1, 1, 0}
+		   , to = {4, 8, 0};
+	zse_map__draw_rec(map->chunks[0], (z__Vint2){map->size.x, map->size.y}, from, to, '.' - ' ');
+
 	zse_rtT_getkey();
 	zse_rtT__set00();
 	_zse___TEST_map__draw(map);
@@ -58,6 +64,14 @@ static z__bool zse___TEST_map_load(void)
 	return ZSE___TEST___SUCESSS;
 }
 
+static void zse___TEST_printAsciiChart(void)
+{
+	for (z__u8 i = 32; i < 128; ++i)
+	{
+		printf("||%hhx||%03hhd||%c||\n", i, i, i);
+	}
+}
+
 static z__bool zse___TEST_map(void)
 {
 	zse_rtT_init();
@@ -73,13 +87,10 @@ static z__bool zse___TEST_map(void)
 	printf("Loading...");
 	zse_rtT_getkey();
 
+	zse_rtT__set00();
 	zse___TEST_map_load();
 	zse_rtT_getkey();
 
-
-
-
-	zse_rtT_getkey();
 	zse_rtT_showCursor();
 	zse_rtT_exit();
 	return ZSE___TEST___SUCESSS;
@@ -88,5 +99,6 @@ static z__bool zse___TEST_map(void)
 int zse___TEST(void)
 {
 	zse___TEST_map();
+	//zse___TEST_printAsciiChart();
 	return 0;
 }
