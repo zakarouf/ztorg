@@ -44,7 +44,10 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 
 }zset__SpriteChar;
 
-
+#define ZSE_sprite__Char_setColor(spr, x, y, f, color) \
+	{ 																			\
+		(spr)->colormap[zse_xyz3Dto1D(x, y, f, (spr)->x, (spr)->y)] = color; 	\
+	}
 
 
 #endif
