@@ -37,6 +37,7 @@ void zse_sprite__sChar_export(const zset__SpriteChar *spr ,const char filename[ 
 	{
 		fwrite(spr->seq.data[i], sizeof(**spr->seq.data), spr->seq.lens[i], fp);
 	}
+	fclose(fp);
 }
 
 zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
@@ -77,6 +78,7 @@ zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
 		fread(spr.seq.data[i], sizeof(**spr.seq.data), spr.seq.lens[i], fp);
 	}
 
+	fclose(fp);
 	return spr;
 }
 
