@@ -104,6 +104,7 @@ zset__SpriteChar zse_sprite__sChar_createEmpty(z__u16 x, z__u16 y, z__u16 frames
 		.x = x,
 		.y = y,
 		.frames = frames,
+		.dt = dt,
 		.plot = z__CALLOC(x * y * frames, sizeof(*spr.plot)),
 		.colormap = z__CALLOC(x * y * frames, sizeof(*spr.colormap)),
 		.seq.count = seqCount, 
