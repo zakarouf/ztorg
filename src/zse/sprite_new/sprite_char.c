@@ -29,6 +29,7 @@ void zse_sprite__sChar_export(const zset__SpriteChar *spr ,const char filename[ 
 	fwrite(&spr->seq.count, sizeof(spr->seq.count), 1, fp);	
 
 	fwrite(spr->plot, sizeof(*spr->plot), spr->x * spr->y * spr->frames, fp);
+	fwrite(spr->colormap, sizeof(*spr->colormap), spr->x * spr->y * spr->frames, fp);
 
 	fwrite(spr->seq.lens, sizeof(*spr->seq.lens), spr->seq.count, fp);
 
@@ -63,6 +64,9 @@ zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
 	spr.plot = z__MALLOC(sizeof(*spr.plot) * spr.x * spr.y * spr.frames);
 	fread(spr.plot, sizeof(*spr.plot), spr.x * spr.y * spr.frames, fp);
 
+	spr.colormap = z__MALLOC(sizeof(*spr.colormap) * spr.x * spr.y * spr.frames);
+	fread(spr.colormap, sizeof(*spr.colormap), spr.x * spr.y * spr.frames, fp);
+
 	spr.seq.lens = z__MALLOC(sizeof(*spr.seq.lens) * spr.seq.count);
 	fread(spr.seq.lens, sizeof(*spr.seq.lens), spr.seq.count, fp);
 
@@ -79,6 +83,7 @@ zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
 void zse_sprite__sChar_delete(zset__SpriteChar *spr)
 {
 	z__FREE(spr->plot);
+	z__FREE(spr->colormap);
 
 	for (int i = 0; i < spr->seq.count; ++i)
 	{
@@ -98,9 +103,10 @@ zset__SpriteChar zse_sprite__sChar_createEmpty(z__u16 x, z__u16 y, z__u16 frames
 		.y = y,
 		.frames = frames,
 		.plot = z__CALLOC(x * y * frames, sizeof(*spr.plot)),
+		.colormap = z__CALLOC(x * y * frames, sizeof(*spr.colormap)),
 		.seq.count = seqCount, 
-		.seq.lens = z__MALLOC(sizeof(*spr.seq.lens) * seqCount),
-		.seq.data = z__CALLOC(seqCount, sizeof(*spr.seq.data))
+		.seq.lens = (seqCount <= 0)? NULL : z__MALLOC(sizeof(*spr.seq.lens) * seqCount),
+		.seq.data = (seqCount <= 0)? NULL : z__CALLOC(seqCount, sizeof(*spr.seq.data))
 	};
 
 	for (int i = 0; i < seqCount; ++i)
