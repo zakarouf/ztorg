@@ -23,11 +23,13 @@
  * Compactible with ncurses
  */
 
+typedef z__u8 zset__spritechtype;
+
 typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 {
     z__u16 x, y, frames;
     z__u8* colormap;
-    z__u8* plot;
+    zset__spritechtype* plot;
 
     z__float dt;
 
@@ -47,6 +49,7 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 #define ZSE_sprite__Char_getX(spr) spr.x
 #define ZSE_sprite__Char_getY(spr) spr.y
 #define ZSE_sprite__Char_getFrames(spr) spr.frames
+#define ZSE_sprite__Char_getTotalLen(spr) ((spr)->x * (spr)->y * (spr)->frames)
 
 #define ZSE_sprite__Char_getDt(spr) spr.dt
 
@@ -54,11 +57,11 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 #define ZSE_sprite__Char_getSeqLen(spr, of) spr.seq.lens[of]
 #define ZSE_sprite__Char_getSeqData(spr, of) spr.seq.data[of]
 
-#define ZSE_sprite__Char_setColor(spr, x, y, f, color) { (spr)->colormap[zse_xyz3Dto1D((x), (y), (f), (spr)->x, (spr)->y)] = color; }
-#define ZSE_sprite__Char_setPlot(spr, x, y, f, plot) { (spr)->plot[zse_xyz3Dto1D((x), (y), (f), (spr)->x, (spr)->y)] = plot; }
+#define ZSE_sprite__Char_setPlot(spr, _x, _y, _f, plot) { (spr)->plot[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = plot; }
+#define ZSE_sprite__Char_setColor(spr, _x, _y, _f, color) { (spr)->colormap[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = color; }
 
-#define ZSE_sprite__Char_getPlot(spr, x, y, f) spr.plot[zse_xyz3Dto1D((x), (y), (f), spr.x, spr.y)]
-#define ZSE_sprite__Char_getColor(spr, x, y, f) spr.color[zse_xyz3Dto1D((x), (y), (f), spr.x, spr.y)]
+#define ZSE_sprite__Char_getPlot(spr, _x, _y, _f) spr.plot[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
+#define ZSE_sprite__Char_getColor(spr, _x, _y, _f) spr.colormap[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
 
 
 #endif
