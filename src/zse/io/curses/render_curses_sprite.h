@@ -3,24 +3,24 @@
 
 #include "curses.h"
 
-#include "../../sprite/sprite_lib.h"
+#include "../../sprite/sprite_char_def.h"
 
 int zse_rtC_spritePrintAll
 (
 	WINDOW *win,
 	int startX,
 	int startY,
-	SPRITES_t* spr,
+	zset__SpriteChar* spr,
 	int startframe,
 	int endframe
 );
 
-void zse_rtC_spritePrintf
+void zse_rtC_sprite__Print
 (
 	WINDOW *win,
 	int startX,
 	int startY,
-	SPRITES_t* spr,
+	zset__SpriteChar* spr,
 	const int atframe
 );
 
