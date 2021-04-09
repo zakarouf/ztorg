@@ -16,8 +16,10 @@ int zse_sys_getLocalTime(int *h, int *m, int *s);
 void zse_sys_msleep(int milliseconds);
 
 #define zse_sys_fillArrayVal(array, val, len)\
-    for (int i = 0; i < len; ++i)\
-        array[i] = val;\
+	{\
+	    for (int i = 0; i < len; ++i)\
+	        array[i] = val;\
+	}
 
 
 z__i8Arr zse_sys_readFile(char filename[]);
