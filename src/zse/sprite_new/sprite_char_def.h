@@ -26,7 +26,8 @@
 typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 {
     z__u16 x, y, frames;
-    z__u16* plot;
+    z__u8* colormap;
+    z__u8* plot;
 
     z__float dt;
 
