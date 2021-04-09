@@ -96,7 +96,7 @@ static z__bool zse___TEST_map(void)
 	return ZSE___TEST___SUCESSS;
 }
 
-#include "../zse/sprite_new/sprite_char.h"
+#include "../zse/sprite/sprite_char.h"
 void zse___TEST_spriteChar_createNexport(void)
 {
 	zset__SpriteChar spr = zse_sprite__sChar_createEmpty(10, 10, 1, 0.5f, 4);
