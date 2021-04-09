@@ -96,9 +96,48 @@ static z__bool zse___TEST_map(void)
 	return ZSE___TEST___SUCESSS;
 }
 
+#include "../zse/sprite_new/sprite_char.h"
+void zse___TEST_spriteChar_createNexport(void)
+{
+	zset__SpriteChar spr = zse_sprite__sChar_createEmpty(10, 10, 1, 0.5f, 4);
+
+	memset(spr.plot, 'a', spr.x * spr.y * spr.frames);
+	memset(spr.colormap, 5, spr.x * spr.y * spr.frames);
+
+	zse_rtT__spriteChar__print(&spr, 0);
+	puts("Saving... As Testspr.zspr");
+	zse_sprite__sChar_export(&spr, "Testspr.zspr");
+	zse_rtT_getkey();
+
+
+	zse_sprite__sChar_delete(&spr);
+}
+void zse___TEST_spriteChar_load(void)
+{
+	puts("Loading Testspr.zspr");
+	zset__SpriteChar spr = zse_sprite__sChar_load("Testspr.zspr");
+
+	printf("Contents:"
+		"x,y := %d,%d\n"
+		"frames := %d\n"
+		"dt := %f\n"
+		"seqC := %d\n", spr.x, spr.y, spr.frames, spr.dt, spr.seq.count);
+
+	zse_rtT__spriteChar__print(&spr, 0);
+	zse_rtT_getkey();
+
+}
+
+void zse___TEST_spriteChar(void)
+{
+	zse___TEST_spriteChar_createNexport();
+	zse___TEST_spriteChar_load();
+}
+
 int zse___TEST(void)
 {
-	zse___TEST_map();
+	//zse___TEST_map();
+	zse___TEST_spriteChar();
 	//zse___TEST_printAsciiChart();
 	return 0;
 }
