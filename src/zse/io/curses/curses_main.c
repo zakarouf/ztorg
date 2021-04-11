@@ -29,8 +29,13 @@ int zse_rtC_init()
         return 1;
     }
 
+
+
 	use_default_colors();
 	curs_set(0);
+
+    int zse_rtC_color_initpairs(void);
+        zse_rtC_color_initpairs();
 
 	return 0;
 }
