@@ -3,7 +3,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.4.1] -CURRENT
+## [0.4.2] -CURRENT
+### Added
+- Tile Module, Rewoked
+- Sprite Module, Reworked
+
+
+## [0.4.1] -2021-4-6
 ### Added
 - Vulkan API
 - OpenGL API
