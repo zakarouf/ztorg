@@ -5,33 +5,33 @@
 #include "tisk.h"
 
 
-frinl void zse_rtT__setCur(int x, int y)
+frinl void zse_rtT__D_setCur(int x, int y)
 {
     printf("\x1b[%d;%dH", x, y);
 }
 
-frinl void zse_rtT__set00(void)
+frinl void zse_rtT__D_set00(void)
 {
     fputs("\x1b[H",  stdout);
 }
 
-frinl void zse_rtT_init(void)
+frinl void zse_rtT__init(void)
 {
     fputs("\x1b[2J", stdout);
 }
 
-frinl void zse_rtT_exit(void)
+frinl void zse_rtT__exit(void)
 {
-    zse_rtT__set00();
+    zse_rtT__D_set00();
     //fputs("\x1b[2J", stdout);
 }
 
-frinl void zse_rtT_showCursor(void)
+frinl void zse_rtT__D_showCursor(void)
 {
     fputs("\x1b[?25h",  stdout);
 }
 
-frinl void zse_rtT_hideCursor(void)
+frinl void zse_rtT__D_hideCursor(void)
 {
     fputs("\x1b[?25l",  stdout);
 }
