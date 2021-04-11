@@ -4,10 +4,9 @@
 
 #include "../../common.h"
 
-#include "render_tisk_color.h"
-#include "render_tisk_sprite.h"
-#include "render_tisk_io.h"
-
+#include "tisk_def.h"
+#include "tisk_color.h"
+#include "tisk_io.h"
 
 #define zse_rtT_getmaxx() 300
 #define zse_rtT_getmaxy() 90

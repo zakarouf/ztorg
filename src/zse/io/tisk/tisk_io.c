@@ -1,20 +1,38 @@
 #include <unistd.h>
 #include <termios.h>
 #include <stdio.h>
+#include <string.h>
 
+#include "_intra.h"
 #include "tisk.h"
-#include "tisk_intra.h"
-#include "render_tisk_io.h"
+#include "tisk_io.h"
 
 /* OUTPUT */
 
 void zse_rtT_io_printString(z__String *s)
 {
-    write(STDOUT_FILENO, s->data, s->size);
+    fwrite(s->data, sizeof(*s->data), s->size, stdout);
+    fflush(stdout);
 }
 
 /*INPUTS*/
 
+z__u32 zse_rtT__io_getstr(char *str, z__u32 size)
+{
+    fgets(str, size, stdin);
+    z__u32 used = strcspn(str, "\n");
+    str[used] = '\0';
+
+    return used;
+
+}
+
+/* TODO: generic Input */
+z__u32 zse_rtT__io_input(char *str, char const * const msg, z__u32 strsize)
+{
+    printf("%s", msg);
+    return zse_rtT__io_getstr(str, strsize);
+}
 
 char zse_rtT_getkey(void)
 {

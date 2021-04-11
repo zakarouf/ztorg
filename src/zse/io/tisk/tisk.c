@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "tisk.h"
 
 
@@ -33,6 +34,39 @@ frinl void zse_rtT_showCursor(void)
 frinl void zse_rtT_hideCursor(void)
 {
     fputs("\x1b[?25l",  stdout);
+}
+
+zset__rtT_TiskWin zse_rtT__Win_create(z__u32 x, z__u32 y, z__u32 buffs)
+{
+    zset__rtT_TiskWin win = {
+        .size.x = x,
+        .size.y = y,
+        .bufferCount = buffs,
+
+        .buffers = z__CALLOC(buffs, sizeof(*win.buffers)),
+        
+    };
+
+    for (int i = 0; i < buffs; ++i)
+    {
+        win.buffers[i] = z__CALLOC(x * y ,sizeof(**win.buffers));
+    }
+    win.mainWin = win.buffers[0];
+
+    return win;
+}
+
+void zse_rtT__Win_deleteContent(zset__rtT_TiskWin *win)
+{
+    for (int i = 0; i < win->bufferCount; ++i)
+    {
+        z__FREE(win->buffers[i]);
+    }
+    z__FREE(win->buffers);
+
+    win->size.x = -1;
+    win->size.y = -1;
+    win->bufferCount = -1;
 }
 
 /*

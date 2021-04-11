@@ -1,7 +1,7 @@
 #include "../../common.h"
 #include "../../sprite/sprite_char_def.h"
 
-#include "render_tisk_color.h"
+#include "tisk_color.h"
 #include <stdio.h>
 
 void zse_rtT__spriteChar__print(const zset__SpriteChar *spr, int frame)
