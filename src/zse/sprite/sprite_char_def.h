@@ -46,22 +46,22 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 
 }zset__SpriteChar;
 
-#define ZSE_sprite__Char_getX(spr) spr.x
-#define ZSE_sprite__Char_getY(spr) spr.y
-#define ZSE_sprite__Char_getFrames(spr) spr.frames
-#define ZSE_sprite__Char_getTotalLen(spr) ((spr)->x * (spr)->y * (spr)->frames)
+#define ZSE_sprite__sChar_getX(spr) spr.x
+#define ZSE_sprite__sChar_getY(spr) spr.y
+#define ZSE_sprite__sChar_getFrames(spr) spr.frames
+#define ZSE_sprite__sChar_getTotalLen(spr) ((spr)->x * (spr)->y * (spr)->frames)
 
-#define ZSE_sprite__Char_getDt(spr) spr.dt
+#define ZSE_sprite__sChar_getDt(spr) spr.dt
 
-#define ZSE_sprite__Char_getMaxSeq(spr) spr.seq.count
-#define ZSE_sprite__Char_getSeqLen(spr, of) spr.seq.lens[of]
-#define ZSE_sprite__Char_getSeqData(spr, of) spr.seq.data[of]
+#define ZSE_sprite__sChar_getMaxSeq(spr) spr.seq.count
+#define ZSE_sprite__sChar_getSeqLen(spr, of) spr.seq.lens[of]
+#define ZSE_sprite__sChar_getSeqData(spr, of) spr.seq.data[of]
 
-#define ZSE_sprite__Char_setPlot(spr, _x, _y, _f, plot) { (spr)->plot[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = plot; }
-#define ZSE_sprite__Char_setColor(spr, _x, _y, _f, color) { (spr)->colormap[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = color; }
+#define ZSE_sprite__sChar_setPlot(spr, _x, _y, _f, _plot) { (spr)->plot[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = _plot; }
+#define ZSE_sprite__sChar_setColor(spr, _x, _y, _f, _color) { (spr)->colormap[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = _color; }
 
-#define ZSE_sprite__Char_getPlot(spr, _x, _y, _f) spr.plot[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
-#define ZSE_sprite__Char_getColor(spr, _x, _y, _f) spr.colormap[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
+#define ZSE_sprite__sChar_getPlot(spr, _x, _y, _f) spr.plot[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
+#define ZSE_sprite__sChar_getColor(spr, _x, _y, _f) spr.colormap[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
 
 
 #endif
