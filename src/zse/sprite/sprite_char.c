@@ -117,6 +117,8 @@ zset__SpriteChar zse_sprite__sChar_createEmpty(z__u16 x, z__u16 y, z__u16 frames
 		spr.seq.data[i] = z__CALLOC(spr.seq.lens[i], sizeof(**spr.seq.data));
 	}
 
+	memset(spr.plot, ' ', spr.x * spr.y * spr.frames);
+
 	return spr;
 }
 
