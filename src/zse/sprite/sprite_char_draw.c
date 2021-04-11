@@ -34,8 +34,8 @@ void zse_sprite__sChar_swapColors(zset__SpriteChar *spr, z__u32 frame ,z__i32 ta
 {
     for (int i = 0; i < spr->x * spr->y; ++i)
     {
-        if(ZSE_sprite__Char_getColor(spr[0], i, 0, frame) == targetColo) {
-        	ZSE_sprite__Char_getColor(spr[0], i, 0, frame) = colorCode;
+        if(ZSE_sprite__sChar_getColor(spr[0], i, 0, frame) == targetColo) {
+        	ZSE_sprite__sChar_getColor(spr[0], i, 0, frame) = colorCode;
         }
     }
 }
