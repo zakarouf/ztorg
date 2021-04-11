@@ -97,7 +97,6 @@ void zse_sprite__sChar_delete(zset__SpriteChar *spr)
 	memset(spr, 0, sizeof(*spr));
 }
 
-#define z__CALLOC calloc  // short-term fix until ztypes includes z__CALLOC 
 zset__SpriteChar zse_sprite__sChar_createEmpty(z__u16 x, z__u16 y, z__u16 frames, z__float dt, z__u16 seqCount)
 {
 	zset__SpriteChar spr = {
