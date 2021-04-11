@@ -50,7 +50,6 @@ int zse_rtC_getint()
 int zse_rtC_getint_printw_option(char str[])
 {
     int r;
-    clear();
     addstr(str);
     scanw("%d", &r);
     return r;
@@ -133,7 +132,7 @@ void zse_rtC_clearPortion(WINDOW *win, int x, int y, int uptoX, int uptoY)
     {
         for (; x < xlim; ++x)
         {
-            mvwprintw(win , y, x, " ");
+            mvwaddch(win , y, x, ' ');
         }
     }
 }

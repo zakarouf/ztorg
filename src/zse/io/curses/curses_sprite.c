@@ -1,5 +1,5 @@
 #include <ncurses/ncurses.h>
-#include "render_curses_sprite.h"
+#include "curses_sprite.h"
 
 int zse_rtC_spritePrintAll
 (
@@ -31,11 +31,9 @@ int zse_rtC_spritePrintAll
 				{
 					for (int j = 0; j < spr->x; ++j)
 					{
-						if(spr->plot[zse_xyz3Dto1D(j, i, atframe, spr->x, spr->y)] != 0xFF){
 							attrset(COLOR_PAIR(spr->colormap[zse_xyz3Dto1D(j, i, atframe, spr->x, spr->y)]));
 							mvwaddch(win,i+startY, j+startX, spr->plot[zse_xyz3Dto1D(j, i, atframe, spr->x, spr->y)]);
 							attrset(A_NORMAL);
-						}
 					}
 				}
 				atframe++;

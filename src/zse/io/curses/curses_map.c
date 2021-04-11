@@ -1,4 +1,4 @@
-#include "render_curses_map.h"
+#include "curses_map.h"
 
 void zse_rtC_map_show2dworld
 (
