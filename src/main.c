@@ -159,13 +159,11 @@ int main(int argc, char const *argv[])
     //mainpgm(argc, argv);
 
     /* Vulkan */
-    void zse_rVK_init(void);    
-    //zse_rVK_init();
-
+    //void zse_rVK_init(void); zse_rVK_init();
 
     /* OpenGL */
-    void zse_rGL_init(void);
-    //zse_rGL_init();
+    //void zse_rGL_init(void); zse_rGL_init();
+
 
     #define ZSE___TEST___ON
     #ifdef ZSE___TEST___ON
