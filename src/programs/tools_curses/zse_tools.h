@@ -1,5 +1,5 @@
-#ifndef ZTORG_COM_HEADER
-#define ZTORG_COM_HEADER
+#ifndef ZSE__TOOLS_CURSES_FRONTEND_HEADER
+#define ZSE__TOOLS_CURSES_FRONTEND_HEADER
 
 #include "../../zse/zse.h"
 
