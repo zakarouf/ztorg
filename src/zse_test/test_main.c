@@ -25,9 +25,9 @@ static z__bool zse___TEST_map_export(void)
 	zset__MapCh *map = zse_map__ch_createEmpty(10, 10, 1, 0);
 	memset(map->chunks[0], 0, 10*10);
 
-	zse_rtT_init();
+	zse_rtT__init();
 //	zse_rtT_hideCursor();
-	zse_rtT__set00();
+	zse_rtT__D_set00();
 
 	_zse___TEST_map__draw(map);
 	map->chunks[0][2] = 2;
@@ -39,12 +39,12 @@ static z__bool zse___TEST_map_export(void)
 	zse_map__draw_rec(map->chunks[0], (z__Vint2){map->size.x, map->size.y}, from, to, '.' - ' ');
 
 	zse_rtT_getkey();
-	zse_rtT__set00();
+	zse_rtT__D_set00();
 	_zse___TEST_map__draw(map);
 	zse_rtT_getkey();
 
-	zse_rtT_showCursor();
-	zse_rtT_exit();
+	zse_rtT__D_showCursor();
+	zse_rtT__exit();
 
 	zse_map__ch_export__st("foo", map);
 
@@ -74,9 +74,9 @@ static void zse___TEST_printAsciiChart(void)
 
 static z__bool zse___TEST_map(void)
 {
-	zse_rtT_init();
+	zse_rtT__init();
 //	zse_rtT_hideCursor();
-	zse_rtT__set00();
+	zse_rtT__D_set00();
 
 
 
@@ -87,16 +87,17 @@ static z__bool zse___TEST_map(void)
 	printf("Loading...");
 	zse_rtT_getkey();
 
-	zse_rtT__set00();
+	zse_rtT__D_set00();
 	zse___TEST_map_load();
 	zse_rtT_getkey();
 
-	zse_rtT_showCursor();
-	zse_rtT_exit();
+	zse_rtT__D_showCursor();
+	zse_rtT__exit();
 	return ZSE___TEST___SUCESSS;
 }
 
 #include "../zse/sprite/sprite_char.h"
+#include "../zse/io/tisk/tisk_sprite.h"
 void zse___TEST_spriteChar_createNexport(void)
 {
 	zset__SpriteChar spr = zse_sprite__sChar_createEmpty(10, 10, 1, 0.5f, 4);

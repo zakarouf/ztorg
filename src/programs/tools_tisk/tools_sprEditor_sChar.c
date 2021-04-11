@@ -45,7 +45,7 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
 
     
     while(true) {
-        zse_rtT__set00();
+        zse_rtT__D_set00();
         fputs("(N)ew | (O)pen | Go(B)ack", stdout);
         z__u8 op = zse_rtT_getkey();
 
@@ -77,7 +77,7 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
 
 void zse_tools__spr_sChar_editor_mainloop(void)
 {
-    zse_rtT_init();
+    zse_rtT__init();
 
     z__Arr(zset__SpriteChar) sprBuffer;
     z__Arr_create(&sprBuffer, 8);
@@ -134,16 +134,16 @@ void zse_tools__spr_sChar_editor_mainloop(void)
             case 127:
                 goto _L__CLEANUP_and_EXIT;
                 break;
-                
+
             default:
                 break;
         }
         ZSE_sprite__sChar_setPlot(spr_current_buffer, Brush.pos.x, Brush.pos.y, Brush.frame , Brush.prop.ink );
 
         zse_rtT__spriteChar__print(spr_current_buffer, Brush.frame);
-        zse_rtT__setCur(Brush.pos.x, Brush.pos.y);
+        zse_rtT__D_setCur(Brush.pos.x, Brush.pos.y);
         fputc('@', stdout);
-        zse_rtT__setCur(0, spr_current_buffer->y + 1);
+        zse_rtT__D_setCur(0, spr_current_buffer->y + 1);
 
 
     }
@@ -155,7 +155,7 @@ void zse_tools__spr_sChar_editor_mainloop(void)
         }
         z__Arr_delete(&sprBuffer);
 
-        zse_rtT_exit();
+        zse_rtT__exit();
         return;
     }
 }
