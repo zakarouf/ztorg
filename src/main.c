@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "zse/zse.h"
-//#include "zse/io/curses/curses.h"
+//#define ZSE___TEST___ON
 
 #if 0
 
@@ -164,8 +164,9 @@ int main(int argc, char const *argv[])
     /* OpenGL */
     //void zse_rGL_init(void); zse_rGL_init();
 
-
-    #define ZSE___TEST___ON
+    void zse_tools_curses_spr_sChar_editor_mainloop(void); 
+    zse_tools_curses_spr_sChar_editor_mainloop();
+    
     #ifdef ZSE___TEST___ON
 
         int zse___TEST(void);
