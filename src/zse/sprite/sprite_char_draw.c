@@ -1,6 +1,6 @@
 #include "sprite_char_draw.h"
 
-void zse_sprite__sCharDraw_circle (zset__spritechtype *cha, z__Vint3 on , z__Vint2 bounds , z__i32 r, zset__spritechtype val)
+void zse_sprite__sCharDraw_circle (zset__SpriteChar *spr ,z__Vint3 on , z__i32 r, zset__spritechtype val, z__u8 color)
 {
 	z__i32 i = on.y - r;
 	z__i32 end_i = on.y + r + 1;
@@ -9,11 +9,11 @@ void zse_sprite__sCharDraw_circle (zset__spritechtype *cha, z__Vint3 on , z__Vin
 	if(i < 0) {
 		i = 0;
 	}
-	if (end_i >= bounds.y) {
-		end_i = bounds.y;
+	if (end_i >= spr->y) {
+		end_i = spr->y;
 	}
-	if(end_j >= bounds.x) {
-		end_j = bounds.x;
+	if(end_j >= spr->x) {
+		end_j = spr->x;
 	}
 	
 	z__i32 tmp_j = (on.x - r < 0)? 0: on.x - r;
@@ -24,7 +24,8 @@ void zse_sprite__sCharDraw_circle (zset__spritechtype *cha, z__Vint3 on , z__Vin
         for (; j < end_j ; ++j) {
 
             if( ((j - on.x) * (j - on.x) + (i - on.y) * (i - on.y)) <= r * r ) {
-                	cha[zse_xyz3Dto1D(j, i, on.z, bounds.x, bounds.y)] = val;
+                	spr->plot[zse_xyz3Dto1D(j, i, on.z, spr->x, spr->y)] = val;
+                	spr->colormap[zse_xyz3Dto1D(j, i, on.z, spr->x, spr->y)] = color;
             }
         }
     }
