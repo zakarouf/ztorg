@@ -24,6 +24,17 @@ void zse_rtC_sprite__Print
 	const int atframe
 );
 
+void zse_rtC__sprite__sChar_PrintPadEnd
+(
+	WINDOW *win,
+	int startX,
+	int startY,
+	int padxend,
+	int padyend,
+	zset__SpriteChar* spr,
+	const int atframe
+);
+
 int zse_rtC_spriteSmooth(float pos, float slength);
 
 #endif

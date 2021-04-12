@@ -68,15 +68,49 @@ void zse_rtC_sprite__Print
 	const int atframe
 )
 {
-	zset__spritechtype *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];	
+	zset__spritechtype *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
+	z__u8 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
 	for (int i = 0; i < spr->y; ++i)
 	{
 		for (int j = 0; j < spr->x; ++j)
 		{
 			//if((*sprp) != 0xFF){
+				wattrset(win, COLOR_PAIR(*color) );
 				mvwaddch(win, startY + i, startX + j, *sprp);
 			//}
 
+			color++;
+			sprp++;
+		}
+	}
+}
+
+void zse_rtC__sprite__sChar_PrintPadEnd
+(
+	WINDOW *win,
+	int startX,
+	int startY,
+	int padxend,
+	int padyend,
+	zset__SpriteChar* spr,
+	const int atframe
+)
+{
+	int endx = (spr->x > getmaxx(win)? getmaxx(win): spr->x) - padxend;
+	int endy = (spr->y > getmaxy(win)? getmaxy(win): spr->y) - padyend;
+
+	zset__spritechtype *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
+	z__u8 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
+	for (int i = 0; i < endy; ++i)
+	{
+		for (int j = 0; j < endx; ++j)
+		{
+			//if((*sprp) != 0xFF){
+				wattrset(win, COLOR_PAIR(*color) );
+				mvwaddch(win, startY + i, startX + j, *sprp);
+			//}
+
+			color++;
 			sprp++;
 		}
 	}

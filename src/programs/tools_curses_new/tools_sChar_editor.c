@@ -26,7 +26,6 @@
     "`         Exit\n"
 
 
-
 struct zset_S_sprBrush
 {
     z__Vint2 pos;
@@ -107,6 +106,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
     char __Toggle[2][4] = {"Off", "On"};
     char __key = 0;
+    zset_rtC_L_chtype cursor = '+';
     wclear(stdscr);
     noecho();
 
@@ -188,16 +188,14 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
         if(Brush.toggle)
         {
-            ZSE_sprite__sChar_setPlot(spr_current_buffer, Brush.pos.x, Brush.pos.y, Brush.frame , Brush.prop.ink );
+            zse_sprite__sCharDraw_circle( spr_current_buffer
+                , (z__Vint3){Brush.pos.x, Brush.pos.y ,Brush.frame}
+                , Brush.prop.size, Brush.prop.ink, Brush.prop.color);
         }
 
-        zse_rtC_sprite__Print(
-            stdscr,
-            0,
-            0,
-            spr_current_buffer,
-            Brush.frame);
-        mvwaddch(stdscr, Brush.pos.y, Brush.pos.x, '@');
+        zse_rtC__sprite__sChar_PrintPadEnd(stdscr, 0, 0, 0, getmaxy(status), spr_current_buffer, Brush.frame);
+        mvwaddch(stdscr, Brush.pos.y, Brush.pos.x, cursor | COLOR_PAIR(Brush.prop.color));
+        
 
 
         mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%hi}"
@@ -205,7 +203,9 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
         wattrset(status, COLOR_PAIR(Brush.prop.color));
         waddstr(status,"##  \n");
-        wattrset(status, COLOR_PAIR(A_NORMAL));
+
+
+        wattrset(status, A_NORMAL);
 
 
         mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
