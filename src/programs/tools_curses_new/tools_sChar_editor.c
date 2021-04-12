@@ -158,10 +158,32 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                 Brush.prop.ink = wgetch(status);
                 break;
 
-            case 't':
+            case 'v':
                 Brush.toggle ^= 1;
                 break;
 
+            case 'b':
+                echo();
+                Brush.prop.size = zse_rtC__mvmsgGetint(status, getmaxy(status)-1, 0, "Enter New Size >> ");
+                noecho();
+                break;
+
+            case 'g':
+                Brush.prop.color -= 1;
+                if(Brush.prop.color < 0){Brush.prop.color = COLORS -1;}
+                break;
+            case 'h':
+                Brush.prop.color += 1;
+                if(Brush.prop.color > COLORS){Brush.prop.color = 0;}
+                break;
+            case 'G':
+                Brush.prop.color -= 6;
+                if(Brush.prop.color < 0){Brush.prop.color = COLORS -1;}
+                break;
+            case 'H':
+                Brush.prop.color += 6;
+                if(Brush.prop.color > COLORS){Brush.prop.color = 0;}
+                break;
 
             // Options
             case ':':
