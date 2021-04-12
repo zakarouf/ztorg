@@ -4,8 +4,13 @@ from subprocess import Popen
 from datetime import datetime
 
 
-folderIgnore={"data", "doc" , ".git", "SDL", "demos_curses", "tools_curses", "logic", "shader", "ztorg", "map_old", "zse_all", "tools_curses", "zse_test", "tools_tisk"}
-IgnoreNames={"cave_hunter.c", "ztorg-raylib.c", "zse.c", "zse_misc.c"}
+folderIgnore={
+      "data", "doc" , ".git"
+    , "SDL", "shader"
+    , "demos_curses", "tools_curses", "tools_tisk", "tools_curses"
+    , "logic", "ztorg", "map_old", "zse_all", "zse_test"}
+
+IgnoreNames={"cave_hunter.c", "zse.c"}
 
 ignorePatternFront = ["."]
 ignorePatternEnd = []
