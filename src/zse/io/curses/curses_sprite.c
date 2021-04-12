@@ -96,8 +96,8 @@ void zse_rtC__sprite__sChar_PrintPadEnd
 	const int atframe
 )
 {
-	int endx = (spr->x > getmaxx(win)? getmaxx(win): spr->x) - padxend;
-	int endy = (spr->y > getmaxy(win)? getmaxy(win): spr->y) - padyend;
+	int endx = (spr->x > getmaxx(win)- padxend ? getmaxx(win)- padxend: spr->x);
+	int endy = (spr->y > getmaxy(win)- padyend ? getmaxy(win)- padyend: spr->y);
 
 	zset__spritechtype *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
 	z__u8 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
