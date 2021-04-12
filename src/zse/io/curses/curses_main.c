@@ -45,19 +45,27 @@ void zse_rtC_exit()
 	endwin();
 }
 
-int zse_rtC_getint()
+int zse_rtC__getint(WINDOW *win)
 {
     int r;
-    scanw("%d", &r);
+    wscanw(win, "%d", &r);
     return r;
 }
 
-int zse_rtC_getint_printw_option(char str[])
+int zse_rtC__msgGetint(WINDOW *win, char const msg[])
 {
-    int r;
-    addstr(str);
-    scanw("%d", &r);
-    return r;
+    int rval;
+    waddstr(win, msg);
+    wscanw(win ,"%d", &rval);
+    return rval;
+}
+
+int zse_rtC__mvmsgGetint(WINDOW *win, int y, int x, char const msg[])
+{
+    int rval;
+    mvwaddstr(win, y, x, msg);
+    wscanw(win ,"%d", &rval);
+    return rval;
 }
 
 int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname)
