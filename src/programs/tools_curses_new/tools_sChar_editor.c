@@ -121,109 +121,94 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
     while(true)
     {
         switch(__key) {
-            case 'a':
-                Brush.pos.x-= 1;
-                if (Brush.pos.x < 0) {
-                    Brush.pos.x += 1;
-                }
-                break;
+        case 'a':   Brush.pos.x-= 1; if (Brush.pos.x < 0) { Brush.pos.x += 1; }                         break;
+        case 'd':   Brush.pos.x+= 1; if (Brush.pos.x >= Brush.sprCur->x) { Brush.pos.x -= 1; }          break;
+        case 'w':   Brush.pos.y -= 1; if (Brush.pos.y < 0) { Brush.pos.y += 1; }                        break;      
+        case 's':   Brush.pos.y += 1; if (Brush.pos.y >= Brush.sprCur->y) { Brush.pos.y -= 1; }         break;
 
-            case 'd':
-                Brush.pos.x+= 1;
-                if (Brush.pos.x >= spr_current_buffer->x) {
-                    Brush.pos.x -= 1;
-                }
-                break;
-            
-            case 'w':
-                Brush.pos.y -= 1;
-                if (Brush.pos.y < 0) {
-                    Brush.pos.y += 1;
-                }
-                break;
-            
-            case 's':
-                Brush.pos.y += 1;
-                if (Brush.pos.y >= spr_current_buffer->y) {
-                    Brush.pos.y -= 1;
-                }
-                break;
-            case 'z':
-                Brush.frame -= 1;
-                if (Brush.frame < 0) {
-                    Brush.frame += 1;
-                }
-                break;
-            case 'x':
-                Brush.frame += 1;
-                if (Brush.frame >= spr_current_buffer->frames) {
-                    Brush.frame -= 1;
-                }
-                break;
+        case 'z':   Brush.frame -= 1; if (Brush.frame < 0) { Brush.frame += 1; }                        break;
+        case 'x':   Brush.frame += 1; if (Brush.frame >= Brush.sprCur->frames) { Brush.frame -= 1; }    break;
 
+        case 'c':   Brush.prop.ink = wgetch(status);                                                    break;
+        case 'v':   Brush.toggle ^= 1;                                                                  break;
 
-            case 'c':
-                Brush.prop.ink = wgetch(status);
-                break;
+        case 'b':   echo();
+                    Brush.prop.size = zse_rtC__mvmsgGetint(status, getmaxy(status)-1, 0, "Enter New Size >> ");
+                    noecho();                                                                           break;
 
-            case 'v':
-                Brush.toggle ^= 1;
-                break;
+        case 'g':   Brush.prop.color -= 1; if (Brush.prop.color < 0) { Brush.prop.color = COLORS -1; }  break;
+        case 'h':   Brush.prop.color += 1; if (Brush.prop.color > COLORS){ Brush.prop.color = 0; }      break;
+        case 'G':   Brush.prop.color -= 6; if (Brush.prop.color < 0){ Brush.prop.color = COLORS -1; }   break;
+        case 'H':   Brush.prop.color += 6; if (Brush.prop.color > COLORS){ Brush.prop.color = 0; }      break;
 
-            case 'b':
+        // Options
+        case ':':
+            do {
                 echo();
-                Brush.prop.size = zse_rtC__mvmsgGetint(status, getmaxy(status)-1, 0, "Enter New Size >> ");
-                noecho();
-                break;
+                z__char tmpop = mvwgetch(status, getmaxy(status) -1, 0);
 
-            case 'g':
-                Brush.prop.color -= 1;
-                if(Brush.prop.color < 0){Brush.prop.color = COLORS -1;}
-                break;
-            case 'h':
-                Brush.prop.color += 1;
-                if(Brush.prop.color > COLORS){Brush.prop.color = 0;}
-                break;
-            case 'G':
-                Brush.prop.color -= 6;
-                if(Brush.prop.color < 0){Brush.prop.color = COLORS -1;}
-                break;
-            case 'H':
-                Brush.prop.color += 6;
-                if(Brush.prop.color > COLORS){Brush.prop.color = 0;}
-                break;
+                if (tmpop == 'w') {   
+                    mvwaddstr(status, getmaxy(status) -1, 0, "Enter Name: ");
+                    char *name = z__MALLOC(sizeof(char) * 32);
+                    wgetnstr(status, name, 32);
+                    zse_sprite__sChar_export(Brush.sprCur, name);
+                    z__FREE(name);
 
-            // Options
-            case ':':
-                do {
-                    echo();
-                    z__char tmpop = mvwgetch(status, getmaxy(status) -1, 0);
+                    mvwaddstr(status, getmaxy(status) -1, 0, "Sprite Saved");
+                    zse_rtC_clearLine_set0(status);
 
-                    if (tmpop == 'w') {   
-                        mvwprintw(status, getmaxy(status) -1, 0, "Enter Name: ");
-                        char *name = z__MALLOC(sizeof(char) * 32);
-                        wgetnstr(status, name, 32);
-                        zse_sprite__sChar_export(spr_current_buffer, name);
-
-                    } else if (tmpop == 'q') {
-                        goto _L__CLEANUP_and_EXIT;
+                } else if (tmpop == 'C') {
+                    mvwaddstr(status, getmaxy(status) -1, 0, "Copy |n|p|s| ");
+                    tmpop = mvwgetch(status, getmaxy(status) -1, 0);
+                    
+                    if (tmpop == 'n') {
+                        if (Brush.frame+1 < Brush.sprCur->frames ) {
+                    	    zse_sprite__sChar_copyFrame(Brush.sprCur, Brush.frame+1, Brush.frame);
+                    	}
+                    } else if ( tmpop == 'p') {
+                        if (Brush.frame-1 >= 0) {
+                       	    zse_sprite__sChar_copyFrame(Brush.sprCur, Brush.frame-1, Brush.frame);
+                        }
+                    } else if (tmpop == 's') {
+                        zse_sprite__sChar_copyFrame(Brush.sprCur, Brush.selection.frame, Brush.frame);
                     }
 
-                    noecho();
-                } while(0);
-                break;
-            default:
+                    zse_rtC_clearLine_set0(status);
+
+                } else if (tmpop == 'S') {
+                    mvwaddstr(status, getmaxy(status) -1, 0, "Select |f|a|p|s| ");
+                    
+                    switch(mvwgetch(status, getmaxy(status) -1, 0)) {
+                    case 'f':   Brush.selection.frame = Brush.frame; break;
+                    case 'p':   Brush.selection.pos = Brush.pos;     break;
+                    case 's':   Brush.sprTmp = Brush.sprCur;         break;
+                    case 'a':   {
+                                    Brush.sprTmp = Brush.sprCur;
+                                    Brush.selection.pos = Brush.pos;
+                                    Brush.selection.frame = Brush.frame;
+                                }                                    break;
+                        }
+
+                    zse_rtC_clearLine_set0(status);
+                } else if (tmpop == 'q') {
+                    goto _L__CLEANUP_and_EXIT;
+                }
+
+                noecho();
+            } while(0);
+            break;
+        default:
                 break;
         }
 
         if(Brush.toggle)
         {
-            zse_sprite__sCharDraw_circle( spr_current_buffer
+            zse_sprite__sCharDraw_circle( Brush.sprCur
                 , (z__Vint3){Brush.pos.x, Brush.pos.y ,Brush.frame}
                 , Brush.prop.size, Brush.prop.ink, Brush.prop.color);
         }
 
-        zse_rtC__sprite__sChar_PrintPadEnd(stdscr, 0, 0, 0, getmaxy(status), spr_current_buffer, Brush.frame);
+        zse_rtC__sprite__sChar_PrintPadEnd(stdscr, 0, 0, 0, getmaxy(status), Brush.sprCur, Brush.frame);
         mvwaddch(stdscr, Brush.pos.y, Brush.pos.x, cursor | COLOR_PAIR(Brush.prop.color));
         
 
