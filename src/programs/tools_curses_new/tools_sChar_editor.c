@@ -62,10 +62,10 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
         if (op == 'N')
         {
             printw("\nSize X :"); refresh(); scanw("%hd", &spr.x);
-            printw("\nSize Y :"); refresh(); scanw("%hd", &spr.y);
-            printw("\nFrames :"); refresh(); scanw("%d", &spr.frames);
-            printw("\ndt     :"); refresh(); scanw("%f", &spr.dt);
-            printw("\nSeq    :"); refresh(); scanw("%d", &spr.seq.count);
+            printw("Size Y :"); refresh(); scanw("%hd", &spr.y);
+            printw("Frames :"); refresh(); scanw("%d", &spr.frames);
+            printw("dt     :"); refresh(); scanw("%f", &spr.dt);
+            printw("Seq    :"); refresh(); scanw("%d", &spr.seq.count);
 
             spr = zse_sprite__sChar_createEmpty(spr.x, spr.y, spr.frames, spr.frames, spr.seq.count);
             return spr;
