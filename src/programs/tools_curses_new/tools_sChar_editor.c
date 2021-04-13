@@ -37,6 +37,14 @@ struct zset_S_sprBrush
         z__u8 color;
     } prop;
 
+    struct {
+        z__Vint2 pos;
+        z__i32 frame;
+    } selection;
+
+    zset__SpriteChar *sprCur;
+    zset__SpriteChar *sprTmp;
+
     z__bool toggle;
 };
 
