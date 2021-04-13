@@ -5,9 +5,9 @@
 #include "common/common.h"
 
 #if defined(_MSC_VER)
-#  ifdef CGLM_STATIC
+#  ifdef ZSE__STATIC
 #    define ZSE__EXPORT
-#  elif defined(CGLM_EXPORTS)
+#  elif defined(ZSE__EXPORTS)
 #    define ZSE__EXPORT __declspec(dllexport)
 #  else
 #    define ZSE__EXPORT __declspec(dllimport)
