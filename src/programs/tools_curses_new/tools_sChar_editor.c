@@ -92,15 +92,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
     z__Arr(zset__SpriteChar) sprBuffer;
     z__Arr_create(&sprBuffer, 8);
-
     z__Arr_push(&sprBuffer, _tools_spr_sChar_editor_load_new());
-    zset__SpriteChar *spr_current_buffer = &z__Arr_getTop(sprBuffer);
-                     //*spr_tmp_buffer = NULL;
-
-    if (spr_current_buffer->x < 1 && spr_current_buffer->y < 1) {
-        z__Arr_pop(&sprBuffer);
-        goto _L__CLEANUP_and_EXIT;
-    }
 
     struct zset_S_sprBrush Brush = {
         .pos.x = 0,
@@ -109,7 +101,16 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         .prop.ink = '@',
         .prop.color = 0,
         .prop.size = 0,
+        .sprCur = &z__Arr_getTop(sprBuffer),
+        .sprTmp = &z__Arr_getTop(sprBuffer),
     };
+
+    if (Brush.sprCur->x < 1 && Brush.sprCur->y < 1) {
+        z__Arr_pop(&sprBuffer);
+        goto _L__CLEANUP_and_EXIT;
+    }
+
+
 
 
     char __Toggle[2][4] = {"Off", "On"};
@@ -224,7 +225,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
 
         mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
-            , Brush.pos.x, Brush.pos.y, Brush.frame, spr_current_buffer->frames-1, ZSE_sprite__sChar_getColor(spr_current_buffer[0], Brush.pos.x, Brush.pos.y, Brush.frame));
+            , Brush.pos.x, Brush.pos.y, Brush.frame, Brush.sprCur->frames-1, ZSE_sprite__sChar_getColor(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
 
         //mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d",
         //    r_options&ZSE_T_SPRSR_OP_COLORS? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSENAB? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSSHOW? 1:0);
