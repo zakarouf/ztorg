@@ -1,8 +1,7 @@
 #ifndef ZSE_RENDER_CURSES_TERMINAL_H
 #define ZSE_RENDER_CURSES_TERMINAL_H
 
-
-#include "curses_alias.h"
+#include "curses_def.h"
 #include "curses_color.h"
 
 int zse_rtC_init();
