@@ -23,10 +23,10 @@
 #define zse_rtC_L__waddstr   waddstr
 #define zse_rtC_L__mvwaddstr mvwaddstr
 
-#define zse_rtC_L__attron 	attron
-#define zse_rtC_L__attroff 	attroff
-#define zse_rtC_L__attrset 	attrset
-#define zse_rtC_L__wattrset wattrset
+#define zse_rtC_L__attr_on      attr_on
+#define zse_rtC_L__attr_off     attr_off
+#define zse_rtC_L__attr_set     attr_set
+#define zse_rtC_L__wattr_set    wattr_set
 
 #define zse_rtC_L__noecho noecho
 #define zse_rtC_L__raw raw
