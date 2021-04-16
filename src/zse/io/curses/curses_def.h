@@ -20,5 +20,11 @@ ZSE__INLINE void zse_rtC_clearLine_set0 (WINDOW *win)
 	wmove(win ,getcury(win), 0);     // move to begining of line
 	wclrtoeol(win);          		 // clear line
 }
+// Clears Line and set the cursor to 0
+ZSE__INLINE void zse_rtC_clearLine_Sp (WINDOW *win, int line)
+{
+	wmove(win ,line, 0);     // move to begining of line
+	wclrtoeol(win);          		 // clear line
+}
 
 #endif
