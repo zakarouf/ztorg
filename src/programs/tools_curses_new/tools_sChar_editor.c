@@ -113,12 +113,14 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
     z__Arr_create(&sprBuffer, 8);
     z__Arr_push(&sprBuffer, _tools_spr_sChar_editor_load_new());
 
+    enum {_MAX_FOREGROUND_COLOR = 256, _MAX_BACKGROUND_COLOR = 16};
     struct zset_S_sprBrush Brush = {
         .pos.x = 0,
         .pos.y = 0,
         .frame = 0,
         .prop.ink = '@',
-        .prop.color = 0,
+        .prop.colorFg = 0,
+        .prop.colorBg = 0,
         .prop.size = 0,
         .sprCur = &z__Arr_getTop(sprBuffer),
         .sprTmp = &z__Arr_getTop(sprBuffer),
@@ -156,10 +158,15 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                     Brush.prop.size = zse_rtC__mvmsgGetint(status, getmaxy(status)-1, 0, "Enter New Size >> ");
                     noecho();                                                                           break;
 
-        case 'g':   Brush.prop.color -= 1; if (Brush.prop.color < 0) { Brush.prop.color = COLORS -1; }  break;
-        case 'h':   Brush.prop.color += 1; if (Brush.prop.color > COLORS){ Brush.prop.color = 0; }      break;
-        case 'G':   Brush.prop.color -= 6; if (Brush.prop.color < 0){ Brush.prop.color = COLORS -1; }   break;
-        case 'H':   Brush.prop.color += 6; if (Brush.prop.color > COLORS){ Brush.prop.color = 0; }      break;
+        case 'g':   Brush.prop.colorFg -= 1; if (Brush.prop.colorFg < 0) { Brush.prop.colorFg = _MAX_FOREGROUND_COLOR  -1; }  break;
+        case 'h':   Brush.prop.colorFg += 1; if (Brush.prop.colorFg > _MAX_FOREGROUND_COLOR-1 ){ Brush.prop.colorFg = 0; }      break;
+        case 'G':   Brush.prop.colorFg -= 6; if (Brush.prop.colorFg < 0) { Brush.prop.colorFg = _MAX_FOREGROUND_COLOR  -1; }   break;
+        case 'H':   Brush.prop.colorFg += 6; if (Brush.prop.colorFg > _MAX_FOREGROUND_COLOR-1 ){ Brush.prop.colorFg = 0; }      break;
+
+        case 'r':   Brush.prop.colorBg -= 1; if (Brush.prop.colorBg < 0) { Brush.prop.colorBg = _MAX_BACKGROUND_COLOR -1; }  break;
+        case 't':   Brush.prop.colorBg += 1; if (Brush.prop.colorBg > _MAX_BACKGROUND_COLOR){ Brush.prop.colorBg = 0; }      break;
+        case 'R':   Brush.prop.colorBg -= 6; if (Brush.prop.colorBg < 0) { Brush.prop.colorBg = _MAX_BACKGROUND_COLOR -1; }   break;
+        case 'T':   Brush.prop.colorBg += 6; if (Brush.prop.colorBg > _MAX_BACKGROUND_COLOR){ Brush.prop.colorBg = 0; }      break;
 
         // Options
         case ':':
@@ -218,41 +225,42 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
             } while(0);
             break;
         default:
-                break;
+            break;
         }
 
+        int _color_tmp = (Brush.prop.colorBg << 8) | Brush.prop.colorFg;
         if(Brush.toggle)
         {
             zse_sprite__sCharDraw_circle( Brush.sprCur
                 , (z__Vint3){Brush.pos.x, Brush.pos.y ,Brush.frame}
-                , Brush.prop.size, Brush.prop.ink, Brush.prop.color);
+                , Brush.prop.size, Brush.prop.ink, _color_tmp);
         }
 
+
+        werase(stdscr);
+
         zse_rtC__sprite__sChar_PrintPadEnd(stdscr, 0, 0, 0, getmaxy(status), Brush.sprCur, Brush.frame);
-        mvwaddch(stdscr, Brush.pos.y, Brush.pos.x, cursor | COLOR_PAIR(Brush.prop.color));
         
+        mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%hi|%hi} "
+            , __Toggle[Brush.toggle], Brush.prop.ink , "NONE", Brush.prop.size, Brush.prop.colorFg, Brush.prop.colorBg);
 
-
-        mvwprintw(status, 0, 0,"Brush[%3s] -> %c {%s} :: %d =Color={%hi}"
-            , __Toggle[Brush.toggle], Brush.prop.ink , "NONE", Brush.prop.size, Brush.prop.color);
-
-        wattrset(status, COLOR_PAIR(Brush.prop.color));
+        wcolor_set(status, _color_tmp , NULL);
         waddstr(status,"##  \n");
+        wattr_set(status, A_NORMAL, 0, NULL);
 
-
-        wattrset(status, A_NORMAL);
-
+        mvwaddch(stdscr, Brush.pos.y, Brush.pos.x, cursor | COLOR_PAIR(_color_tmp));
 
         mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
-            , Brush.pos.x, Brush.pos.y, Brush.frame, Brush.sprCur->frames-1, ZSE_sprite__sChar_getColor(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
+            , Brush.pos.x, Brush.pos.y, Brush.frame, Brush.sprCur->frames-1, ZSE_sprite__sChar_getColorFg(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
 
         //mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d",
         //    r_options&ZSE_T_SPRSR_OP_COLORS? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSENAB? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSSHOW? 1:0);
-
-        wrefresh(status);
+        
         wrefresh(stdscr);
+        //wrefresh(status);
 
         __key = wgetch(status);
+        
     }
 
     _L__CLEANUP_and_EXIT: {
