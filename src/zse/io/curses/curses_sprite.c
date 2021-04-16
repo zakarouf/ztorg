@@ -69,7 +69,8 @@ void zse_rtC_sprite__Print
 )
 {
 	zset__spritechtype *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
-	z__u8 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
+	z__u16 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
+
 	for (int i = 0; i < spr->y; ++i)
 	{
 		for (int j = 0; j < spr->x; ++j)
@@ -100,18 +101,20 @@ void zse_rtC__sprite__sChar_PrintPadEnd
 	int endy = (spr->y > getmaxy(win)- padyend ? getmaxy(win)- padyend: spr->y);
 
 	zset__spritechtype *sprp = &spr->plot[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
-	z__u8 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
+	z__u16 *color = &spr->colormap[zse_xyz3Dto1D(0, 0, atframe, spr->x, spr->y)];
 	for (int i = 0; i < endy; ++i)
 	{
 		for (int j = 0; j < endx; ++j)
 		{
 			//if((*sprp) != 0xFF){
-				wattrset(win, COLOR_PAIR(*color) );
-				mvwaddch(win, startY + i, startX + j, *sprp);
+				wcolor_set(win, *color, NULL );
+				mvwaddch(win, startY + i, startX + j, (*sprp));
 			//}
 
 			color++;
 			sprp++;
 		}
 	}
+
+	wcolor_set(win, 0, NULL);
 }
