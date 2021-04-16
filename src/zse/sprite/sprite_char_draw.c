@@ -1,7 +1,7 @@
 #include <string.h>
 #include "sprite_char_draw.h"
 
-void zse_sprite__sCharDraw_circle (zset__SpriteChar *spr ,z__Vint3 on , z__i32 r, zset__spritechtype val, z__u8 color)
+void zse_sprite__sCharDraw_circle (zset__SpriteChar *spr ,z__Vint3 on , z__i32 r, zset__spritechtype val, z__u16 color)
 {
 	z__i32 i = on.y - r;
 	z__i32 end_i = on.y + r + 1;
@@ -34,10 +34,11 @@ void zse_sprite__sCharDraw_circle (zset__SpriteChar *spr ,z__Vint3 on , z__i32 r
 
 void zse_sprite__sChar_swapColors(zset__SpriteChar *spr, z__u32 frame ,z__i32 targetColo, z__i32 colorCode)
 {
+    z__u16 *plot = &spr->colormap[zse_xyz3Dto1D(0, 0, frame, spr->x, spr->y)];
     for (int i = 0; i < spr->x * spr->y; ++i)
     {
-        if(ZSE_sprite__sChar_getColor(spr[0], i, 0, frame) == targetColo) {
-        	ZSE_sprite__sChar_getColor(spr[0], i, 0, frame) = colorCode;
+        if(*plot == targetColo) {
+        	*plot = colorCode;
         }
     }
 }

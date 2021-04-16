@@ -28,7 +28,7 @@ typedef z__u8 zset__spritechtype;
 typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 {
     z__u16 x, y, frames;
-    z__u8* colormap;
+    z__u16* colormap;
     zset__spritechtype* plot;
 
     z__float dt;
@@ -46,22 +46,24 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 
 }zset__SpriteChar;
 
-#define ZSE_sprite__sChar_getX(spr) spr.x
-#define ZSE_sprite__sChar_getY(spr) spr.y
-#define ZSE_sprite__sChar_getFrames(spr) spr.frames
+#define ZSE_sprite__sChar_getX(spr) (spr).x
+#define ZSE_sprite__sChar_getY(spr) (spr).y
+#define ZSE_sprite__sChar_getFrames(spr) (spr).frames
 #define ZSE_sprite__sChar_getTotalLen(spr) ((spr)->x * (spr)->y * (spr)->frames)
 
-#define ZSE_sprite__sChar_getDt(spr) spr.dt
+#define ZSE_sprite__sChar_getDt(spr) (spr).dt
 
-#define ZSE_sprite__sChar_getMaxSeq(spr) spr.seq.count
-#define ZSE_sprite__sChar_getSeqLen(spr, of) spr.seq.lens[of]
-#define ZSE_sprite__sChar_getSeqData(spr, of) spr.seq.data[of]
+#define ZSE_sprite__sChar_getMaxSeq(spr) (spr).seq.count
+#define ZSE_sprite__sChar_getSeqLen(spr, of) (spr).seq.lens[of]
+#define ZSE_sprite__sChar_getSeqData(spr, of) (spr).seq.data[of]
 
 #define ZSE_sprite__sChar_setPlot(spr, _x, _y, _f, _plot) { (spr)->plot[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = _plot; }
-#define ZSE_sprite__sChar_setColor(spr, _x, _y, _f, _color) { (spr)->colormap[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = _color; }
+#define ZSE_sprite__sChar_setColorFg(spr, _x, _y, _f, _color) { (spr)->colormap[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = _color; }
+#define ZSE_sprite__sChar_setColorBg(spr, _x, _y, _f, _color) { (spr)->colormap[zse_xyz3Dto1D((_x), (_y), (_f), (spr)->x, (spr)->y)] = _color << 8; }
 
-#define ZSE_sprite__sChar_getPlot(spr, _x, _y, _f) spr.plot[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
-#define ZSE_sprite__sChar_getColor(spr, _x, _y, _f) spr.colormap[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
+#define ZSE_sprite__sChar_getPlot(spr, _x, _y, _f) (spr).plot[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]
+#define ZSE_sprite__sChar_getColorFg(spr, _x, _y, _f) ((spr).colormap[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)]&0xff)
+#define ZSE_sprite__sChar_getColorBg(spr, _x, _y, _f) ((spr).colormap[zse_xyz3Dto1D((_x), (_y), (_f), spr.x, spr.y)] >> 8)
 
 
 #endif

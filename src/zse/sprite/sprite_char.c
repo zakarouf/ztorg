@@ -62,11 +62,14 @@ zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
 	fread(&spr.dt, sizeof(spr.dt), 1, fp);
 	fread(&spr.seq.count, sizeof(spr.seq.count), 1, fp);
 
+	// Get Main Charset
 	spr.plot = z__MALLOC(sizeof(*spr.plot) * spr.x * spr.y * spr.frames);
 	fread(spr.plot, sizeof(*spr.plot), spr.x * spr.y * spr.frames, fp);
 
+	// Get ForeGround Color
 	spr.colormap = z__MALLOC(sizeof(*spr.colormap) * spr.x * spr.y * spr.frames);
 	fread(spr.colormap, sizeof(*spr.colormap), spr.x * spr.y * spr.frames, fp);
+
 
 	spr.seq.lens = z__MALLOC(sizeof(*spr.seq.lens) * spr.seq.count);
 	fread(spr.seq.lens, sizeof(*spr.seq.lens), spr.seq.count, fp);
