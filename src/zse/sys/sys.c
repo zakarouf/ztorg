@@ -42,7 +42,7 @@ long zse_sys_getRamUsage(void)
     return usage.ru_maxrss;
 }
 
-z__StringLines zse_dir_getfnames(char path[])
+/*z__StringLines zse_dir_getfnames(char path[])
 {
     DIR * drip = opendir(path);
     if(drip == NULL) return (z__StringLines){0} ;
@@ -55,13 +55,41 @@ z__StringLines zse_dir_getfnames(char path[])
 
     while((dp = readdir(drip)) != NULL)
     {
-        sscanf(dp->d_name, "%s", fnames.data[i]);
+        sprintf(fnames.data[i], "%s", dp->d_name);
         i++;
         if(i >= items)
         {
             items += 8;
+            return fnames;
+            closedir(drip);
             z__StringLines_Resize_Y(&fnames, items);
         }
+    }
+    closedir(drip);
+
+    return fnames;
+}*/
+z__StringLines zse_dir_getfnames(char path[])
+{
+    DIR * drip = opendir(path);
+    if(drip == NULL) return (z__StringLines){0};
+    struct dirent* dp;
+    int items = 0;
+
+    while((dp = readdir(drip)) != NULL)
+    {
+        items++;
+    }
+    closedir(drip);
+    drip = opendir(path);
+
+    z__StringLines fnames = z__StringLines_createEmpty(ZSE_MAX_FILENAME_SIZE, items);
+
+    int i = 0;
+    while((dp = readdir(drip)) != NULL)
+    {
+        sprintf(fnames.data[i], "%s", dp->d_name);
+        i++;
     }
     closedir(drip);
 
