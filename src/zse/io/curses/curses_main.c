@@ -68,7 +68,7 @@ int zse_rtC__mvmsgGetint(WINDOW *win, int y, int x, char const msg[])
     return rval;
 }
 
-int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, char *getname)
+int zse_rtC__selectListS(WINDOW *win, int x, int y, char const **list, int const listsize, char *getstringS, int stringSize)
 {
     int scr_y = getmaxy(win), pagestart = 0, exit = 0;
     char key = ' ';
@@ -76,9 +76,7 @@ int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, ch
 
     while(!exit) 
     {
-
-        switch(key)
-        {
+        switch(key) {
             case 'w':
                 pagestart--;
                 if(pagestart < 0)
@@ -95,18 +93,18 @@ int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, ch
                 break;
             case 'e':
                 echo();
-                mvwprintw(win ,scr_y-1, 0, ">>                    ");
+                mvwprintw(win ,scr_y-2, 0, ">>                    ");
                 wrefresh(win);
-                mvwscanw(win, scr_y-1, 3, "%s", getname);
+                mvwgetnstr(win, scr_y-2, 3, getstringS, stringSize);
                 noecho();
                 return 0;
                 
                 break;
             case 'n':
                 echo();
-                mvwprintw(win ,scr_y-1, 0, ">>                    ");
+                mvwprintw(win ,scr_y-2, 0, ">>                    ");
                 wrefresh(win);
-                mvwscanw(win ,scr_y-1, 3, "%d", &tmpr);
+                mvwscanw(win ,scr_y-2, 3, "%d", &tmpr);
                 noecho();
                 tmpr = tmpr >= listsize ? listsize-1: tmpr;
                 //sprintf(getname, "%s", list[tmpr]); <- Wanted to return the string too, but not working :(
@@ -114,22 +112,24 @@ int zse_rtC_selectListS(WINDOW *win, int x, int y, char **list, int listsize, ch
                 return tmpr;
                 break;
             case 'q':
-                return 0;
+                return -1;
                 break;
         }
 
 
-        wclear(win);
-        for (int i = pagestart; i < scr_y + pagestart -2; ++i)
+        werase(win);
+        for (int i = pagestart; i < scr_y-1 + pagestart -2; ++i)
         {
             if (i < listsize)
             {
-                mvwprintw(win ,i - pagestart+1 +y, 0+x, "[%d] %s", i ,list[i]);
+                mvwprintw(win ,i - pagestart+1 +y, 0+x, "|%03d: %s", i ,list[i]);
             }
 
         }
 
-        mvwprintw(win,scr_y-2, 0, "[n]Enter NumID | [e]Enter Name | [q]Confirm");
+        wmove(win, scr_y-2, 0);
+        wprintw(win, "[n]Enter NumID | [e]Enter Name | ");
+        wprintw(win, "[q]Go Back");
         wrefresh(win);
 
         key = wgetch(win);
