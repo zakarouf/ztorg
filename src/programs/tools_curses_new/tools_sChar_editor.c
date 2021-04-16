@@ -2,6 +2,7 @@
 #include <stdlib.h> /* memory */
 
 #include "tools.h"
+#include "../../zse/sys/sys.h"
 
 #include "../../zse/io/curses/curses.h"
 #include "../../zse/io/curses/curses_sprite.h"
@@ -9,21 +10,33 @@
 #include "../../zse/sprite/sprite_char.h"
 #include "../../zse/sprite/sprite_char_draw.h"
 
-#define ZSE_T_SPRSR_OP_HELPTEXT \
-    "Sprite Help:\n"\
-    "w,a,s,d   Move Brush\n"\
-    "z, x      Move To Layer Up/Down\n"\
-    "c         Change Ink\n"\
-    "v         Toggle Brush\n"\
-    "b         Change Size\n"\
-    "p         Pick Brush\n"\
-    "l         Pick Color\n"\
-    "h         Realloc Frames\n"\
-    "r         Change dt\n"\
-    ":         Commands\n"\
-    "e         Apply Colour\n"\
-    "-,=,_,+   Change Colour\n"\
-    "`         Exit\n"
+static const char *ZSE_T_SPRSR_OP_HELPTEXT[] = {
+    "USAGE:",
+    "w,a,s,d   Move Brush",
+    "z, x      Move To Layer Up/Down",
+    "c         Change Ink",
+    "v         Toggle Brush",
+    "b         Change Size",
+    "l         Pick Color",
+    
+    "g,G,h,H   Change Foreground Colour",
+    "r,R,t,T   Change Background Colour",
+    
+    
+    ":         Commands",
+    ":Cn       Copy Next Frame",
+    ":Cp       Copy Previous Frame",
+    ":Cs       Copy Selected Frame",
+    
+    ":Ss       Select Current Sprite Buffer",
+    ":Sf       Select Current Sprite Frame",
+    ":Sa       Select Current Sprite Buffer w/ Pos & Frame",
+    ":Sp       Select Current Sprite Position",
+    
+    ":h        Help",
+    ":w        Save",
+    ":q        Quit",
+};
 
 
 struct zset_S_sprBrush
@@ -34,12 +47,15 @@ struct zset_S_sprBrush
     struct {
         z__u32 size;
         z__u8 ink;
-        z__u8 color;
+        z__u8 colorFg;
+        z__u8 colorBg;
     } prop;
 
     struct {
         z__Vint2 pos;
         z__i32 frame;
+        z__u8 color;
+        z__u8 colorBg;
     } selection;
 
     zset__SpriteChar *sprCur;
@@ -72,7 +88,10 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
         }
         else if (op == 'O')
         {
-            printw("\nName   :"); scanw("%s", __tmpbuff);
+            z__StringLines filenames = zse_dir_getfnames("./sprites");
+            zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.data, filenames.lines, __tmpbuff, 32);
+            z__StringLines_delete(&filenames);
+
             spr = zse_sprite__sChar_load(__tmpbuff);
 
             return spr;
