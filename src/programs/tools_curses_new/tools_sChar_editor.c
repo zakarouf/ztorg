@@ -104,6 +104,16 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
     }
 }
 
+static void _tools_spr_sChar_editor_editSequence(zset__SpriteChar *spr)
+{
+    z__u16 frameCursor = 0;
+
+    while (true)
+    {
+
+    }
+}
+
 void zse_tools_curses_spr_sChar_editor_mainloop(void)
 {
     zse_rtC_init();
@@ -143,8 +153,8 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
     while(true)
     {
         switch(__key) {
-        case 'a':   Brush.pos.x-= 1; if (Brush.pos.x < 0) { Brush.pos.x += 1; }                         break;
-        case 'd':   Brush.pos.x+= 1; if (Brush.pos.x >= Brush.sprCur->x) { Brush.pos.x -= 1; }          break;
+        case 'a':   Brush.pos.x -= 1; if (Brush.pos.x < 0) { Brush.pos.x += 1; }                         break;
+        case 'd':   Brush.pos.x += 1; if (Brush.pos.x >= Brush.sprCur->x) { Brush.pos.x -= 1; }          break;
         case 'w':   Brush.pos.y -= 1; if (Brush.pos.y < 0) { Brush.pos.y += 1; }                        break;      
         case 's':   Brush.pos.y += 1; if (Brush.pos.y >= Brush.sprCur->y) { Brush.pos.y -= 1; }         break;
 
@@ -181,6 +191,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                     zse_sprite__sChar_export(Brush.sprCur, name);
                     z__FREE(name);
 
+                    zse_rtC_clearLine_set0(status);
                     mvwaddstr(status, getmaxy(status) -1, 0, "Sprite Saved");
                     zse_rtC_clearLine_set0(status);
 
@@ -217,6 +228,10 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                         }
 
                     zse_rtC_clearLine_set0(status);
+                } else if (tmpop == 'R') {
+                    // Record a sequence
+                } else if (tmpop == 'h') {
+                    zse_rtC__selectListS(stdscr, 0,  0, ZSE_T_SPRSR_OP_HELPTEXT, 20, &tmpop, 0);
                 } else if (tmpop == 'q') {
                     goto _L__CLEANUP_and_EXIT;
                 }
