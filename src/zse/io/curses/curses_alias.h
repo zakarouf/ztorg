@@ -7,12 +7,12 @@
 #define zse_rtC_L__mvprintw  mvprintw
 #define zse_rtC_L__mvwprintw mvwprintw
 
-#define zse_rtC_L__getch 	getch
-#define zse_rtC_L__wgetch 	wgetch
+#define zse_rtC_L__getch    getch
+#define zse_rtC_L__wgetch   wgetch
 #define zse_rtC_L__mvwgetch mvwgetch
 
-#define zse_rtC_L__addch 	addch
-#define zse_rtC_L__waddch 	waddch
+#define zse_rtC_L__addch    addch
+#define zse_rtC_L__waddch   waddch
 #define zse_rtC_L__mvwaddch mvwaddch
 
 #define zse_rtC_L__scanw    scanw
