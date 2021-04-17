@@ -1,3 +1,0 @@
-[submodule "src/deps/typed"]
-	path = src/deps/typed
-	url = https://github.com/zakarouf/typed
