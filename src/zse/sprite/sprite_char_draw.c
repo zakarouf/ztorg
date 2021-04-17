@@ -37,13 +37,19 @@ void zse_sprite__sChar_swapColors(zset__SpriteChar *spr, z__u32 frame ,z__i32 ta
     z__u16 *plot = &spr->colormap[zse_xyz3Dto1D(0, 0, frame, spr->x, spr->y)];
     for (int i = 0; i < spr->x * spr->y; ++i)
     {
-        if(*plot == targetColo) {
+        if(*plot++ == targetColo) {
         	*plot = colorCode;
         }
     }
 }
 inline void zse_sprite__sChar_copyFrame(zset__SpriteChar *spr, z__u32 from, z__u32 to)
 {
-    memcpy(&spr->plot[zse_xyz3Dto1D(0, 0, to, spr->x, spr->y)], &spr->plot[zse_xyz3Dto1D(0, 0, from, spr->x, spr->y)], spr->x * spr->y);
+    memcpy(&spr->plot[zse_xyz3Dto1D(0, 0, to, spr->x, spr->y)]
+         , &spr->plot[zse_xyz3Dto1D(0, 0, from, spr->x, spr->y)]
+         , sizeof(*spr->plot) * spr->x * spr->y);
+
+    memcpy(&spr->colormap[zse_xyz3Dto1D(0, 0, to, spr->x, spr->y)]
+         , &spr->colormap[zse_xyz3Dto1D(0, 0, from, spr->x, spr->y)]
+         , sizeof(*spr->colormap) * spr->x * spr->y);
 }
 
