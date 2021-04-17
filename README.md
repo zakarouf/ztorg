@@ -4,10 +4,68 @@
 
 This is My First Attempt to have something remotely big Project.
 
-- Its a tile-based terminal game.
+- A collection of mudules and libraries I wrote or put to-gether for just making anything.
 - The Source Code is Made to be Independent. I'll release a more Refined Library which is not tied w/ ztorg In Future. But if You are fairly competent in programming. You can use my source and modify however you like.
-- Its more of a Demo rather than a game.
+- Can be used for both GUI and TUI implementation,
 
+
+Main Source Layout
+---
+```sh
+src
+├── deps
+│   └── typed
+│       ├── docs
+│       │   ├── imgs
+│       │   └── in-depth
+│       ├── extra
+│       └── src
+├── extmod
+├── programs
+│   ├── demos_curses
+│   ├── tools_curses
+│   ├── tools_curses_new
+│   ├── tools_tisk
+│   └── ztorg
+├── zse
+│   ├── common
+│   │   └── zklib -> ../../deps/typed/src
+│   ├── entity
+│   ├── io
+│   │   ├── SDL
+│   │   ├── curses
+│   │   ├── opengl
+│   │   │   └── glad
+│   │   │       ├── KHR
+│   │   │       └── glad
+│   │   ├── tisk
+│   │   └── vulkan
+│   ├── logic
+│   │   └── mte
+│   ├── map
+│   ├── map_old
+│   ├── sprite
+│   ├── sys
+│   ├── tile
+│   ├── tile_new
+│   └── zse_all
+└── zse_test
+```
+### Take-away
+- `deps`: For External Dependencies; Not maintained within Ztorg or ZSE.
+- `extmod`: External Modification Directly writen onto ZSE and Ztorg.
+- `programs`: Tools and Demos created with OR for ZSE.
+- `zse`: Main ZSE source directory.
+    - `common`: Sources Used Everywhere.
+    - `io`: Main Input/Output streamer.
+    - `sprite`: Sprite Handler.
+    - `map`: Map Handler.
+    - `map_old`: [ **DEPRICATED** ] Old Map Submodule & Handler. Kept for refference.
+    - `sys`: Module To Communicate with system, log and police the library itself
+    - `tile_new`: **[ FUTURE ]** Tileset Handler.
+    - `tile`: **[ Soon To Be DEPRICATED ]** Tileset Handler.
+    - `entity`: Entity Handler.
+    - `logic`: Caculation the inner working b/w `map`,`tile`,`entity` etc.
 
 Read On [How to Install Ztorg?](INSTALL.md)
 
