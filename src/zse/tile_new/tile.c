@@ -5,6 +5,8 @@
 
 #include "tile_def.h"
 
+#define _TILE_DEFAULT_EXPORT_DIRECTORY "./" "tiles/"
+
 static struct zset__Stile* _tiles_getdefault(z__i32 *tileCount)
 {
     enum {MaxTiles = 8};
@@ -53,7 +55,7 @@ zset__Tileset zse_tile__tileset_getDefault(void)
 {
     zset__Tileset ts;
     ts.tiles = _tiles_getdefault(&ts.tileCount);
-    ts.tileTextureIDs = NULL;
+    ts.tileTextureIDs = z__CALLOC(ts.tileCount, sizeof(*ts.tileTextureIDs));
 
     return ts;
 }
@@ -64,4 +66,67 @@ void zse_tile__tileset_deleteContent(zset__Tileset *ts)
     free(ts->tileTextureIDs);
 
     ts->tileCount = -1;
+}
+
+void zse_tile__tileset_export(zset__Tileset *ts, char filename [ static 1 ])
+{
+    char fullpath[128];
+    snprintf(fullpath, sizeof(fullpath), _TILE_DEFAULT_EXPORT_DIRECTORY "%s", filename);
+
+    FILE *fp = fopen (fullpath, "wb");
+    if(!fp)
+    {
+        return;
+    }
+
+    fwrite(ZSE_ENGINE_VERSION, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
+
+    fwrite(&ts->tileCount, sizeof(ts->tileCount), 1, fp);
+    struct zset__Stile *tile = ts->tiles;
+    for (int i = 0; i < ts->tileCount; ++i)
+    {
+        fwrite(tile->name, sizeof(*tile->name), sizeof(tile->name)/sizeof(*tile->name), fp);
+        fwrite(&tile->mapSymb, sizeof(tile->mapSymb), 1, fp);
+        fwrite(&tile->attr, sizeof(tile->attr), 1, fp);
+
+        tile++;
+    }
+
+    fwrite(ts->tileTextureIDs, sizeof(*ts->tileTextureIDs), ts->tileCount, fp);
+    fclose(fp);
+}
+
+zset__Tileset zse_tile__tileset_load(char const filename [ static 1 ])
+{
+    zset__Tileset ts = {0};
+
+    char fullpath[128];
+    snprintf(fullpath, sizeof(fullpath), _TILE_DEFAULT_EXPORT_DIRECTORY "%s", filename);
+
+    FILE *fp = fopen (fullpath, "rb");
+    if(!fp)
+    {
+        return ts;
+    }
+
+    char version[ZSE_ENGINE_VERSION_SIGN_SIZE];
+    fread(version, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
+    fread(&ts.tileCount, sizeof(ts.tileCount), 1, fp);
+
+    ts.tiles = z__CALLOC(sizeof(&ts.tiles), ts.tileCount);
+
+    struct zset__Stile *tile = ts.tiles;
+    for (int i = 0; i < ts.tileCount; ++i)
+    {
+        fread(tile->name, sizeof(*tile->name), sizeof(tile->name)/sizeof(*tile->name), fp);
+        fread(&tile->mapSymb, sizeof(tile->mapSymb), 1, fp);
+        fread(&tile->attr, sizeof(tile->attr), 1, fp);
+
+        tile++;
+    }
+
+    fread(ts.tileTextureIDs, sizeof(*ts.tileTextureIDs), ts.tileCount, fp);
+    fclose(fp);
+
+    return ts;
 }
