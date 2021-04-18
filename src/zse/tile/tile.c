@@ -1,195 +1,132 @@
-#include "tile_lib.h"
 #include <string.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-static TILE_t* _tile_getdefault()
+#include "tile_def.h"
+
+#define _TILE_DEFAULT_EXPORT_DIRECTORY "./" "tiles/"
+
+static struct zset__Stile* _tiles_getdefault(z__i32 *tileCount)
 {
-	TILE_t *tileset = malloc(sizeof(TILE_t) * 8);
+    enum {MaxTiles = 8};
+    struct zset__Stile *tiles = z__MALLOC(sizeof(*tiles) * MaxTiles);
 
-	char tile_desc[8][16] = {
-			{"Floor/Space"},
-			{"WALL"},
-			{"WALL_MOVEABLE"},
-			{"WALL_BREAKABLE"},
-			{"WALL_INVISIBLE"},
-			{"FLOOR_TOXIC"},
-			{"FLOOR_WATER"},
-			{"FLOOR_NULL"},
-		};
+    char tile_desc[MaxTiles][16] = {
+            {"Floor/Space"},
+            {"WALL"},
+            {"WALL_MOVEABLE"},
+            {"WALL_BREAKABLE"},
+            {"WALL_INVISIBLE"},
+            {"FLOOR_TOXIC"},
+            {"FLOOR_WATER"},
+            {"FLOOR_NULL"},
+        };
 
-	attribute_bit_t attr[8] = {
+    z__u32 attr[MaxTiles] = {
 
-		TILE_ISPASS,				// 000 AIR
-		TILE_ISBLOC,				// 001 WALL 
-		TILE_ISBLOC | TILE_ISMOVE,	// 002 WALL_MOVEABLE
-		TILE_ISBLOC | TILE_ISDEST,	// 003 WALL_BREAKABLE
-		TILE_ISBLOC | TILE_ISINVI,	// 004 WALL_INVISIBLE
-		TILE_ISPASS | TILE_ISTOXI,	// 005 FLOOR_TOXIC
-		TILE_ISPASS | TILE_ISFLUD,	// 006 FLOOL_WATER
-		TILE_ISPASS,				// 007 FLOOR_NULL
-	};
+        0,                                                                                      // 000 AIR
+        ZSE_TILE__ATTR_IS_opaque | ZSE_TILE__ATTR_IS_block,                                     // 001 WALL 
+        ZSE_TILE__ATTR_IS_moveable | ZSE_TILE__ATTR_IS_block | ZSE_TILE__ATTR_IS_opaque,        // 002 WALL_MOVEABLE
+        ZSE_TILE__ATTR_IS_destructable | ZSE_TILE__ATTR_IS_block |ZSE_TILE__ATTR_IS_opaque,     // 003 WALL_BREAKABLE
+        ZSE_TILE__ATTR_IS_block,                                                                // 004 WALL_INVISIBLE
+        ZSE_TILE__ATTR_IS_toxic | ZSE_TILE__ATTR_IS_floor,                                      // 005 FLOOR_TOXIC
+        ZSE_TILE__ATTR_IS_liquid | ZSE_TILE__ATTR_IS_floor,                                     // 006 FLOOL_WATER
+        ZSE_TILE__ATTR_IS_floor,                                                                // 007 FLOOR_NULL
+    };
 
-	uint8_t 
-		symb[8] = 
-		{'.', '#', '#', '#', '#', '%', '~', ' '},
-		colo[8] = 
-		{3, 15, 2, 3, 6, 1, 4, 0};
+    uint8_t 
+        symb[MaxTiles] = 
+        {' ', '#', '&', '*', '\\', '%', '~', '.'};
 
-	for(int i = 0; i < 8; i++)
-		{
-			sprintf(tileset[i].name_id,"%s", tile_desc[i]);
-			tileset[i].coloc = colo[i];
-			tileset[i].symb = symb[i];
-			tileset[i].attr = attr[i];
-			//tileset[i].tex_id = 0;
-		}
+    for(int i = 0; i < MaxTiles; i++)
+        {
+            sprintf(tiles[i].name,"%s", tile_desc[i]);
+            tiles[i].mapSymb = symb[i];
+            tiles[i].attr = attr[i];
+            
+        }
 
-	return tileset;
+    *tileCount = MaxTiles;
+    return tiles;
 }
 
-static TILE_t* _tile_load_maindata(char dirpos[])
+zset__Tileset zse_tile__tileset_getDefault(void)
 {
-	FILE *fp = fopen(dirpos, "r");
-	char ver[8];
-    fread(ver, sizeof(ver), 1, fp);
-    int tilenum;
-    fread(&tilenum, sizeof(int), 1, fp);
+    zset__Tileset ts;
+    ts.tiles = _tiles_getdefault(&ts.tileCount);
+    ts.tileTextureIDs = z__CALLOC(ts.tileCount, sizeof(*ts.tileTextureIDs));
 
-    TILE_t *tile = malloc(sizeof(TILE_t) * tilenum);
+    return ts;
+}
 
-    fread(tile, sizeof(TILE_t), tilenum, fp);
+void zse_tile__tileset_deleteContent(zset__Tileset *ts)
+{
+    free(ts->tiles);
+    free(ts->tileTextureIDs);
 
+    ts->tileCount = -1;
+}
+
+void zse_tile__tileset_export(zset__Tileset *ts, char filename [ static 1 ])
+{
+    char fullpath[128];
+    snprintf(fullpath, sizeof(fullpath), _TILE_DEFAULT_EXPORT_DIRECTORY "%s", filename);
+
+    FILE *fp = fopen (fullpath, "wb");
+    if(!fp)
+    {
+        return;
+    }
+
+    fwrite(ZSE_ENGINE_VERSION, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
+
+    fwrite(&ts->tileCount, sizeof(ts->tileCount), 1, fp);
+    struct zset__Stile *tile = ts->tiles;
+    for (int i = 0; i < ts->tileCount; ++i)
+    {
+        fwrite(tile->name, sizeof(*tile->name), sizeof(tile->name)/sizeof(*tile->name), fp);
+        fwrite(&tile->mapSymb, sizeof(tile->mapSymb), 1, fp);
+        fwrite(&tile->attr, sizeof(tile->attr), 1, fp);
+
+        tile++;
+    }
+
+    fwrite(ts->tileTextureIDs, sizeof(*ts->tileTextureIDs), ts->tileCount, fp);
+    fclose(fp);
+}
+
+zset__Tileset zse_tile__tileset_load(char const filename [ static 1 ])
+{
+    zset__Tileset ts = {0};
+
+    char fullpath[128];
+    snprintf(fullpath, sizeof(fullpath), _TILE_DEFAULT_EXPORT_DIRECTORY "%s", filename);
+
+    FILE *fp = fopen (fullpath, "rb");
+    if(!fp)
+    {
+        return ts;
+    }
+
+    char version[ZSE_ENGINE_VERSION_SIGN_SIZE];
+    fread(version, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
+    fread(&ts.tileCount, sizeof(ts.tileCount), 1, fp);
+
+    ts.tiles = z__CALLOC(sizeof(&ts.tiles), ts.tileCount);
+
+    struct zset__Stile *tile = ts.tiles;
+    for (int i = 0; i < ts.tileCount; ++i)
+    {
+        fread(tile->name, sizeof(*tile->name), sizeof(tile->name)/sizeof(*tile->name), fp);
+        fread(&tile->mapSymb, sizeof(tile->mapSymb), 1, fp);
+        fread(&tile->attr, sizeof(tile->attr), 1, fp);
+
+        tile++;
+    }
+
+    fread(ts.tileTextureIDs, sizeof(*ts.tileTextureIDs), ts.tileCount, fp);
     fclose(fp);
 
-    return tile;
-
-}
-
-TILE_t* zse_tile_realloc (size_t *old_size, size_t new_size, TILE_t *tile)
-{
-	TILE_t *tmp = tile;
-	tmp = realloc (tile, sizeof(TILE_t) * new_size);
-
-	if(tmp == NULL)
-	{
-		// Reallocation Fails Do Nothing. Return As Is
-		return tile;
-	}
-
-	else {
-
-		// Realloction Success. Initilize new formed tiles.
-		for (int i = *old_size; i < new_size ; i++)
-		{
-			sprintf(tmp[i].name_id, "NULL");
-			//tile[i].tex_id = 0;
-			tmp[i].symb = 32;
-			tmp[i].coloc = 0;
-			tmp[i].attr = 0;
-		}
-		
-		*old_size = new_size;
-		return tmp;
-	}
-}
-
-
-TILE_t* zse_tile_intiempty (size_t t_size)
-{
-	TILE_t *tile = malloc(sizeof(TILE_t) * t_size);
-
-	for (int i = 0; i < t_size ; i++)
-	{
-		sprintf(tile[i].name_id, "NULL");
-		tile[i].symb = 32;
-		tile[i].coloc = 0;
-		tile[i].attr = 0;
-	}
-	
-	return tile;
-}
-
-static TILE_t *zse_tile_load(char name[], size_t *size)
-{
-	if(strcmp(name, TILE_DEFAULTTILESET) == 0)
-	{
-		*size = 8;
-		return _tile_getdefault();
-	}
-
-	char tile_dir[64] = TILE_PARENTDIR;
-	char dirpos[72];
-
-	strncat(tile_dir, name, 64);
-	sprintf(dirpos, "%s/%s", tile_dir, TILE_TILEDATA_FILE);
-	TILE_t *tile = _tile_load_maindata(dirpos);
-
-
-
-	return tile;
-}
-
-static int zse_tile_export(TILE_t *tile, size_t size ,char name[], char newtile)
-{
-	char tile_dir[64] = TILE_PARENTDIR;
-	char dirpos[72];
-
-	strncat(tile_dir, name, 64);
-	sprintf(dirpos, "%s/%s", tile_dir, TILE_TILEDATA_FILE);
-
-	if(newtile)
-	{
-		mkdir(tile_dir, 0777);
-	}
-
-	FILE *fp;
-	if((fp = fopen(dirpos, "w")) == NULL)
-	{
-		return -1;
-	}
-
-	fwrite(ZSE_ENGINE_VERSION, sizeof(char), 8, fp);
-	fwrite(&size, sizeof(int), 1, fp);
-	fwrite(tile, sizeof(TILE_t), size, fp);
-
-	fclose(fp);
-	return 0;
-}
-
-
-//--------------------------TILESET-------------------------------------------
-TILESET_t zse_tileset_get (char name[])
-{
-	TILESET_t t;
-	t.tile = zse_tile_load(name, &t.tsize);
-	t.tiletexsize = 4;
-	return t;
-}
-
-TILESET_t zse_tileset_init (void)
-{
-	TILESET_t t;
-	t.tsize = 8;
-	t.tile = zse_tile_intiempty(t.tsize);
-	return t;
-}
-
-int zse_tileset_chsize(TILESET_t *t, size_t newsize)
-{
-	t->tile =  zse_tile_realloc(&t->tsize, newsize, t->tile);
-	return 0;
-}
-
-int zse_tileset_exp (char name[], TILESET_t *t, int newt)
-{
-	zse_tile_export(t[0].tile, t[0].tsize, name, newt);
-	return 0;
-}
-
-void zse_tileset_delete(TILESET_t *t)
-{
-	free(t->tile);
-	free(t->tex);
+    return ts;
 }

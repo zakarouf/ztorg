@@ -3,7 +3,7 @@
 
 #include "curses.h"
 #include "../../map_old/map_lib.h"
-#include "../../tile/tile_lib.h"
+#include "../../tile_old/tile_lib.h"
 
 void zse_rtC_map_show2dworld
 (
