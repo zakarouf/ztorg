@@ -9,16 +9,18 @@ int zse_rtC_color_initpairs(void)
 	for (int i = 0; i < COLORS; ++i)
 	{
 		init_pair(pair, i, -1);
+
 		pair++;
 	}
 	// Colors Text w/ b/g from 1 to 256
-	for (int i = 1; i < 16; i += 1) // Bg
+	for (int i = 1; i < 128; i += 1) // Bg
 	{
 		for (int j = 0; j < COLORS; ++j)
 		{
 			init_pair(pair, j, i);
 			pair++;
 		}
+
 	}
 
 #if 0 // Checks
