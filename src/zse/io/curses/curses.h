@@ -18,4 +18,23 @@ int zse_rtC__selectListS(
 	, char *getstringS, int stringSize);
 void zse_rtC__clearPortion(WINDOW *win, int x, int y, int uptoX, int uptoY);
 
+void zse_rtC__drawHorizortalGraphRuler_nocheck(
+	  WINDOW *win
+	, z__u32 at_x
+	, z__u32 at_y
+	, z__u32 upto_x
+	, z__f32 ruler_x
+	, z__f32 ruler_increment
+	, z__u32 rulerGap);
+
+void zse_rtC__drawVerticalGraphRuler_nocheck(
+      WINDOW *win
+    , z__u32 at_x
+    , z__u32 at_y
+    , z__u32 upto_y
+    , z__f32 ruler_y
+    , z__f32 ruler_increment
+    , z__u32 rulerGap
+);
+
 #endif

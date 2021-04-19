@@ -149,3 +149,49 @@ void zse_rtC_clearPortion(WINDOW *win, int x, int y, int uptoX, int uptoY)
         }
     }
 }
+
+void zse_rtC__drawHorizortalGraphRuler_nocheck(
+      WINDOW *win
+    , z__u32 at_x
+    , z__u32 at_y
+    , z__u32 upto_x
+    , z__f32 ruler_x
+    , z__f32 ruler_increment
+    , z__u32 rulerGap
+)
+{
+    wmove(win, at_y, at_x);
+    whline(win, ACS_HLINE, upto_x - at_x);
+
+    rulerGap += 1;
+
+    for (int i = at_x; i < upto_x; i += rulerGap)
+    {
+        mvwaddch(win ,at_y, i, ACS_TTEE);
+        mvwprintw(win, at_y+1, i-1, "%.1f", ruler_x);
+        ruler_x += ruler_increment;
+    }
+}
+
+void zse_rtC__drawVerticalGraphRuler_nocheck(
+      WINDOW *win
+    , z__u32 at_x
+    , z__u32 at_y
+    , z__u32 upto_y
+    , z__f32 ruler_y
+    , z__f32 ruler_increment
+    , z__u32 rulerGap
+)
+{
+    wmove(win, at_y, at_x);
+    wvline(win, ACS_VLINE, upto_y - at_y);
+
+    rulerGap += 1;
+
+    for (int i = at_y; i < upto_y; i += rulerGap)
+    {
+        mvwaddch(win, i, at_x, ACS_RTEE);
+        mvwprintw(win, i, at_x-4, "%.1f", ruler_y);
+        ruler_y += ruler_increment;
+    }
+}

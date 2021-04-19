@@ -1,6 +1,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "test.h"
+
 #include "../zse/zse.h"
 #include "../zse/map/map.h"
 #include "../zse/map/map_ch_draw.h"
@@ -139,7 +141,8 @@ void zse___TEST_spriteChar(void)
 int zse___TEST(void)
 {
 	//zse___TEST_map();
-	zse___TEST_spriteChar();
+	//zse___TEST_spriteChar();
 	//zse___TEST_printAsciiChart();
+	zse___TEST___curses();
 	return 0;
 }
