@@ -229,7 +229,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
                     zse_rtC_clearLine_set0(status);
                 } else if (tmpop == 'R') {
-                    // Record a sequence
+                    // TODO: Record a sequence
                 } else if (tmpop == 'h') {
                     zse_rtC__selectListS(stdscr, 0,  0, ZSE_T_SPRSR_OP_HELPTEXT, 20, &tmpop, 0);
                 } else if (tmpop == 'q') {
