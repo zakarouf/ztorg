@@ -9,7 +9,8 @@
 #include <time.h>
 #include <math.h>
 
-#include "zklib/ztypes.h"
+#include "z_/types/ztypes.h"
+#include "z_/z_.h"
 #include "common_macrofunc.h"
 
 #define frinl __attribute__((always_inline)) inline
