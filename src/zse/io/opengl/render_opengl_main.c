@@ -17,11 +17,11 @@
 #include "../../sys/sys.h"
 
 #define priv_LOG_MSG(format, ...)\
-    zse_sys_log(stdout,"\x1b[38;5;3m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
+    z__log_basic(stdout,"\x1b[38;5;3m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
 #define priv_LOG_ERROR(format, ...)\
-    zse_sys_log(stdout,"\x1b[38;5;1m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
+    z__log_basic(stdout,"\x1b[38;5;1m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
 #define priv_LOG_COLOR(color, format, ...)\
-    zse_sys_log(stdout, "\x1b[38;5;%dm" "rGL:" format "\x1b[0m", color, ##__VA_ARGS__ )
+    z__log_basic(stdout, "\x1b[38;5;%dm" "rGL:" format "\x1b[0m", color, ##__VA_ARGS__ )
 
 typedef struct {
     z__u32 VBO;

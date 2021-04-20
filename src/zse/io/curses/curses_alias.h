@@ -16,7 +16,7 @@
 #define zse_rtC_L__mvwaddch mvwaddch
 
 #define zse_rtC_L__whline whline
-#define zse_rtC_L__whline vhline
+#define zse_rtC_L__vhline vhline
 
 #define zse_rtC_L__scanw    scanw
 #define zse_rtC_L__mvscanw  mvscanw

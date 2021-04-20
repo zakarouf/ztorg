@@ -29,12 +29,12 @@
 
 #ifdef ZSE_CONFIG_LOGS__USE_VARDIC_MACROS
     #define NOTPUB_log_normal(format , ...)\
-        zse_sys_log(stdout,"\x1b[38;5;3m" "rVK:" format "\x1b[0m", ##__VA_ARGS__ )
+        z__log_basic(stdout,"\x1b[38;5;3m" "rVK:" format "\x1b[0m", ##__VA_ARGS__ )
 
     #define NOTPUB_log_error(format , ...)\
-        zse_sys_log(stdout,"\x1b[38;5;1m" "rVK:ERROR:" format "\x1b[0m", ##__VA_ARGS__ )
+        z__log_basic(stdout,"\x1b[38;5;1m" "rVK:ERROR:" format "\x1b[0m", ##__VA_ARGS__ )
     #define NOTPUB_log_distinct(color ,format, ...)\
-        zse_sys_log(stdout, "\x1b[38;5;%dm" "rVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
+        z__log_basic(stdout, "\x1b[38;5;%dm" "rVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
 
 #else
     #define NOTPUB_log_normal(...)\
@@ -303,8 +303,8 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
 
 static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 {
-    z__Dynt vertShaderCode = zse_sys__Dynt_readFile("shaders/vert.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
-    z__Dynt fragShaderCode = zse_sys__Dynt_readFile("shaders/frag.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
+    z__Dynt vertShaderCode = z__file__Dynt_readFile("shaders/vert.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
+    z__Dynt fragShaderCode = z__file__Dynt_readFile("shaders/frag.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
 
     if (vertShaderCode.data == NULL)
     {
@@ -1192,7 +1192,7 @@ static void _zse_rVK_mainLoop(GLFWwindow* window)
 {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        zse_sys_msleep(100);
+        z__time_msleep(100);
     }
 }
 
