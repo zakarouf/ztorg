@@ -1,0 +1,7 @@
+#ifndef ZAKAROUF_ZSE_ENTITY_CONFIG_H
+#define ZAKAROUF_ZSE_ENTITY_CONFIG_H
+
+
+
+
+#endif

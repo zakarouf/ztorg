@@ -1,0 +1,13 @@
+#ifndef ZAKAROUF_ZSE__MAP_CHUNKTYPE_CONFIG_H
+#define ZAKAROUF_ZSE__MAP_CHUNKTYPE_CONFIG_H
+
+#define MAP_CH_GENERAL_DIRECTORY "./maps/"
+
+#define VACANT_MAP "\0"
+
+#define MAP_DATAFILE_COMMON "cd.bin"
+#define MAP_DATAFILE_LINK "ld.bin"
+
+#define MAP_DATAFILE_EXTENTION ".bin"
+
+#endif

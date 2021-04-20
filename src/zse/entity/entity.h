@@ -1,5 +1,5 @@
-#ifndef ZSE_ENTITY_H
-#define ZSE_ENTITY_H
+#ifndef ZAKAROUF_ZSE__ENTITY_H
+#define ZAKAROUF_ZSE__ENTITY_H
 
 #include "../common.h"
 

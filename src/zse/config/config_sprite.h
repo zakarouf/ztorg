@@ -1,0 +1,6 @@
+#ifndef ZAKAROUF_ZSE__SPRITE_CONFIG_H
+#define ZAKAROUF_ZSE__SPRITE_CONFIG_H
+
+
+
+#endif

@@ -5,15 +5,7 @@
 #include <stdlib.h>
 
 #include "map_ch.h"
-
-#define MAP_GENERAL_DIRECTORY "./maps/"
-
-#define VACANT_MAP "\0"
-
-#define MAP_DATAFILE_COMMON "cd.bin"
-#define MAP_DATAFILE_LINK "ld.bin"
-
-#define MAP_DATAFILE_EXTENTION ".bin"
+#include "../config/config_map_ch.h"
 /*----
  main world data file naming format 'x,y,z.bin'
 ----*/
@@ -21,7 +13,7 @@
 void zse_map__ch_load_singleChunk(const char mapname[] ,zset__MapCh *map, z__u32 chunk, z__Vint3 Chunk_cords)
 {
 	char file[128];
-	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
+	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
 	FILE *fp = fopen(file, "rb");
 	if (fp == NULL) {
 		map->chunks[chunk] = NULL;
@@ -36,7 +28,7 @@ void zse_map__ch_load_singleChunk(const char mapname[] ,zset__MapCh *map, z__u32
 static void zse_map__ch_load_commondata(const char mapname[], zset__MapCh *map)
 {
 	char file[128];
-	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
+	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
 	FILE *fp = fopen(file, "rb");
 
 	char version[ZSE_ENGINE_VERSION_SIGN_SIZE];
@@ -61,7 +53,7 @@ zset__MapCh *zse_map__ch_load__st(const char mapname[ static 1 ])
 void zse_map__ch_export_singleChunk(char mapname[] ,zset__MapCh *map, z__u32 chunk, z__Vint3 Chunk_cords)
 {
 	char file[128];
-	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
+	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
 	FILE *fp = fopen(file, "wb");
 
 	fwrite(map->chunks[chunk], sizeof(**map->chunks), map->size.x * map->size.z * map->size.y, fp);
@@ -72,7 +64,7 @@ void zse_map__ch_export_singleChunk(char mapname[] ,zset__MapCh *map, z__u32 chu
 void zse_map__ch_export_commondata(char mapname[], zset__MapCh *map)
 {
 	char file[128];
-	snprintf(file, 128, MAP_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
+	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
 	FILE *fp = fopen(file, "wb");
 
 	fwrite(ZSE_ENGINE_VERSION, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
@@ -85,8 +77,8 @@ void zse_map__ch_export_commondata(char mapname[], zset__MapCh *map)
 
 void zse_map__ch_export__st(char mapname[ static 1 ], zset__MapCh *map)
 {
-	char mapdir[96] = MAP_GENERAL_DIRECTORY;
-	strncat(mapdir, mapname, sizeof(mapdir) - sizeof(MAP_GENERAL_DIRECTORY));
+	char mapdir[96] = MAP_CH_GENERAL_DIRECTORY;
+	strncat(mapdir, mapname, sizeof(mapdir) - sizeof(MAP_CH_GENERAL_DIRECTORY));
 
 		mkdir(mapdir, 0755);
 
