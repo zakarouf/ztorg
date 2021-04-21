@@ -1,13 +1,9 @@
-#include "sprite_char_def.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define SPRITES_PARENTDIR "./sprites/"
-
-#define SPRITES_SINGLE_EXT ".zcspr"
-#define SPRITES_BLOCFILE_EXT ".zbcspr"
+#include "sprite_char_def.h"
+#include "../config/config_sprite_char.h"
 
 void zse_sprite__sChar_export(const zset__SpriteChar *spr ,const char filename[ static 1 ])
 {

@@ -4,8 +4,7 @@
 #include <stdlib.h>
 
 #include "tile_def.h"
-
-#define _TILE_DEFAULT_EXPORT_DIRECTORY "./" "tiles/"
+#include "../config/config_tile.h"
 
 static struct zset__Stile* _tiles_getdefault(z__i32 *tileCount)
 {

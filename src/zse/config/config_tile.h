@@ -1,5 +1,6 @@
 #ifndef ZAKAROUF_ZSE__TILE_CONFIG_H
 #define ZAKAROUF_ZSE__TILE_CONFIG_H
 
+#define _TILE_DEFAULT_EXPORT_DIRECTORY "./" "tiles/"
 
 #endif
