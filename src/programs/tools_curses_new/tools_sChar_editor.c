@@ -114,6 +114,7 @@ static void _tools_spr_sChar_editor_editSequence(zset__SpriteChar *spr)
     }
 }
 
+
 void zse_tools_curses_spr_sChar_editor_mainloop(void)
 {
     zse_rtC_init();
@@ -140,9 +141,6 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         z__Arr_pop(&sprBuffer);
         goto _L__CLEANUP_and_EXIT;
     }
-
-
-
 
     char __Toggle[2][4] = {"Off", "On"};
     char __key = 0;

@@ -14,12 +14,6 @@ Main Source Layout
 ```sh
 src
 ├── deps
-│   └── typed
-│       ├── docs
-│       │   ├── imgs
-│       │   └── in-depth
-│       ├── extra
-│       └── src
 ├── extmod
 ├── programs
 │   ├── demos_curses
@@ -29,7 +23,11 @@ src
 │   └── ztorg
 ├── zse
 │   ├── common
-│   │   └── zklib -> ../../deps/typed/src
+│   │   └── z_
+│   │       ├── extra
+│   │       ├── proc
+│   │       └── types
+│   ├── config
 │   ├── entity
 │   ├── io
 │   │   ├── SDL
@@ -47,7 +45,7 @@ src
 │   ├── sprite
 │   ├── sys
 │   ├── tile
-│   ├── tile_new
+│   ├── tile_old
 │   └── zse_all
 └── zse_test
 ```
