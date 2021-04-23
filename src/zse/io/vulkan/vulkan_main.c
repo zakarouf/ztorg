@@ -109,7 +109,7 @@ static const int GLOBAL_rVK_validationLayersCount = 1;
 static void _zse_rVK_init_deviceExtentions(z__StringLines *dE)
 {
     int device = 1;
-    *dE = z__StringLines_createEmpty(96, device);
+    *dE = z__StringLines_new(96, device);
     z__StringLines_pushString(dE, 96, VK_KHR_SWAPCHAIN_EXTENSION_NAME);
 }
 
@@ -506,7 +506,7 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 
 static void _zse_rVK_createImageViews(_zse_rVK_HANDLERS *Handle)
 {
-    z__Arr_create(&Handle->_rVK_swapChainImageViews, Handle->_rVK_swapChainImages.lenUsed);
+    z__Arr_new(&Handle->_rVK_swapChainImageViews, Handle->_rVK_swapChainImages.lenUsed);
 
     NOTPUB_log_normal("Creating Image Views: %d\n", Handle->_rVK_swapChainImages.lenUsed);
 
@@ -736,7 +736,7 @@ static VkSwapchainKHR _zse_rVK_createSwapChain
     }
 
     vkGetSwapchainImagesKHR(device, swapChain, &imageCount, NULL);
-    z__Arr_create(swapChainImages, imageCount+1);
+    z__Arr_new(swapChainImages, imageCount+1);
     vkGetSwapchainImagesKHR(device, swapChain, &imageCount, swapChainImages->data);
     swapChainImages->lenUsed = imageCount;
 
@@ -866,7 +866,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
 
 
-    z__StringLines requiredExtensions = z__StringLines_createEmpty(96, deviceExtensions->lines);
+    z__StringLines requiredExtensions = z__StringLines_new(96, deviceExtensions->lines);
     for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
     {
         z__StringLines_pushString(&requiredExtensions, 96, deviceExtensions->data[i]);
@@ -961,7 +961,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 static z__StringLines _zse_rVK_getRequiredExtentions()
 {
 
-    z__StringLines strLines = z__StringLines_createEmpty(32, 5);
+    z__StringLines strLines = z__StringLines_new(32, 5);
 
     // Extentions
     uint32_t glfwExtensionCount = 0;

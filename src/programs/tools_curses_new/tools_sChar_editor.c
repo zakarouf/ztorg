@@ -121,7 +121,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
     WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
     z__Arr(zset__SpriteChar) sprBuffer;
-    z__Arr_create(&sprBuffer, 8);
+    z__Arr_new(&sprBuffer, 8);
     z__Arr_push(&sprBuffer, _tools_spr_sChar_editor_load_new());
 
     enum {_MAX_FOREGROUND_COLOR = 256, _MAX_BACKGROUND_COLOR = 16};

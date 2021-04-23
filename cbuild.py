@@ -20,7 +20,7 @@ CC="gcc"
 ERRFLAGS = ["-Wall"]
 CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
 #LDFLAGS=["-lm", "-lncurses", "-lraylib"]
-LDFLAGS=["-lm", "-lvulkan", "-lglfw", "-lncursesw", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
+LDFLAGS=["-I/usr/local/include" ,"-lm", "-lvulkan", "-lglfw", "-lncursesw", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
 
 
@@ -139,7 +139,7 @@ def main(source, clean, TestEnabled, testCommands):
 
 
 
-    compile(outstr)
+    compile(outstr[0:-1])
     if checkforfileExistance(OUTEXE):
         log("SUCCESS\n\n")
     else:

@@ -143,8 +143,8 @@ static void _zse_rGL_getShader
     , z__u32 *fragmentShaderID
 )
 {
-    z__String vertShaderSource = z__String_createFromFile((char *)pathVert);
-    z__String fragShaderSource = z__String_createFromFile((char *)pathFrag);
+    z__String vertShaderSource = z__String_newFromFile((char *)pathVert);
+    z__String fragShaderSource = z__String_newFromFile((char *)pathFrag);
     const char *vSource = vertShaderSource.data;
     const char *fSource = fragShaderSource.data;
 
@@ -240,7 +240,7 @@ static _zse_rGL_HANDLERS *_zse_rGL_createHandle(void)
 {
     _zse_rGL_HANDLERS *handle = z__MALLOC(sizeof(_zse_rGL_HANDLERS));
 
-    z__Arr_create(&handle->_rGL_buffObj, 8);
+    z__Arr_new(&handle->_rGL_buffObj, 8);
 
     handle->_rGL_window = _zse_rGL_windowInit(640, 480);
 
