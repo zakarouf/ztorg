@@ -114,31 +114,36 @@ static void _tools_spr_sChar_editor_editSequence(zset__SpriteChar *spr)
     }
 }
 
+void _reset_brush_except_cur_n_tmp(struct zset_S_sprBrush *brsh)
+{
+    brsh->pos.x = 0;
+    brsh->pos.y = 0;
+    brsh->frame = 0;
+    brsh->prop.ink = 'a';
+    brsh->prop.colorFg = 0;
+    brsh->prop.colorBg = 0;
+    brsh->prop.size = 0;
+}
 
 void zse_tools_curses_spr_sChar_editor_mainloop(void)
 {
     zse_rtC_init();
     WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
-    z__Arr(zset__SpriteChar) sprBuffer;
-    z__Arr_new(&sprBuffer, 8);
-    z__Arr_push(&sprBuffer, _tools_spr_sChar_editor_load_new());
+    /* Using Linked list to emulate tabs */
+    z__Link(sprBuffer_ll, zset__SpriteChar);
+    z__LList(sprBuffer_ll, int current) sprBuffer;
+    z__LList_new(&sprBuffer, _tools_spr_sChar_editor_load_new());
+    sprBuffer.current = 0;
 
-    enum {_MAX_FOREGROUND_COLOR = 256, _MAX_BACKGROUND_COLOR = 16};
+    enum {_MAX_FOREGROUND_COLOR = 256, _MAX_BACKGROUND_COLOR = 128};
     struct zset_S_sprBrush Brush = {
-        .pos.x = 0,
-        .pos.y = 0,
-        .frame = 0,
-        .prop.ink = '@',
-        .prop.colorFg = 0,
-        .prop.colorBg = 0,
-        .prop.size = 0,
-        .sprCur = &z__Arr_getTop(sprBuffer),
-        .sprTmp = &z__Arr_getTop(sprBuffer),
+        .sprCur = &sprBuffer.cursor->data,
+        .sprTmp = &sprBuffer.cursor->data,
     };
+    _reset_brush_except_cur_n_tmp(&Brush);
 
     if (Brush.sprCur->x < 1 && Brush.sprCur->y < 1) {
-        z__Arr_pop(&sprBuffer);
         goto _L__CLEANUP_and_EXIT;
     }
 
@@ -175,6 +180,17 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         case 't':   Brush.prop.colorBg += 1; if (Brush.prop.colorBg > _MAX_BACKGROUND_COLOR){ Brush.prop.colorBg = 0; }      break;
         case 'R':   Brush.prop.colorBg -= 6; if (Brush.prop.colorBg < 0) { Brush.prop.colorBg = _MAX_BACKGROUND_COLOR -1; }   break;
         case 'T':   Brush.prop.colorBg += 6; if (Brush.prop.colorBg > _MAX_BACKGROUND_COLOR){ Brush.prop.colorBg = 0; }      break;
+
+        case ']':   if (sprBuffer.cursor->next) {
+                        sprBuffer.cursor = sprBuffer.cursor->next;
+                        Brush.sprCur = &sprBuffer.cursor->data;
+                        sprBuffer.current++;
+                    } else {
+                        sprBuffer.cursor = sprBuffer.tail; Brush.sprCur = &sprBuffer.cursor->data;
+                        sprBuffer.current = 0;
+                    }
+                    _reset_brush_except_cur_n_tmp(&Brush);
+                    break;
 
         // Options
         case ':':
@@ -226,6 +242,14 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                         }
 
                     zse_rtC_clearLine_set0(status);
+                } else if (tmpop == 'N') {
+                    z__LList_pushHead(&sprBuffer, _tools_spr_sChar_editor_load_new());
+                    if (sprBuffer.head->data.x < 1 && sprBuffer.head->data.y < 1) {
+                        z__LList_popHead(&sprBuffer);
+                    } else {
+                        Brush.sprCur = &sprBuffer.head->data;
+                        z__LList_setCursorHead(&sprBuffer);
+                    }
                 } else if (tmpop == 'R') {
                     // TODO: Record a sequence
                 } else if (tmpop == 'h') {
@@ -266,9 +290,26 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
             , Brush.pos.x, Brush.pos.y, Brush.frame, Brush.sprCur->frames-1, ZSE_sprite__sChar_getColorFg(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
 
+        mvwprintw(status, 3, 0, "Current: %d"
+            , sprBuffer.current);
         //mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d",
         //    r_options&ZSE_T_SPRSR_OP_COLORS? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSENAB? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSSHOW? 1:0);
         
+
+        /* Draw Tabs */
+        z__LinkDef(sprBuffer_ll) *tmpTab_cursor = sprBuffer.tail;
+        int i = 0;
+        for(; i < getmaxy(stdscr)-2 && tmpTab_cursor; ++i)
+        {
+            if (i == sprBuffer.current)
+            {
+                wcolor_set(stdscr, 1, NULL);
+            }
+            mvwprintw(stdscr, i+1, getmaxx(stdscr)-6, "| %d |", i);
+            tmpTab_cursor = tmpTab_cursor->next;
+            wcolor_set(stdscr, 0, NULL);
+        }
+
         wrefresh(stdscr);
         //wrefresh(status);
 
@@ -277,12 +318,8 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
     }
 
     _L__CLEANUP_and_EXIT: {
-        for (int i = 0; i < z__Arr_getUsed(sprBuffer); ++i)
-        {
-            zse_sprite__sChar_delete(&sprBuffer.data[i]);
-        }
-        z__Arr_delete(&sprBuffer);
 
+        z__LList_delete(&sprBuffer);
         delwin(status);
         echo();
         zse_rtC_exit();
