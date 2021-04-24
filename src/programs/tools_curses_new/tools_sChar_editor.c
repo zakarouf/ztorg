@@ -33,6 +33,7 @@ static const char *ZSE_T_SPRSR_OP_HELPTEXT[] = {
     ":Sa       Select Current Sprite Buffer w/ Pos & Frame",
     ":Sp       Select Current Sprite Position",
     
+    ":N        New tab",
     ":h        Help",
     ":w        Save",
     ":q        Quit",
