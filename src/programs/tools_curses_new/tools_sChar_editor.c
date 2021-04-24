@@ -10,6 +10,7 @@
 #include "../../zse/sprite/sprite_char.h"
 #include "../../zse/sprite/sprite_char_draw.h"
 
+static const char ZSE_T_SPRSR_OP_HELPTEXT_ITEMS = 21;
 static const char *ZSE_T_SPRSR_OP_HELPTEXT[] = {
     "USAGE:",
     "w,a,s,d   Move Brush",
@@ -22,7 +23,7 @@ static const char *ZSE_T_SPRSR_OP_HELPTEXT[] = {
     "g,G,h,H   Change Foreground Colour",
     "r,R,t,T   Change Background Colour",
     
-    
+
     ":         Commands",
     ":Cn       Copy Next Frame",
     ":Cp       Copy Previous Frame",
@@ -254,7 +255,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                 } else if (tmpop == 'R') {
                     // TODO: Record a sequence
                 } else if (tmpop == 'h') {
-                    zse_rtC__selectListS(stdscr, 0,  0, ZSE_T_SPRSR_OP_HELPTEXT, 20, &tmpop, 0);
+                    zse_rtC__selectListS(stdscr, 0,  0, ZSE_T_SPRSR_OP_HELPTEXT, ZSE_T_SPRSR_OP_HELPTEXT_ITEMS, &tmpop, 0);
                 } else if (tmpop == 'q') {
                     goto _L__CLEANUP_and_EXIT;
                 }
