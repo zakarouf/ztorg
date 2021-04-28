@@ -109,8 +109,8 @@ static const int GLOBAL_rVK_validationLayersCount = 1;
 static void _zse_rVK_init_deviceExtentions(z__StringLines *dE)
 {
     int device = 1;
-    *dE = z__StringLines_new(96, device);
-    z__StringLines_pushString(dE, 96, VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    *dE = z__StringLines_new(device);
+    z__StringLines_push(dE, VK_KHR_SWAPCHAIN_EXTENSION_NAME, -1);
 }
 
 static VkResult _zse_rVK_createDebugUtilsMessengerEXT
@@ -866,10 +866,10 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
 
 
-    z__StringLines requiredExtensions = z__StringLines_new(96, deviceExtensions->lines);
+    z__StringLines requiredExtensions = z__StringLines_new(deviceExtensions->lines);
     for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
     {
-        z__StringLines_pushString(&requiredExtensions, 96, deviceExtensions->data[i]);
+        z__StringLines_push(&requiredExtensions, deviceExtensions->data[i], -1);
     }
 
     const uint32_t TotalExtentionsRequired = requiredExtensions.linesUsed;
@@ -961,7 +961,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 static z__StringLines _zse_rVK_getRequiredExtentions()
 {
 
-    z__StringLines strLines = z__StringLines_new(32, 5);
+    z__StringLines strLines = z__StringLines_new(5);
 
     // Extentions
     uint32_t glfwExtensionCount = 0;
@@ -971,11 +971,10 @@ static z__StringLines _zse_rVK_getRequiredExtentions()
 
     for (int i = 0; i < glfwExtensionCount; ++i)
     {
-        strcpy(strLines.data[i], glfwExtensions[i]);
-        strLines.linesUsed+=1;
+        z__StringLines_push(&strLines, glfwExtensions[i], -1);
     }
 
-    z__StringLines_pushString(&strLines, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME), VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    z__StringLines_push(&strLines, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME) );
 
     NOTPUB_log_normal("%d\n", strLines.linesUsed);
 

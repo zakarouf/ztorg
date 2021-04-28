@@ -233,42 +233,43 @@ typedef size_t z__size;
         /* Basic Arithmatic */
         #define z__Vector2_A(a, b, operator, dest)  \
         {                                           \
-            (dest).x = (a).x operator (b).x;        \
-            (dest).y = (a).y operator (b).y;        \
+            (dest)->x = (a).x operator (b).x;        \
+            (dest)->y = (a).y operator (b).y;        \
         }
         #define z__Vector3_A(a, b, operator, dest)  \
         {                                           \
-            (dest).x = (a).x operator (b).x;        \
-            (dest).y = (a).y operator (b).y;        \
-            (dest).z = (a).z operator (b).z;        \
+            (dest)->x = (a).x operator (b).x;        \
+            (dest)->y = (a).y operator (b).y;        \
+            (dest)->z = (a).z operator (b).z;        \
         }
         #define z__Vector4_A(a, b, operator, dest)  \
         {                                           \
-            (dest).x = (a).x operator (b).x;        \
-            (dest).y = (a).y operator (b).y;        \
-            (dest).z = (a).z operator (b).z;        \
-            (dest).w = (a).w operator (b).w;        \
+            (dest)->x = (a).x operator (b).x;        \
+            (dest)->y = (a).y operator (b).y;        \
+            (dest)->z = (a).z operator (b).z;        \
+            (dest)->w = (a).w operator (b).w;        \
         }
+        #define z__Vector3_dot(a,b) (((a).x * (b).x)+((a).y * (b).y)+((a).z * (b).z))
+        
 
-
-        #define z__Matrix2_A (a, b, operator, dest)\
+        #define z__Matrix2_A(a, b, operator, dest)\
         {                                                                                  \
-            dest._0_0 = a._0_0 operator b._0_0; /**/ dest._0_1 = a._0_1 operator b._0_1;   \
-            dest._1_0 = a._1_0 operator b._1_0; /**/ dest._1_1 = a._1_1 operator b._1_1;   \
+            (dest)->_0_0 = (a)._0_0 operator (b)._0_0; /**/ (dest)->_0_1 = (a)._0_1 operator (b)._0_1;   \
+            (dest)->_1_0 = (a)._1_0 operator (b)._1_0; /**/ (dest)->_1_1 = (a)._1_1 operator (b)._1_1;   \
         }
 
-        #define z__Matrix3_A (a, b, operator, dest)\
+        #define z__Matrix3_A(a, b, operator, dest)\
         {                                                                                                                           \
-            dest._0_0 = a._0_0 operator b._0_0; /**/ dest._0_1 = a._0_1 operator b._0_1; /**/ dest._0_2 = a._0_2 operator b._0_2;   \
-            dest._1_0 = a._1_0 operator b._1_0; /**/ dest._1_1 = a._1_1 operator b._1_1; /**/ dest._1_2 = a._1_2 operator b._1_2;   \
-            dest._2_0 = a._2_0 operator b._2_0; /**/ dest._2_1 = a._2_1 operator b._2_1; /**/ dest._2_2 = a._2_2 operator b._2_2;   \
+            (dest)->_0_0 = (a)._0_0 operator (b)._0_0; /**/ (dest)->_0_1 = (a)._0_1 operator (b)._0_1; /**/ (dest)->_0_2 = (a)._0_2 operator (b)._0_2;   \
+            (dest)->_1_0 = (a)._1_0 operator (b)._1_0; /**/ (dest)->_1_1 = (a)._1_1 operator (b)._1_1; /**/ (dest)->_1_2 = (a)._1_2 operator (b)._1_2;   \
+            (dest)->_2_0 = (a)._2_0 operator (b)._2_0; /**/ (dest)->_2_1 = (a)._2_1 operator (b)._2_1; /**/ (dest)->_2_2 = (a)._2_2 operator (b)._2_2;   \
         }
-        #define z__Matrix4_A (a, b, operator, dest)\
+        #define z__Matrix4_A(a, b, operator, dest)\
         {                                                                                                                                                                   \
-            dest._0_0 = a._0_0 operator b._0_0; /**/ dest._0_1 = a._0_1 operator b._0_1; /**/ dest._0_2 = a._0_2 operator b._0_2; /**/ dest._0_3 = a._0_3 operator b._0_3;  \
-            dest._1_0 = a._1_0 operator b._1_0; /**/ dest._1_1 = a._1_1 operator b._1_1; /**/ dest._1_2 = a._1_2 operator b._1_2; /**/ dest._1_3 = a._1_3 operator b._1_3;  \
-            dest._2_0 = a._2_0 operator b._2_0; /**/ dest._2_1 = a._2_1 operator b._2_1; /**/ dest._2_2 = a._2_2 operator b._2_2; /**/ dest._2_3 = a._2_3 operator b._2_3;  \
-            dest._3_0 = a._3_0 operator b._3_0; /**/ dest._3_1 = a._3_1 operator b._3_1; /**/ dest._3_2 = a._3_2 operator b._3_2; /**/ dest._3_3 = a._3_3 operator b._3_3;  \
+            (dest)->_0_0 = (a)._0_0 operator (b)._0_0; /**/ (dest)->_0_1 = (a)._0_1 operator (b)._0_1; /**/ (dest)->_0_2 = (a)._0_2 operator (b)._0_2; /**/ (dest)->_0_3 = (a)._0_3 operator (b)._0_3;  \
+            (dest)->_1_0 = (a)._1_0 operator (b)._1_0; /**/ (dest)->_1_1 = (a)._1_1 operator (b)._1_1; /**/ (dest)->_1_2 = (a)._1_2 operator (b)._1_2; /**/ (dest)->_1_3 = (a)._1_3 operator (b)._1_3;  \
+            (dest)->_2_0 = (a)._2_0 operator (b)._2_0; /**/ (dest)->_2_1 = (a)._2_1 operator (b)._2_1; /**/ (dest)->_2_2 = (a)._2_2 operator (b)._2_2; /**/ (dest)->_2_3 = (a)._2_3 operator (b)._2_3;  \
+            (dest)->_3_0 = (a)._3_0 operator (b)._3_0; /**/ (dest)->_3_1 = (a)._3_1 operator (b)._3_1; /**/ (dest)->_3_2 = (a)._3_2 operator (b)._3_2; /**/ (dest)->_3_3 = (a)._3_3 operator (b)._3_3;  \
         }
 
     #endif
@@ -700,13 +701,13 @@ typedef size_t z__size;
         {                                   \
             while((zls)->head->prev != NULL)\
             {                               \
-                z__LList_popHead(zls);       \
+                z__LList_popHead(zls);      \
             }                               \
             z__FREE((zls)->head);           \
             (zls)->head = NULL;             \
         }
     
-    #define z__LList_pushHead(zls, D...)\
+    #define z__LList_pushHead(zls, D)\
         {                                                                   \
             (zls)->head->next = z__MALLOC(sizeof( *(zls)->head->next) );    \
             (zls)->head->next->prev = (zls)->head;                          \
@@ -715,7 +716,7 @@ typedef size_t z__size;
             (zls)->head->data = D;                                          \
             (zls)->head->next = NULL;                                       \
         }
-    #define z__LList_pushTail(zls, D...)\
+    #define z__LList_pushTail(zls, D)\
         {                                                                   \
             (zls)->tail->prev = z__MALLOC(sizeof( *(zls)->tail->prev ) );   \
             (zls)->tail->prev->next = (zls)->tail;                          \
@@ -750,6 +751,43 @@ typedef size_t z__size;
     #define z__LList_setCursorTail(zls)\
         {                                           \
             (zls)->cursor = (zls)->tail;            \
+        }
+    #define z__LList_setCursorNext(zls)\
+        {                                           \
+            if((zls)->cursor->next) {               \
+                (zls)->cursor = (zls)->cursor->next;\
+            }                                       \
+        }                                           
+
+    #define z__LList_setCursorPrev(zls)\
+        {                                           \
+            if((zls)->cursor->prev) {               \
+                (zls)->cursor = (zls)->cursor->prev;\
+            }                                       \
+        }
+
+    #define z__LList_pushCursor_next(zls, D)\
+        {                                                                       \
+            if((zls)->cursor) {                                                 \
+                (zls)->head->next = (zls)->cursor->next;                        \
+                (zls)->cursor->next = z__MALLOC(sizeof(*(zls)->cursor->next));  \
+                (zls)->cursor->next->data = D;                                  \
+                (zls)->cursor->next->prev = (zls)->cursor;                      \
+                (zls)->cursor->next->next = (zls)->head->next;                  \
+                (zls)->head->next->prev = (zls)->cursor->next;                  \
+                (zls)->head->next = NULL;                                       \
+            }                                                                   \
+        }
+    #define z__LList_pushCursor_prev(zls, D)\
+        {                                                                       \
+            if ((zls)->cursor) {                                                \
+                (zls)->head->next = (zls)->cursor->prev;                        \
+                (zls)->cursor->prev = z__MALLOC(sizeof(*(zls)->cursor->prev));  \
+                (zls)->cursor->prev->next = (zls)->cursor;                      \
+                (zls)->cursor->prev->prev = (zls)->head->next;                  \
+                (zls)->head->next->next = (zls)->cursor->prev;                  \
+                (zls)->head->next = NULL;                                       \
+            }                                                                   \
         }
 
     #define z__LList_cursorDel_setPrev(zls)\

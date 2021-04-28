@@ -112,7 +112,12 @@ static void _tools_spr_sChar_editor_editSequence(zset__SpriteChar *spr)
 
     while (true)
     {
-
+        switch(getch())
+        {
+            case 'a': frameCursor--;
+            case 'd': frameCursor++;
+            case 'q':return;
+        }
     }
 }
 
@@ -253,7 +258,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                         z__LList_setCursorHead(&sprBuffer);
                     }
                 } else if (tmpop == 'R') {
-                    // TODO: Record a sequence
+                    _tools_spr_sChar_editor_editSequence(Brush.sprCur);
                 } else if (tmpop == 'h') {
                     zse_rtC__selectListS(stdscr, 0,  0, ZSE_T_SPRSR_OP_HELPTEXT, ZSE_T_SPRSR_OP_HELPTEXT_ITEMS, &tmpop, 0);
                 } else if (tmpop == 'q') {
@@ -287,16 +292,16 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         waddstr(status,"##  \n");
         wattr_set(status, A_NORMAL, 0, NULL);
 
+        // Draw Brush
         mvwaddch(stdscr, Brush.pos.y, Brush.pos.x, cursor | COLOR_PAIR(_color_tmp));
 
+        
         mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
             , Brush.pos.x, Brush.pos.y, Brush.frame, Brush.sprCur->frames-1, ZSE_sprite__sChar_getColorFg(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
 
         mvwprintw(status, 3, 0, "Current: %d"
             , sprBuffer.current);
-        //mvwprintw(status, 2, 0, "Show: Colors %d  TransEnable %d  TransShow %d",
-        //    r_options&ZSE_T_SPRSR_OP_COLORS? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSENAB? 1:0, r_options&ZSE_T_SPRSR_OP_TRANSSHOW? 1:0);
-        
+
 
         /* Draw Tabs */
         z__LinkDef(sprBuffer_ll) *tmpTab_cursor = sprBuffer.tail;
@@ -313,7 +318,6 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         }
 
         wrefresh(stdscr);
-        //wrefresh(status);
 
         __key = wgetch(status);
         
