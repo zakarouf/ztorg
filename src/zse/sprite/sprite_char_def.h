@@ -28,7 +28,14 @@ typedef z__u8 zset__spritechtype;
 typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 {
     z__u16 x, y, frames;
-    z__u16* colormap;
+	union {
+		struct {
+			z__u8 _1, _2, _3, _4;
+		};
+		z__u32 raw;
+	} color;
+	
+	z__u16 *colormap;
     zset__spritechtype* plot;
 
     z__float dt;

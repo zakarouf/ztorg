@@ -65,8 +65,8 @@ z__float GLOBAL_zse_rGL_vertices [] = {
 
 unsigned int GLOBAL_zse_rGL_indices[] = { // note that we start from 0!
     0, 1, 2, // first triangle
-    3, 4, 5,  // second triangle
-    6, 7, 8  // Third triangle
+//    3, 4, 5,  // second triangle
+//    6, 7, 8  // Third triangle
 };
 
 // NOTE: TO MOVE THIS FUNCTION OR REPLACE IT
@@ -193,8 +193,12 @@ static z__u32 _zse_rGL_createShaderProgram(const char *const pathVert, const cha
 static void _zse_rGL__bindObjects
 (
       _zse_rGL_object* buffObj
+
       , z__float vertices[static 1]
       , z__u32 vertices_count
+
+      , z__u32 indices[ static 1 ]
+      , z__u32 indices_count
 )
 {
     glGenBuffers(1, &buffObj->VBO);
@@ -205,10 +209,10 @@ static void _zse_rGL__bindObjects
     glBindVertexArray(buffObj->VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, buffObj->VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(z__float) * vertices_count, vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(*vertices) * vertices_count, vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffObj->EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLOBAL_zse_rGL_indices), GLOBAL_zse_rGL_indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(*indices) * indices_count, indices, GL_STATIC_DRAW);
              
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -251,9 +255,11 @@ static _zse_rGL_HANDLERS *_zse_rGL_createHandle(void)
 void zse_rGL_mainloop(_zse_rGL_HANDLERS *Handle)
 {
     z__u32 shaderProgramID_1 = _zse_rGL_createShaderProgram("shaders/src/glT.vert", "shaders/src/glT.frag");
-    z__u32 shaderProgramID_2 = _zse_rGL_createShaderProgram("shaders/src/glT.vert", "shaders/src/glT2.frag");
+    z__u32 shaderProgramID_2 = _zse_rGL_createShaderProgram("shaders/src/glT2.vert", "shaders/src/glT2.frag");
 
-    _zse_rGL__bindObjects(&Handle->_rGL_buffObj.data[0], GLOBAL_zse_rGL_vertices, sizeof(GLOBAL_zse_rGL_vertices)/sizeof(z__float));
+    _zse_rGL__bindObjects(&Handle->_rGL_buffObj.data[0]
+        , GLOBAL_zse_rGL_vertices, sizeof(GLOBAL_zse_rGL_vertices)/sizeof(*GLOBAL_zse_rGL_vertices)
+        , GLOBAL_zse_rGL_indices, sizeof(GLOBAL_zse_rGL_indices)/sizeof(*GLOBAL_zse_rGL_indices));
 
 
     while(!glfwWindowShouldClose(Handle->_rGL_window))
@@ -267,11 +273,13 @@ void zse_rGL_mainloop(_zse_rGL_HANDLERS *Handle)
 
         glUseProgram(shaderProgramID_1);
         glBindVertexArray(Handle->_rGL_buffObj.data[0].VAO);
-        glDrawElements(GL_TRIANGLES, sizeof(GLOBAL_zse_rGL_indices)/sizeof(z__float), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, sizeof(GLOBAL_zse_rGL_indices)/sizeof(*GLOBAL_zse_rGL_indices), GL_UNSIGNED_INT, 0);
+        
 
         // Update
         glfwSwapBuffers(Handle->_rGL_window);
-        glfwPollEvents();    
+        glfwPollEvents();
+        z__time_msleep(100);
     }
 
     glDeleteVertexArrays(1, &Handle->_rGL_buffObj.data[0].VAO);
@@ -290,6 +298,9 @@ void zse_rGL_init(void)
     _zse_rGL_HANDLERS *rglHandle = _zse_rGL_createHandle();
     zse_rGL_mainloop(rglHandle);
     zse_rGL_exit(rglHandle);
+
+    #include "../tisk/tisk.h"
+    zse_rtT_getkey();
 }
 
 

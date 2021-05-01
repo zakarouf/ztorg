@@ -164,8 +164,9 @@ int main(int argc, char const *argv[])
     /* OpenGL */
     //void zse_rGL_init(void); zse_rGL_init();
 
-    void zse_tools_curses_spr_sChar_editor_mainloop(void); 
-    zse_tools_curses_spr_sChar_editor_mainloop();
+    
+    /* Sprite Char Editor */
+    void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
     
 
     #ifdef ZSE___TEST___ON
