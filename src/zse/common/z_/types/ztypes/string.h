@@ -61,7 +61,8 @@ z__String z__String_MakeCopy(const z__String str);
 void z__Strint_append(z__String *str, const z__char* src, int length);
 void z__String_join(z__String *dest, z__String *src, unsigned int extraSpace);
 z__String z__String_newFromFile(char filename[]);
-
+void z__String_insertChar(z__String *dest, z__char ch, int pos);
+void z__String_delChar(z__String *dest, int pos);
 
 z__StringLines z__StringLines_new(unsigned int base_lines_count);
 void z__StringLines_delete(z__StringLines *strLines);
@@ -71,8 +72,8 @@ void z__StringLines_pushString(z__StringLines *ln ,z__String str);
 void z__StringLines_push(z__StringLines *ln , char const * st, int len);
 void z__StringLines_pop(z__StringLines *ln);
 
-z__StringLines z__String_splitTok(z__String str, char const *restrict seperator);
-z__StringLines z__String_splitTok_raw(char const *restrict stri, int len, char const *restrict seperator);
+z__StringLines z__String_splitTok(z__String str, char const * seperator);
+z__StringLines z__String_splitTok_raw(char const * stri, int len, char const * seperator);
 z__StringLines z__String_split_raw(char const *mainStr, int mainStrLen, char const *str, int str_len);
 
 

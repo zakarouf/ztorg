@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "zse/zse.h"
-//#define ZSE___TEST___ON
+#define ZSE___TEST___ON
 
 #if 0
 
@@ -166,7 +166,7 @@ int main(int argc, char const *argv[])
 
     
     /* Sprite Char Editor */
-    void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
+    //void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
     
 
     #ifdef ZSE___TEST___ON

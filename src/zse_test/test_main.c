@@ -36,9 +36,9 @@ static z__bool zse___TEST_map_export(void)
 	map->chunks[0][88] = 2;
 	map->chunks[0][44] = 2;
 
-	z__Vint3 from = {1, 1, 0}
-		   , to = {4, 8, 0};
-	zse_map__draw_rec(map->chunks[0], (z__Vint2){map->size.x, map->size.y}, from, to, '.' - ' ');
+	z__Vint3 from = {{1, 1, 0}}
+		   , to = {{4, 8, 0}};
+	zse_map__draw_rec(map->chunks[0], (z__Vint2){{map->size.x, map->size.y}}, from, to, '.' - ' ');
 
 	zse_rtT_getkey();
 	zse_rtT__D_set00();
@@ -137,12 +137,99 @@ void zse___TEST_spriteChar(void)
 	zse___TEST_spriteChar_load();
 }
 
+#define ESC          27
+#define INSERT       50
+#define DELETE       51
+#define PGUP         53
+#define PGDN         54
+#define ARROWRIGHT   67
+#define ARROWLEFT    68
+#define END          70
+#define HOME         72
+#define OTHER        79
+#define BRACKETLEFT  91
+#define TILDE       126
+#define BACKSPACE   127
+
+#include <sys/select.h>
+#include <sys/ioctl.h>
+#include <termios.h>
+#include <unistd.h>
+
+
+static const int STDIN = 0;
+int kbhit(void)
+{
+    int bytesWaiting;
+
+    ioctl(STDIN, FIONREAD, &bytesWaiting);
+    return bytesWaiting;
+}
+void zse_rtT__D_setCurL(z__u32 times)
+{
+	fprintf(stdout, "\033[%dD", times);
+}
+void zse_rtT__D_setCurR(z__u32 times)
+{
+	fprintf(stdout, "\033[%dC", times);
+}
+void zse_rtT__D_eraseTillEndOfLine(void)
+{
+	printf("\033[K");
+}
+
+z__String zse_rtT__getString(z__char exitchar, z__u32 maxlen)
+{
+	z__String str = z__String_new(maxlen);
+
+	z__i32 buffpos = 0;
+	z__char tmpChar;
+	while (str.used < maxlen && tmpChar != exitchar ) {
+		tmpChar = zse_rtT_getkey();
+
+		switch (1) {
+		case ARROWLEFT: zse_rtT__D_setCurL(1); buffpos-- ;break;
+		case ARROWRIGHT: zse_rtT__D_setCurR(1); buffpos++ ;break;
+		case '\b': {
+				z__String_delChar(&str, buffpos);
+			}break;
+		default: {
+				z__String_insertChar(&str, tmpChar, buffpos);
+				buffpos += 1;
+			}break;
+		};
+		if (buffpos < 0) {
+			buffpos = 0;
+		}
+		if (buffpos > str.used)
+		{
+			buffpos = str.used;
+		}
+
+		fputc('\r', stdout);fflush(stdout);
+		zse_rtT__D_eraseTillEndOfLine();
+		fputs(str.data, stdout);
+		fflush(stdout);
+
+	};
+
+	return str;
+}
+
+void zse___TEST___tisk(void)
+{
+	z__String str = zse_rtT__getString('\n', 100);
+	zse_rtT_io_printString(&str);
+	printf(">>> ");
+	zse_rtT_io_printString(&str);
+}
 
 int zse___TEST(void)
 {
 	//zse___TEST_map();
 	//zse___TEST_spriteChar();
 	//zse___TEST_printAsciiChart();
-	zse___TEST___curses();
+	//zse___TEST___curses();
+	zse___TEST___tisk();
 	return 0;
 }

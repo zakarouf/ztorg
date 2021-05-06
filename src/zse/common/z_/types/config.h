@@ -30,6 +30,9 @@
 
 /* CGLM LIBRARY for graphics maths */
 //#define Z___TYPE_INCLUED_CGLM
+	//#define Z___TYPE_USE_CGLM_FOR_TYPES
+	//#define Z___TYPE_CONFIG__CGLM_ALIAS_TYPE_ARR_VECTOR_AND_MATRIX
+	//#define Z___TYPE_CONFIG__CGLM_ALIAS_TYPE_STRUCT_VECTOR_AND_MATRIX
 
 /* Used String Type */
 #define Z___TYPE_CONFIG__USE_STRING
@@ -41,14 +44,17 @@
 	//#define Z___TYPE_CONFIG__USE_ARR_FUNTION_GENERATION_TEMPLATE
 
 /* Linked List Type */
-#define Z___TYPE_CONFIG__USE_TYPE_LINKLIST
+#define Z___TYPE_CONFIG__USE_TYPE_LINKEDLIST
+
+/* Dynamic Arrays */
+#define Z___TYPE_CONFIG__USE_ARR_ARRAYTYPE
 
 /* Use Irregular Object holder */
 #define Z___TYPE_CONFIG__USE_IRREGULAR_ARRAYTYPE
 #define Z___TYPE_CONFIG__USE_DYNT_ARRAYTYPE
 
 /* Memory Management */
-#define Z___TYPE_CONFIG__USE_MEM
+//#define Z___TYPE_CONFIG__USE_MEM   /* Custom Mem is always included, this config is useless */
 	//#define Z___TYPE_CONFIG__USE_MEM__VTRACK
 	//#define Z___TYPE_CONFIG__USE_MEM__TRACK
 	//#define Z___TYPE_CONFIG__USE_MEM__TRACK_AS_DEFAULT
@@ -61,6 +67,6 @@
 		//#define Z___TYPE_CONFIG__USE_i64_FOR_INT_VECTOR_STRUCT
 
 #define Z___TYPES_CONFIG__USE_EXTENDED_FEATURES
-	//#define Z___TYPE_CONFIG__USE_TYPE_IDENTIFIER
+	#define Z___TYPE_CONFIG__USE_TYPE_IDENTIFIER
 
 #endif
