@@ -8,7 +8,7 @@
 
 #include "demo.h"
 
-static void display_time(WINDOW *win ,zse_T_Sprite_sChar *nums, zse_T_Sprite_sChar *colon, int x, int y)
+static void display_time(WINDOW *win ,zse_T_Sprite_sChar const *nums, zse_T_Sprite_sChar const *colon, int x, int y)
 {
     z__int hr, min, sec;
     z__time_getLocalTime(&hr, &min, &sec);
@@ -61,6 +61,7 @@ void demo_clock(void)
             default: break;
         }
 
+        // Set the (x,y) Point to middle with the offset of sprite size
         int x = getmaxx(stdscr)/2 -(7*4), y = getmaxy(stdscr)/2 -(2);
         werase(stdscr);
         display_time(stdscr, &nums, &colon, x, y);
