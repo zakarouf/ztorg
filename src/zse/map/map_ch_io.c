@@ -45,7 +45,7 @@ zset__MapCh *zse_map__ch_load__st(const char mapname[ static 1 ])
 	zse_map__ch_load_commondata(mapname, map);
 	zse_map__ch_allocChunks(map, map->size, 1);
 
-	zse_map__ch_load_singleChunk(mapname, map, 0, (z__Vint3){0,0,0});
+	zse_map__ch_load_singleChunk(mapname, map, 0, (z__Vint3){{0,0,0}});
 
 	return map;
 }
@@ -83,5 +83,5 @@ void zse_map__ch_export__st(char mapname[ static 1 ], zset__MapCh *map)
 		mkdir(mapdir, 0755);
 
 	zse_map__ch_export_commondata(mapname, map);
-	zse_map__ch_export_singleChunk(mapname , map, 0, (z__Vint3){0, 0, 0});
+	zse_map__ch_export_singleChunk(mapname , map, 0, (z__Vint3){{0, 0, 0}});
 }

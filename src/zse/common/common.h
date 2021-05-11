@@ -9,7 +9,7 @@
 #include <time.h>
 #include <math.h>
 
-#include "z_/types/ztypes.h"
+#include "z_/types/types.h"
 #include "z_/z_.h"
 #include "common_macrofunc.h"
 

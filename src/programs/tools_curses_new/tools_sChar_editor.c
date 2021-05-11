@@ -90,7 +90,7 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
         }
         else if (op == 'O')
         {
-            z__StringLines filenames = z__file_getfnames("./sprites");
+            z__StringLines filenames = z__io_getfnames("./sprites");
             zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.data, filenames.lines, __tmpbuff, 32);
             z__StringLines_delete(&filenames);
 
@@ -276,7 +276,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
         if(Brush.toggle)
         {
             zse_sprite__sCharDraw_circle( Brush.sprCur
-                , (z__Vint3){Brush.pos.x, Brush.pos.y ,Brush.frame}
+                , (z__Vint3){{Brush.pos.x, Brush.pos.y ,Brush.frame}}
                 , Brush.prop.size, Brush.prop.ink, _color_tmp);
         }
 

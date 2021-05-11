@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "zse/zse.h"
-#define ZSE___TEST___ON
+//#define ZSE___TEST___ON
 
 #if 0
 
@@ -162,7 +162,7 @@ int main(int argc, char const *argv[])
     //void zse_rVK_init(void); zse_rVK_init();
 
     /* OpenGL */
-    //void zse_rGL_init(void); zse_rGL_init();
+    void zse_rGL_init(void); zse_rGL_init();
 
     
     /* Sprite Char Editor */
