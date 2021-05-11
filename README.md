@@ -60,16 +60,20 @@ src
     - `map`: Map Handler.
     - `map_old`: [ **DEPRICATED** ] Old Map Submodule & Handler. Kept for refference.
     - `sys`: Module To Communicate with system, log and police the library itself
-    - `tile_new`: **[ FUTURE ]** Tileset Handler.
-    - `tile`: **[ Soon To Be DEPRICATED ]** Tileset Handler.
+    - `tile`: Tileset Handler.
+    - `tile_old`: **[ DEPRICATED ]** Tileset Handler.
     - `entity`: Entity Handler.
-    - `logic`: Caculation the inner working b/w `map`,`tile`,`entity` etc.
+    - `logic`: Main Logic Handler and the mediator b/w `map`,`tile`,`entity` etc.
 
 Read On [How to Install Ztorg?](INSTALL.md)
 
 
 MORE DOCS INCOMMING!!!
 
+## Examples
+
+* **Clock with Ncurses (57 slocs)**
+![clock](./doc/scr/demo-clock.gif)
 
 ---
 #### IF ANYONE READING THIS
