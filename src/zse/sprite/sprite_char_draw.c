@@ -35,11 +35,14 @@ void zse_sprite__sCharDraw_circle (zset__SpriteChar *spr ,z__Vint3 on , z__i32 r
 void zse_sprite__sChar_swapColors(zset__SpriteChar *spr, z__u32 frame ,z__i32 targetColo, z__i32 colorCode)
 {
     z__u16 *plot = &spr->colormap[zse_xyz3Dto1D(0, 0, frame, spr->x, spr->y)];
-    for (int i = 0; i < spr->x * spr->y; ++i)
+    for (int i = 0; i < (spr->x * spr->y); ++i)
     {
-        if(*plot++ == targetColo) {
+        
+        if(*plot == targetColo) {
         	*plot = colorCode;
         }
+        plot += 1;
+
     }
 }
 inline void zse_sprite__sChar_copyFrame(zset__SpriteChar *spr, z__u32 from, z__u32 to)

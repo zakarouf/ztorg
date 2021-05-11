@@ -154,6 +154,7 @@ void mainpgm(int argc, char const *argv[])
 
 #endif
 
+#include "programs/demos_curses_new/demo.h"
 int main(int argc, char const *argv[])
 {
     //mainpgm(argc, argv);
@@ -162,12 +163,14 @@ int main(int argc, char const *argv[])
     //void zse_rVK_init(void); zse_rVK_init();
 
     /* OpenGL */
-    void zse_rGL_init(void); zse_rGL_init();
+    //void zse_rGL_init(void); zse_rGL_init();
 
     
     /* Sprite Char Editor */
     //void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
     
+    /* Demos */
+    demo_clock();
 
     #ifdef ZSE___TEST___ON
 

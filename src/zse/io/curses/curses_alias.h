@@ -7,9 +7,14 @@
 #define zse_rtC_L__mvprintw  mvprintw
 #define zse_rtC_L__mvwprintw mvwprintw
 
+#define zse_rtC_L__refresh  refresh
+#define zse_rtC_L__wrefresh wrefresh
+
 #define zse_rtC_L__getch    getch
 #define zse_rtC_L__wgetch   wgetch
 #define zse_rtC_L__mvwgetch mvwgetch
+
+#define zse_rtC_L__nodelay  nodelay
 
 #define zse_rtC_L__addch    addch
 #define zse_rtC_L__waddch   waddch

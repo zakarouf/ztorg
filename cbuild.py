@@ -8,7 +8,7 @@ folderIgnore={
       "data", "doc" , ".git"
     , "SDL", "shader"
     , "demos_curses", "tools_curses", "tools_tisk", "tools_curses"
-    , "logic", "ztorg", "map_old", "tile_old", "zse_all"}
+    , "logic", "ztorg", "map_old", "tile_old", "zse_all", "zse_test"}
 
 IgnoreNames={"cave_hunter.c", "zse.c"}
 

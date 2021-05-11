@@ -293,13 +293,13 @@ void zse_rGL_exit(_zse_rGL_HANDLERS *rglHandle)
     _zse_rGL_destroy(rglHandle);
 }
 
+#include "../tisk/tisk.h"
 void zse_rGL_init(void)
 {
     _zse_rGL_HANDLERS *rglHandle = _zse_rGL_createHandle();
     zse_rGL_mainloop(rglHandle);
     zse_rGL_exit(rglHandle);
 
-    #include "../tisk/tisk.h"
     zse_rtT_getkey();
 }
 
