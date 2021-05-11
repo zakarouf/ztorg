@@ -88,7 +88,7 @@ typedef struct __ZSE_MAP__TYPE_
     z__i8 chunkCount;
     z__i8 chunkRadius;
 
-}zset__MapCh;
+}zse_T_MapCh;
 
 
 /*------------------------------------------

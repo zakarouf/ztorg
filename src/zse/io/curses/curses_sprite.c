@@ -6,7 +6,7 @@ int zse_rtC_spritePrintAll
 	WINDOW *win,
 	int startX,
 	int startY,
-	zset__SpriteChar* spr,
+	zse_T_Sprite_sChar* spr,
 	int startframe,
 	int endframe
 )
@@ -64,7 +64,7 @@ void zse_rtC_sprite__Print
 	WINDOW *win,
 	int startX,
 	int startY,
-	zset__SpriteChar* spr,
+	zse_T_Sprite_sChar* spr,
 	const int atframe
 )
 {
@@ -93,7 +93,7 @@ void zse_rtC__sprite__sChar_PrintPadEnd
 	int startY,
 	int padxend,
 	int padyend,
-	zset__SpriteChar* spr,
+	zse_T_Sprite_sChar* spr,
 	const int atframe
 )
 {

@@ -10,7 +10,7 @@
 #define ZSE___TEST___SUCESSS true
 
 
-static void _zse___TEST_map__draw(zset__MapCh *map)
+static void _zse___TEST_map__draw(zse_T_MapCh *map)
 {
 	for (int i = 0; i < map->size.y; ++i)
 	{
@@ -24,7 +24,7 @@ static void _zse___TEST_map__draw(zset__MapCh *map)
 
 static z__bool zse___TEST_map_export(void)
 {
-	zset__MapCh *map = zse_map__ch_createEmpty(10, 10, 1, 0);
+	zse_T_MapCh *map = zse_map__ch_createEmpty(10, 10, 1, 0);
 	memset(map->chunks[0], 0, 10*10);
 
 	zse_rtT__init();
@@ -57,7 +57,7 @@ static z__bool zse___TEST_map_export(void)
 
 static z__bool zse___TEST_map_load(void)
 {
-	zset__MapCh *map = zse_map__ch_load__st("foo");
+	zse_T_MapCh *map = zse_map__ch_load__st("foo");
 
 	_zse___TEST_map__draw(map);
 
@@ -102,7 +102,7 @@ static z__bool zse___TEST_map(void)
 #include "../zse/io/tisk/tisk_sprite.h"
 void zse___TEST_spriteChar_createNexport(void)
 {
-	zset__SpriteChar spr = zse_sprite__sChar_createEmpty(10, 10, 1, 0.5f, 4);
+	zse_T_Sprite_sChar spr = zse_sprite__sChar_createEmpty(10, 10, 1, 0.5f, 4);
 
 	memset(spr.plot, 'a', spr.x * spr.y * spr.frames);
 	memset(spr.colormap, 5, spr.x * spr.y * spr.frames);
@@ -118,7 +118,7 @@ void zse___TEST_spriteChar_createNexport(void)
 void zse___TEST_spriteChar_load(void)
 {
 	puts("Loading Testspr.zspr");
-	zset__SpriteChar spr = zse_sprite__sChar_load("Testspr.zspr");
+	zse_T_Sprite_sChar spr = zse_sprite__sChar_load("Testspr.zspr");
 
 	printf("Contents:"
 		"x,y := %d,%d\n"

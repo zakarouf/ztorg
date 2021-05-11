@@ -5,7 +5,7 @@
 #include "sprite_char_def.h"
 #include "../config/config_sprite_char.h"
 
-void zse_sprite__sChar_export(const zset__SpriteChar *spr ,const char filename[ static 1 ])
+void zse_sprite__sChar_export(const zse_T_Sprite_sChar *spr ,const char filename[ static 1 ])
 {
 	char fullpath[128];
 	snprintf(fullpath, sizeof(fullpath), SPRITES_PARENTDIR "%s", filename);
@@ -36,9 +36,9 @@ void zse_sprite__sChar_export(const zset__SpriteChar *spr ,const char filename[ 
 	fclose(fp);
 }
 
-zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
+zse_T_Sprite_sChar zse_sprite__sChar_load(const char filename[ static 1 ])
 {
-	zset__SpriteChar spr = {0};
+	zse_T_Sprite_sChar spr = {0};
 
 	char fullpath[128];
 	snprintf(fullpath, sizeof(fullpath), SPRITES_PARENTDIR "%s", filename);
@@ -81,7 +81,7 @@ zset__SpriteChar zse_sprite__sChar_load(const char filename[ static 1 ])
 	return spr;
 }
 
-void zse_sprite__sChar_delete(zset__SpriteChar *spr)
+void zse_sprite__sChar_delete(zse_T_Sprite_sChar *spr)
 {
 	z__FREE(spr->plot);
 	z__FREE(spr->colormap);
@@ -96,9 +96,9 @@ void zse_sprite__sChar_delete(zset__SpriteChar *spr)
 	memset(spr, 0, sizeof(*spr));
 }
 
-zset__SpriteChar zse_sprite__sChar_createEmpty(z__u16 x, z__u16 y, z__u16 frames, z__float dt, z__u16 seqCount)
+zse_T_Sprite_sChar zse_sprite__sChar_createEmpty(z__u16 x, z__u16 y, z__u16 frames, z__float dt, z__u16 seqCount)
 {
-	zset__SpriteChar spr = {
+	zse_T_Sprite_sChar spr = {
 		.x = x,
 		.y = y,
 		.frames = frames,

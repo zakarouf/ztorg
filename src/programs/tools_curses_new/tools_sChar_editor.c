@@ -60,16 +60,16 @@ struct zset_S_sprBrush
         z__u8 colorBg;
     } selection;
 
-    zset__SpriteChar *sprCur;
-    zset__SpriteChar *sprTmp;
+    zse_T_Sprite_sChar *sprCur;
+    zse_T_Sprite_sChar *sprTmp;
 
     z__bool toggle;
 };
 
 
-static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
+static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
 {
-    zset__SpriteChar spr = {0};
+    zse_T_Sprite_sChar spr = {0};
     z__char __tmpbuff[32];
     
     while(true) {
@@ -106,7 +106,7 @@ static zset__SpriteChar _tools_spr_sChar_editor_load_new(void)
     }
 }
 
-static void _tools_spr_sChar_editor_editSequence(zset__SpriteChar *spr)
+static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
 {
     z__u16 frameCursor = 0;
 
@@ -138,7 +138,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
     WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
     /* Using Linked list to emulate tabs */
-    z__Link(sprBuffer_ll, zset__SpriteChar);
+    z__Link(sprBuffer_ll, zse_T_Sprite_sChar);
     z__LList(sprBuffer_ll, int current) sprBuffer;
     z__LList_new(&sprBuffer, _tools_spr_sChar_editor_load_new());
     sprBuffer.current = 0;

@@ -8,7 +8,7 @@
 
 #include "demo.h"
 
-static void display_time(WINDOW *win ,zset__SpriteChar *nums, zset__SpriteChar *colon, int x, int y)
+static void display_time(WINDOW *win ,zse_T_Sprite_sChar *nums, zse_T_Sprite_sChar *colon, int x, int y)
 {
     z__int hr, min, sec;
     z__time_getLocalTime(&hr, &min, &sec);
@@ -47,8 +47,8 @@ void demo_clock(void)
     zse_rtC_L__noecho();
     zse_rtC_L__nodelay(stdscr, true);
 
-    zset__SpriteChar nums = zse_sprite__sChar_load("num6x5.zspr");
-    zset__SpriteChar colon = zse_sprite__sChar_load("colon.zspr");
+    zse_T_Sprite_sChar nums = zse_sprite__sChar_load("num6x5.zspr");
+    zse_T_Sprite_sChar colon = zse_sprite__sChar_load("colon.zspr");
 
     for (int i = 0; i < 10; ++i) {
         zse_sprite__sChar_swapColors(&nums, i, 1, i+1);
