@@ -99,18 +99,18 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
     VkDebugUtilsMessengerEXT _rVK_debugMessenger;
 
 
-    z__StringLines _rVK_deviceExtentions;
+    z__StringList _rVK_deviceExtentions;
 
 }_zse_rVK_HANDLERS;
 
 static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
-static void _zse_rVK_init_deviceExtentions(z__StringLines *dE)
+static void _zse_rVK_init_deviceExtentions(z__StringList *dE)
 {
     int device = 1;
-    *dE = z__StringLines_new(device);
-    z__StringLines_push(dE, VK_KHR_SWAPCHAIN_EXTENSION_NAME, -1);
+    *dE = z__StringList_new(device);
+    z__StringList_push(dE, VK_KHR_SWAPCHAIN_EXTENSION_NAME, -1);
 }
 
 static VkResult _zse_rVK_createDebugUtilsMessengerEXT
@@ -756,7 +756,7 @@ static void _zse_rVK_cld_createLogicalDevice
     , VkQueue *graphicsQueue
     , VkQueue *presentQueue
     , VkSurfaceKHR surface
-    , z__StringLines *deviceExtensions
+    , z__StringList *deviceExtensions
 )
 {
     zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(*physicalDevice, surface);
@@ -803,8 +803,8 @@ static void _zse_rVK_cld_createLogicalDevice
     createInfo.pEnabledFeatures = &deviceFeatures;
 
 
-    createInfo.enabledExtensionCount = deviceExtensions->lines;
-    createInfo.ppEnabledExtensionNames = (const char *const *)deviceExtensions->data;
+    createInfo.enabledExtensionCount = deviceExtensions->list_len;
+    createInfo.ppEnabledExtensionNames = (const char *const *)deviceExtensions->str_list;
 
     if (enableValidationLayers) {
         createInfo.enabledLayerCount = GLOBAL_rVK_validationLayersCount;
@@ -857,7 +857,7 @@ static zse_rvk__t_QueueFamilyIndices _zse_rVK__phd_findQueueFamilies(VkPhysicalD
     return indices;
 }
 
-static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z__StringLines *deviceExtensions) {
+static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z__StringList *deviceExtensions) {
 
     uint32_t extensionCount;
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, NULL);
@@ -866,20 +866,20 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
     vkEnumerateDeviceExtensionProperties(device, NULL, &extensionCount, availableExtensions);
 
 
-    z__StringLines requiredExtensions = z__StringLines_new(deviceExtensions->lines);
+    z__StringList requiredExtensions = z__StringList_new(deviceExtensions->list_len);
     for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
     {
-        z__StringLines_push(&requiredExtensions, deviceExtensions->data[i], -1);
+        z__StringList_push(&requiredExtensions, deviceExtensions->str_list[i], -1);
     }
 
-    const uint32_t TotalExtentionsRequired = requiredExtensions.linesUsed;
+    const uint32_t TotalExtentionsRequired = requiredExtensions.ll_used;
     uint32_t ExtentionsFound = 0;
 
     for (int i = 0; i < extensionCount; ++i)
     {
         for (int j = 0; j < TotalExtentionsRequired; ++j)
         {
-            if (strncmp(requiredExtensions.data[j], availableExtensions[i].extensionName, 96) == 0)
+            if (strncmp(requiredExtensions.str_list[j], availableExtensions[i].extensionName, 96) == 0)
             {
                 ExtentionsFound += 1;
             }
@@ -888,12 +888,12 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
 
 
     free (availableExtensions);
-    z__StringLines_delete(&requiredExtensions);
+    z__StringList_delete(&requiredExtensions);
 
     return TotalExtentionsRequired & ExtentionsFound;    
 }
 
-static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, z__StringLines *deviceExtensions)
+static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, z__StringList *deviceExtensions)
 {
     zse_rvk__t_QueueFamilyIndices indices = _zse_rVK__phd_findQueueFamilies(physicalDevice, surface);
 
@@ -917,7 +917,7 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
     
 }
 
-static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface, z__StringLines *deviceExtensions)
+static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance instance, VkSurfaceKHR surface, z__StringList *deviceExtensions)
 {
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
@@ -958,10 +958,10 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 }
 
 
-static z__StringLines _zse_rVK_getRequiredExtentions()
+static z__StringList _zse_rVK_getRequiredExtentions()
 {
 
-    z__StringLines strLines = z__StringLines_new(5);
+    z__StringList strLines = z__StringList_new(5);
 
     // Extentions
     uint32_t glfwExtensionCount = 0;
@@ -971,16 +971,16 @@ static z__StringLines _zse_rVK_getRequiredExtentions()
 
     for (int i = 0; i < glfwExtensionCount; ++i)
     {
-        z__StringLines_push(&strLines, glfwExtensions[i], -1);
+        z__StringList_push(&strLines, glfwExtensions[i], -1);
     }
 
-    z__StringLines_push(&strLines, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME) );
+    z__StringList_push(&strLines, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME) );
 
-    NOTPUB_log_normal("%d\n", strLines.linesUsed);
+    NOTPUB_log_normal("%d\n", strLines.ll_used);
 
-    for (int i = 0; i < strLines.linesUsed; ++i)
+    for (int i = 0; i < strLines.ll_used; ++i)
     {
-        NOTPUB_log_normal("%s\n", strLines.data[i]);        
+        NOTPUB_log_normal("%s\n", strLines.str_list[i]);        
     }
 
     return strLines;
@@ -1019,10 +1019,10 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
     
 
     // Extentions
-    z__StringLines ExtentionsLayer = _zse_rVK_getRequiredExtentions();
+    z__StringList ExtentionsLayer = _zse_rVK_getRequiredExtentions();
 
-    createInfo.enabledExtensionCount = ExtentionsLayer.linesUsed;
-    createInfo.ppEnabledExtensionNames = (const char *const *) ExtentionsLayer.data;
+    createInfo.enabledExtensionCount = ExtentionsLayer.ll_used;
+    createInfo.ppEnabledExtensionNames = (const char *const *) ExtentionsLayer.str_list;
 
 
     VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = {0};

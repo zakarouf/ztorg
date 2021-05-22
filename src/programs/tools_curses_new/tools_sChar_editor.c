@@ -90,9 +90,9 @@ static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
         }
         else if (op == 'O')
         {
-            z__StringLines filenames = z__io_getfnames("./sprites");
-            zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.data, filenames.lines, __tmpbuff, 32);
-            z__StringLines_delete(&filenames);
+            z__StringList filenames = z__io_getfnames("./sprites");
+            zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.str_list, filenames.ll_used, __tmpbuff, 32);
+            z__StringList_delete(&filenames);
 
             spr = zse_sprite__sChar_load(__tmpbuff);
 
