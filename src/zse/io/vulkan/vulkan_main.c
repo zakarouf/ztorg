@@ -9,8 +9,9 @@
 
 #include "../../sys/sys.h"
 #include "vulkan.h"
+#include "../../common/z_/imp/print.h"
 
-#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
+//#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
 //#define ZSE_CONFIG__rVK__MINIATURE
 //#define ZSE_CONFIG__rVK__NDEBUG
 
@@ -106,11 +107,18 @@ typedef struct _zse_rVK_ESSENTIAL_HANDLERS
 static const char *GLOBAL_rVK_validationLayers = {"VK_LAYER_KHRONOS_validation"};
 static const int GLOBAL_rVK_validationLayersCount = 1;
 
+static void die(void)
+{
+    NOTPUB_log_distinct(36, "Dying\n");
+    fflush(stdout);
+    exit(-1);
+}
+
 static void _zse_rVK_init_deviceExtentions(z__StringList *dE)
 {
     int device = 1;
     *dE = z__StringList_new(device);
-    z__StringList_push(dE, VK_KHR_SWAPCHAIN_EXTENSION_NAME, -1);
+    z__StringList_push(dE, VK_KHR_SWAPCHAIN_EXTENSION_NAME, sizeof(VK_KHR_SWAPCHAIN_EXTENSION_NAME));
 }
 
 static VkResult _zse_rVK_createDebugUtilsMessengerEXT
@@ -277,7 +285,7 @@ static void _zse_rVK_createRenderPass(_zse_rVK_HANDLERS *Handles)
 
 static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__Dynt code)
 {
-    VkShaderModuleCreateInfo createInfo;
+    VkShaderModuleCreateInfo createInfo = {0};
 
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
 
@@ -303,8 +311,8 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
 
 static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 {
-    z__Dynt vertShaderCode = z__io_Dynt_readFile("shaders/vert.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
-    z__Dynt fragShaderCode = z__io_Dynt_readFile("shaders/frag.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
+    z__Dynt vertShaderCode = z__io_Dynt_readFile("shaders/f.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
+    z__Dynt fragShaderCode = z__io_Dynt_readFile("shaders/v.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
 
     if (vertShaderCode.data == NULL)
     {
@@ -315,11 +323,14 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
         NOTPUB_log_error("Cant Load Fragment Shader: %s\n", "../shaders/frag.spv");
     }
 
-
     VkShaderModule vertShaderModule = _zse_rVK_createShaderModule(Handle, vertShaderCode);
     VkShaderModule fragShaderModule = _zse_rVK_createShaderModule(Handle, fragShaderCode);
 
+
+
     NOTPUB_log_normal("Shader: Compilation Process:: DONE!\n");
+
+    //die();
 
     VkPipelineShaderStageCreateInfo vertShaderStageInfo = {};
     vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -435,7 +446,7 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     colorBlending.blendConstants[3] = 0.0f; // Optional
 
 
-    /*
+    
         VkDynamicState dynamicStates[] = {
             VK_DYNAMIC_STATE_VIEWPORT,
             VK_DYNAMIC_STATE_LINE_WIDTH
@@ -445,7 +456,7 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
         dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
         dynamicState.dynamicStateCount = 2;
         dynamicState.pDynamicStates = dynamicStates;
-    */
+    
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -453,7 +464,6 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
     pipelineLayoutInfo.pSetLayouts = NULL; // Optional
     pipelineLayoutInfo.pushConstantRangeCount = 0; // Optional
     pipelineLayoutInfo.pPushConstantRanges = NULL; // Optional
-
 
     if (vkCreatePipelineLayout(Handle->_rVK_device, &pipelineLayoutInfo, NULL, &Handle->_rVK_pipelineLayout) != VK_SUCCESS) {
         NOTPUB_log_error("Failed to create pipeline layout!");
@@ -869,8 +879,10 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
     z__StringList requiredExtensions = z__StringList_new(deviceExtensions->list_len);
     for (int i = 0; i < GLOBAL_rVK_validationLayersCount; ++i)
     {
-        z__StringList_push(&requiredExtensions, deviceExtensions->str_list[i], -1);
+        z__StringList_push(&requiredExtensions, deviceExtensions->str_list[i], deviceExtensions->str_lens[i]);
     }
+
+    z__print(requiredExtensions, requiredExtensions.str_lens[0]);
 
     const uint32_t TotalExtentionsRequired = requiredExtensions.ll_used;
     uint32_t ExtentionsFound = 0;
@@ -879,7 +891,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
     {
         for (int j = 0; j < TotalExtentionsRequired; ++j)
         {
-            if (strncmp(requiredExtensions.str_list[j], availableExtensions[i].extensionName, 96) == 0)
+            if (strcmp(requiredExtensions.str_list[j], availableExtensions[i].extensionName) == 0)
             {
                 ExtentionsFound += 1;
             }
@@ -890,7 +902,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
     free (availableExtensions);
     z__StringList_delete(&requiredExtensions);
 
-    return TotalExtentionsRequired & ExtentionsFound;    
+    return TotalExtentionsRequired == ExtentionsFound;    
 }
 
 static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface, z__StringList *deviceExtensions)
@@ -912,6 +924,17 @@ static int _zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(VkPhysicalDevice phys
     }
     else{
         NOTPUB_log_error("Physical Device is NOT Suitable For Vulkan\n");
+
+        if (!extensionsSupported) {
+            NOTPUB_log_error("Extentions\n");
+        }
+        if (!indiceComplete) {
+            NOTPUB_log_error("Indices Complete\n");
+        }
+        if (!swapChainAdequate) {
+            NOTPUB_log_error("Swap Chain Adequate\n");
+        }
+
         return false;
     }
     
@@ -923,6 +946,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, NULL);
+    
 
     if (deviceCount == 0)
     {
@@ -934,6 +958,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
     VkPhysicalDevice *devices = calloc(sizeof(VkPhysicalDevice), deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices);
 
+    NOTPUB_log_distinct(5, ":Using Device %d\n", deviceCount);
     
     // Fillter out devices
     for (int i = 0; i < deviceCount; ++i)
@@ -941,7 +966,7 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
         
         if (_zse_rVK__phd_isPhysicalDeviceSuitableForVulkan(devices[i], surface, deviceExtensions))
         {
-            //NOTPUB_log_error("AS");
+            NOTPUB_log_error("AS\n");
             physicalDevice = devices[i];
             break;
         }
@@ -974,13 +999,13 @@ static z__StringList _zse_rVK_getRequiredExtentions()
         z__StringList_push(&strLines, glfwExtensions[i], -1);
     }
 
-    z__StringList_push(&strLines, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, sizeof(VK_EXT_DEBUG_UTILS_EXTENSION_NAME) );
+    z__StringList_push(&strLines, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, -1 );
 
     NOTPUB_log_normal("%d\n", strLines.ll_used);
 
     for (int i = 0; i < strLines.ll_used; ++i)
     {
-        NOTPUB_log_normal("%s\n", strLines.str_list[i]);        
+        NOTPUB_log_normal(" -- EXT: %s\n", strLines.str_list[i]);        
     }
 
     return strLines;
@@ -1137,6 +1162,7 @@ static int zse_rVK_initVulkan(_zse_rVK_HANDLERS *Handles)
     NOTPUB_log_distinct(6, "Initialization::Creating Vulkan Instatance\n");
     Handles->_rVK_vulkan_instance = _zse_rVK_createInstance(&errorCode);
     _zse_rVK_setupDebugMessenger(Handles->_rVK_vulkan_instance, &Handles->_rVK_debugMessenger);
+
 
     NOTPUB_log_distinct(6, "Initialization::Creating Vulkan Surface\n");
     Handles->_rVK_surface = _zse_rVK_createSurface(
