@@ -28,11 +28,18 @@
 /*------------------------------------------*/
 
 /* General */
+/* Pretty self Explanatory, Edit them with Caution */
 #define Z___TYPE_REALLOC_RESIZE_BY_DEFAULT 8
+
+#define Z___TYPE_CONFIG__ARR__GROWTH_FACTOR__NUM 8
+#define Z___TYPE_CONFIG__ARR__GROWTH_FACTOR__OPERATOR +
+#define Z___TYPE_CONFIG__ARR__SHRINK_FACTOR__NUM 8
+
 #define Z___TYPE_STRINGLINES_REALLOC_RESIZE_BY_DEFAULT 8
 
 /*
  * Used Dollar-sign at the end of macros to explicitly tell they are indeed macros
+ * Currently not all macros are aliased sadly.
  * z__Arr_new$() <- is a macros
  */
 //#define Z___TYPE_CONFIG__ALIAS_DOLLARSIGN_FOR_MACROS
@@ -63,13 +70,24 @@
 #define Z___TYPE_CONFIG__USE_IRREGULAR_ARRAYTYPE
 #define Z___TYPE_CONFIG__USE_DYNT_ARRAYTYPE
 
+/* Use Enum Type */
+//#define Z___TYPE_CONFIG__USE_ENUM_PRIMITIVE
+#define Z___TYPE_CONFIG__USE_ENUM
+	#define Z___TYPE_CONFIG__USE_ENUM_ALIAS_MATCH_STATEMENT
+
+/* Use Tuple Type */
+#define Z___TYPE_CONFIG__USE_TUPLE
+
+/* Use Record Type */
+#define Z___TYPE_CONFIG__USE_RECORD
+
 /* Memory Management */
 //#define Z___TYPE_CONFIG__USE_MEM   /* Custom Mem is always included, this config is useless */
 	//#define Z___TYPE_CONFIG__USE_MEM__VTRACK
 	//#define Z___TYPE_CONFIG__USE_MEM__TRACK
 	//#define Z___TYPE_CONFIG__USE_MEM__TRACK_AS_DEFAULT
 
-/* Array Types, Use Vectors? */
+/* Use Vectors and stuff */
 #define Z___TYPE_CONFIG__USE_GMATHTYPE						
 	#define Z___TYPE_CONFIG__USE_TYPE_ARR_VECTOR_AND_MATRIX			// Also include array for vectors defination, z__Vector2 is struct and z__vec2 is a Array
 	#define Z___TYPE_CONFIG__USE_TYPE_STRUCT_VECTOR_AND_MATRIX
@@ -92,3 +110,4 @@
 #endif
 
 #endif
+

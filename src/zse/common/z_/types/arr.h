@@ -2,6 +2,7 @@
 #define ZAKAROUF__ZTYPES_TYPES__ARR_H
 
 #include "../config_types.h"
+#include "base.h"
 #include "mem.h"
 
 /* Known Type-safe arrays */
@@ -132,7 +133,7 @@
     {                                                                                           \
         if ((arr)->lenUsed >= (arr)->len)                                                       \
         {                                                                                       \
-            (arr)->len += Z___TYPE_REALLOC_RESIZE_BY_DEFAULT;                                   \
+            (arr)->len += Z___TYPE_CONFIG__ARR__GROWTH_FACTOR__NUM;                                   \
             (arr)->data = z__REALLOC_SAFE((arr)->data,  sizeof(*(arr)->data)* ((arr)->len) );   \
         }                                                                                       \
         (arr)->data[(arr)->lenUsed] = val;                                                      \
@@ -143,7 +144,7 @@
     {                                                                                           \
         if ((arr)->lenUsed >= (arr)->len)                                                       \
         {                                                                                       \
-            (arr)->len += Z___TYPE_REALLOC_RESIZE_BY_DEFAULT;                                   \
+            (arr)->len += Z___TYPE_CONFIG__ARR__GROWTH_FACTOR__NUM;                                   \
             (arr)->data = z__REALLOC_SAFE((arr)->data,  sizeof(*(arr)->data)* ((arr)->len) );   \
         }                                                                                       \
         memcpy(&(arr)->data[(arr)->lenUsed], (val), sizeof(*(arr)->data));                      \
@@ -165,9 +166,9 @@
 #define z__Arr_pop(arr)\
     {                                                                               \
         (arr)->lenUsed -= 1;                                                        \
-        if (((arr)->len - (arr)->lenUsed) > Z___TYPE_REALLOC_RESIZE_BY_DEFAULT)     \
+        if (((arr)->len - (arr)->lenUsed) > Z___TYPE_CONFIG__ARR__SHRINK_FACTOR__NUM)     \
         {                                                                           \
-            z__Arr_resize(arr, (arr)->len - Z___TYPE_REALLOC_RESIZE_BY_DEFAULT);    \
+            z__Arr_resize(arr, (arr)->len - Z___TYPE_CONFIG__ARR__SHRINK_FACTOR__NUM);    \
         }                                                                           \
     }
 
@@ -341,7 +342,6 @@
 
 #ifdef Z___TYPE_CONFIG__USE_TYPE_ARR_PREDEFINED
 	
-	#include "base.h"
 
     // Signed
     typedef z__Arr(z__i8)  z__i8Arr;

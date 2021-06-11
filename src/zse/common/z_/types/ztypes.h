@@ -15,8 +15,10 @@
 /* Vectors And Matrices For Graphical Maths */
 #ifdef Z___TYPE_CONFIG__USE_GMATHTYPE
     #include "gmath.h"
-#endif //#ifdef Z___TYPE_CONFIG__USE_GMATHTYPE
+#endif 
 
+
+/* Generic Array Type */
 #ifdef Z___TYPE_CONFIG__USE_ARR_ARRAYTYPE
 	#include "arr.h"
 #endif
@@ -26,10 +28,32 @@
     #include "irrg.h"
 #endif
 
-/* Array Type */
+/* Void Array Type */
 #ifdef Z___TYPE_CONFIG__USE_DYNT_ARRAYTYPE
     #include "dynt.h"
 #endif
+
+
+/* Tuple Type */
+#ifdef Z___TYPE_CONFIG__USE_TUPLE
+    #include "tuple.h"
+#endif
+
+/* Enum Type (PRIMITIVE) */
+#ifdef Z___TYPE_CONFIG__USE_ENUM_PRIMITIVE
+    #include "enum_primitive.h"
+#endif
+
+/* Enum Type */
+#ifdef Z___TYPE_CONFIG__USE_ENUM
+    #include "enum.h"
+#endif
+
+/* Record Type */
+#ifdef Z___TYPE_CONFIG__USE_RECORD
+    #include "record.h"
+#endif
+
 
 /* Linked Lists */
 #ifdef Z___TYPE_CONFIG__USE_TYPE_LINKEDLIST
@@ -45,3 +69,4 @@
 #endif
 
 #endif
+

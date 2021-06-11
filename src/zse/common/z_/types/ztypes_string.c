@@ -18,6 +18,20 @@
         };
     }
 
+    z__String z__String_newfrom(const char *st, int size)
+    {
+        if (size == -1)
+        {
+            size = strnlen(st, 1024);
+        }
+
+        z__String str = z__String_new(size + 8);
+        memcpy(str.str, st, sizeof(*st) * size);
+        str.used = size;
+
+        return str;
+    }
+
     inline void z__String_delete(z__String * s)
     {
         free(s->str);
@@ -227,7 +241,7 @@
         }
 
         if (len == -1) {
-            len = strlen(st);
+            len = strnlen(st, 1024);
         }
 
         ln->str_list[ln->ll_used] = calloc(len, sizeof(**ln->str_list));
@@ -307,7 +321,7 @@
             len = strlen(stri);
         }
         
-        char *tmp_stri = malloc(len * sizeof(*tmp_stri));
+        char *tmp_stri = z__New0(*tmp_stri, len);
         memcpy(tmp_stri, stri, len);
 
         char *lastbuff = tmp_stri;

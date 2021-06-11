@@ -18,7 +18,10 @@
 
 #define zpp__PRIV_TO_STRING(...) #__VA_ARGS__
 
+#define zpp__TO_STRING(...) zpp__PRIV_TO_STRING(__VA_ARGS__)
+
 #define zpp__PRIV_COMMA(...) ,
+#define zpp__PRIV__SEMI_COLON(...) ;
 #define zpp__IGNORE(...)
 #define zpp__EXPAND(...) __VA_ARGS__
 #define zpp__EMPTY
@@ -28,15 +31,30 @@
 #define zpp__if_then_0(x, y) y
 #define zpp__if_then_1(x, y) x
 
-#define zpp__AND(exp) zpp__PRIMITIVE_CAT(zpp__AND_, exp)
+#define zpp__COMPL(exp) zpp__CAT(zpp__COMPL_, exp)
+#define zpp__COMPL_0 1
+#define zpp__COMPL_1 0
+
+#define zpp__AND(exp) zpp__CAT(zpp__AND_, exp)
 #define zpp__AND_0(exp) 0
 #define zpp__AND_1(exp) exp
 
-#define zpp__NOT(exp) zpp__CAT(zpp__NOT_, exp)
-#define zpp__NOT_0 1 
-#define zpp__NOT_1 0
+#define z__BOOL(x) zpp__COMPL(zpp__NOT(x))
 
-#define zpp__V(...) (0zpp__V, __VA_ARGS__)
+#define zpp__DETECT_check_n(x, n, ...) n
+#define zpp__DETECT_check(...) zpp__DETECT_check_n(__VA_ARGS__, 0,)
+#define zpp__DETECT_probe(x) x, 1,
+
+
+#define zpp__NOT(exp) zpp__DETECT_check(zpp__PRIMITIVE_CAT(zpp_NOT_, exp))
+#define zpp__NOT_0 zpp__DETECT_probe(~)
+
+#define zpp__DETECT_paren_probe(...) zpp__DETECT_probe(~)
+#define zpp__DETECT_paren(x) zpp__DETECT_check(zpp__DETECT_paren x)
+
+#define zpp__IS_PAREN_PROBE(...) zpp__DETECT_probe(~)
+#define zpp__IS_PAREN(x) zpp__DETECT_check(zpp__IS_PAREN_PROBE x)
+
 
 #define zpp__From(...) ({ __VA_ARGS__  })
 
