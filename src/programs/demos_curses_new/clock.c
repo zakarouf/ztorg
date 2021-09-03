@@ -7,6 +7,7 @@
 #include "../../zse/sprite/sprite_char_draw.h"
 
 #include "demo.h"
+#include <z_/imp/time.h>
 
 static void display_time(WINDOW *win ,zse_T_Sprite_sChar const *nums, zse_T_Sprite_sChar const *colon, int x, int y)
 {

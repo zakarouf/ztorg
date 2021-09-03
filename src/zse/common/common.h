@@ -9,8 +9,12 @@
 #include <time.h>
 #include <math.h>
 
-#include "z_/types.h"
-#include "z_/z_.h"
+#include <z_/types/base.h>
+#include <z_/types/mem.h>
+#include <z_/types/arr.h>
+#include <z_/types/matrix.h>
+#include <z_/types/vector.h>
+
 #include "common_macrofunc.h"
 
 #define frinl __attribute__((always_inline)) inline

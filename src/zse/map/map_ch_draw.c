@@ -2,7 +2,7 @@
 
 #include "map_ch_draw.h"
 
-void zse_map__draw_circle (zset__mapChPlot *chunk, z__Vint3 on , z__Vint2 bounds , z__i32 r, zset__mapChPlot plot)
+void zse_map__draw_circle_raw (zset__mapChPlot *chunk, z__Vint3 on , z__Vint2 bounds , z__i32 r, zset__mapChPlot plot)
 {
 	z__i32 i = on.y - r;
 	z__i32 end_i = on.y + r + 1;
@@ -32,12 +32,12 @@ void zse_map__draw_circle (zset__mapChPlot *chunk, z__Vint3 on , z__Vint2 bounds
     }
 }
 
-void zse_map__draw_rec(zset__mapChPlot *chunk, z__Vint2 bounds ,z__Vint3 from, z__Vint3 to, zset__mapChPlot plot)
+void zse_map__draw_rect_raw(zset__mapChPlot *chunk, z__Vint2 bounds ,z__Vint2 from, z__Vint2 to, int level , zset__mapChPlot plot)
 {
 	for (int y = from.y; y < to.y; ++y)
 	{
 		// It'll only work if sizeof `plot` == sizeof `char`
-		memset(&chunk[zse_xyz3Dto1D(from.x, y, from.z, bounds.x, bounds.y)], plot, sizeof(plot)*to.x);
+		memset(&chunk[zse_xyz3Dto1D(from.x, y, level, bounds.x, bounds.y)], plot, sizeof(plot)*to.x);
 	}
 }
 /*

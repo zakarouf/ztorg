@@ -9,7 +9,10 @@
 
 #include "../../sys/sys.h"
 #include "vulkan.h"
-#include "../../common/z_/imp/print.h"
+#include <z_/imp/print.h>
+#include <z_/imp/sys.h>
+#include <z_/imp/fio.h>
+#include <z_/imp/time.h>
 
 //#define ZSE_CONFIG__rVK__LOG_DEBUG_ONLYSHOW_IMPORTANT_MESSAGES
 //#define ZSE_CONFIG__rVK__MINIATURE
@@ -30,12 +33,12 @@
 
 #ifdef ZSE_CONFIG_LOGS__USE_VARDIC_MACROS
     #define NOTPUB_log_normal(format , ...)\
-        z__log_basic(stdout,"\x1b[38;5;3m" "rVK:" format "\x1b[0m", ##__VA_ARGS__ )
+        z__logfile_basic(stdout,"\x1b[38;5;3m" "rVK:" format "\x1b[0m", ##__VA_ARGS__ )
 
     #define NOTPUB_log_error(format , ...)\
-        z__log_basic(stdout,"\x1b[38;5;1m" "rVK:ERROR:" format "\x1b[0m", ##__VA_ARGS__ )
+        z__logfile_basic(stdout,"\x1b[38;5;1m" "rVK:ERROR:" format "\x1b[0m", ##__VA_ARGS__ )
     #define NOTPUB_log_distinct(color ,format, ...)\
-        z__log_basic(stdout, "\x1b[38;5;%dm" "rVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
+        z__logfile_basic(stdout, "\x1b[38;5;%dm" "rVK:" format "\x1b[0m", color, ##__VA_ARGS__ )
 
 #else
     #define NOTPUB_log_normal(...)\
@@ -164,19 +167,19 @@ static bool _zse_rVK_DEBUG_checkValidationLayerSupport(const char *validationLay
     }
 
     #define checkValdition(val, aval)\
-    {\
-        bool layerFound = false;\
-        for (int i = 0; i < layerCount; i++) {\
-            if (strcmp(val, aval[i].layerName) == 0) {\
-                    layerFound = true;\
-                    NOTPUB_log_normal(" ValidationLayer Found\n");\
-                    break;\
-            }\
-        }\
-        if (!layerFound) {\
-                free(availableLayers);\
-                return false;\
-        }\
+    {                                                   \
+        bool layerFound = false;                        \
+        for (int i = 0; i < layerCount; i++) {          \
+            if (strcmp(val, aval[i].layerName) == 0) {              \
+                    layerFound = true;                              \
+                    NOTPUB_log_normal(" ValidationLayer Found\n");  \
+                    break;                                          \
+            }                                                       \
+        }                                   \
+        if (!layerFound) {                  \
+                free(availableLayers);      \
+                return false;               \
+        }                                   \
     }
     checkValdition(validationLayers, availableLayers);
     #undef checkValdition
@@ -311,8 +314,8 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
 
 static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 {
-    z__Dynt vertShaderCode = z__io_Dynt_readFile("shaders/f.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
-    z__Dynt fragShaderCode = z__io_Dynt_readFile("shaders/v.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
+    z__Dynt vertShaderCode = z__fio_Dynt_readFile("shaders/v.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
+    z__Dynt fragShaderCode = z__fio_Dynt_readFile("shaders/f.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
 
     if (vertShaderCode.data == NULL)
     {

@@ -80,9 +80,17 @@ typedef z__u8 zset__mapChPlot;
 
 /*----------MapType------------*/
 
+typedef
+    struct {
+        z__Vint3 size;
+        zset__mapChPlot **chunks;
+        z__i8 chunkCount;
+        z__i8 chunkRadius;
+}zse_T_MapCh_Chunks;
+
 typedef struct __ZSE_MAP__TYPE_
 {
-    z__Vint3 size;              // Map size in x, y, z, w
+    z__Vint3 size;              // Map size in x, y, z
     zset__mapChPlot **chunks;
 
     z__i8 chunkCount;
@@ -139,8 +147,20 @@ typedef struct __ZSE_MAP__TYPE_
 #define ZSE_map__CH_chunkCount(map)  (map)->chunkCount
 #define ZSE_map__CH_chunkRadius(map) (map)->chunkRadius
 
+
+
+#define ZSE_map__CH_get(map, x, y, z, ch_x, ch_y)\
+    ((map)->chunks\
+        [zse_xyz3Dto1D(ch_x, ch_y, 0,ZSE_map__CH_calcChunk_Side_fromRad(map), ZSE_map__CH_calcChunk_Side_fromRad(map))]\
+            [zse_xyz3Dto1D(x, y, z, (map)->size.x, (map)->size.y])
+
+#define ZSE_map__CH_getraw(map, x, y, z, ch_num)\
+    ((map)->chunks\
+        [ch_num]\
+            [zse_xyz3Dto1D(x, y, z, (map)->size.x, (map)->size.y)])
+
 /* (p == playerCord|xyz|, C == chunkCord|xyz|, CSize == chunkSize|xyz|) */ 
-#define ZSE_map__CH_getPlayerAbsPos(p, C, CSize) ((CSize)*(C)) + p 
+#define ZSE_map__CH_calcAbsPos(p, C, CSize) (((CSize)*(C)) + p)
 
 
 #define ZSE_map__CH_calcChunk_Side_fromRad(map)   (1 + (2 * ((map)->chunkRadius)))

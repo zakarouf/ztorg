@@ -2,6 +2,7 @@
 #define ZSE_RENDER_TISK_TERMINAL_DEF_H
 
 #include "../../common.h"
+#include <z_/types/string.h>
 
 typedef struct
 {

@@ -1,6 +1,12 @@
 //#include <stdio.h> /* stirng & file */
 #include <stdlib.h> /* memory */
 
+#include <z_/types/arr.h>
+#include <z_/types/string.h>
+#include <z_/types/llist.h>
+
+#include <z_/imp/fio.h>
+
 #include "tools.h"
 #include "../../zse/sys/sys.h"
 
@@ -90,7 +96,7 @@ static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
         }
         else if (op == 'O')
         {
-            z__StringList filenames = z__io_getfnames("./sprites");
+            z__StringList filenames = z__fio_getfnames("./sprites");
             zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.str_list, filenames.ll_used, __tmpbuff, 32);
             z__StringList_delete(&filenames);
 
@@ -109,6 +115,8 @@ static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
 static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
 {
     z__u16 frameCursor = 0;
+    z__Arr(z__Arr(z__typeof(**spr->seq.data))) seqs;
+    z__auto tmpseq = z__Arr_getData(seqs);
 
     while (true)
     {
@@ -116,8 +124,11 @@ static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
         {
             case 'a': frameCursor--;
             case 'd': frameCursor++;
-            case 'q':return;
+            case 'q': return;
+            default:  break;
         }
+
+
     }
 }
 
@@ -304,7 +315,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
 
         /* Draw Tabs */
-        z__LinkDef(sprBuffer_ll) *tmpTab_cursor = sprBuffer.tail;
+        z__LinkType(sprBuffer_ll) *tmpTab_cursor = sprBuffer.tail;
         int i = 0;
         for(; i < getmaxy(stdscr)-2 && tmpTab_cursor; ++i)
         {

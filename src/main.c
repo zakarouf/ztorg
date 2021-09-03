@@ -160,14 +160,14 @@ int main(int argc, char const *argv[])
     //mainpgm(argc, argv);
 
     /* Vulkan */
-    void zse_rVK_init(void); zse_rVK_init();
+    //void zse_rVK_init(void); zse_rVK_init();
 
     /* OpenGL */
     //void zse_rGL_init(void); zse_rGL_init();
 
     
     /* Sprite Char Editor */
-    //void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
+    void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
     
     /* Demos */
     //demo_clock();

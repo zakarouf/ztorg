@@ -20,7 +20,7 @@ CC="gcc"
 ERRFLAGS = ["-Wall"]
 CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
 #LDFLAGS=["-lm", "-lncurses", "-lraylib"]
-LDFLAGS=["-I/usr/local/include" ,"-lm", "-lvulkan", "-lglfw", "-lncursesw", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
+LDFLAGS=["-I/usr/local/include" ,"-lm", "-lvulkan", "-lglfw", "-lncursesw", "-lzkcollection", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
 
 

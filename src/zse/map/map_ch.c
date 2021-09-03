@@ -23,6 +23,7 @@ inline zse_T_MapCh *zse_map__ch_createEmpty(z__u32 x, z__u32 y, z__u32 z, z__u32
 	return map;
 }
 
+
 ZSE__INLINE_NST void zse_map__ch_deleteChunk(zset__mapChPlot **chunks, z__u32 at)
 {
 	free(chunks[at]);

@@ -12,16 +12,24 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <z_/types/arr.h>
+#include <z_/types/string.h>
+#include <z_/types/llist.h>
+
+#include <z_/imp/fio.h>
+#include <z_/imp/sys.h>
+#include <z_/imp/time.h>
+
 #include "../../common.h"
 #define z__Arr_getTopMT(arr)        arr.data[arr.lenUsed]
 #include "../../sys/sys.h"
 
 #define priv_LOG_MSG(format, ...)\
-    z__log_basic(stdout,"\x1b[38;5;3m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
+    z__logfile_basic(stdout,"\x1b[38;5;3m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
 #define priv_LOG_ERROR(format, ...)\
-    z__log_basic(stdout,"\x1b[38;5;1m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
+    z__logfile_basic(stdout,"\x1b[38;5;1m" "rGL:" format "\x1b[0m", ##__VA_ARGS__ )
 #define priv_LOG_COLOR(color, format, ...)\
-    z__log_basic(stdout, "\x1b[38;5;%dm" "rGL:" format "\x1b[0m", color, ##__VA_ARGS__ )
+    z__logfile_basic(stdout, "\x1b[38;5;%dm" "rGL:" format "\x1b[0m", color, ##__VA_ARGS__ )
 
 typedef struct {
     z__u32 VBO;
