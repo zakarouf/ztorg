@@ -114,21 +114,70 @@ static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
 
 static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
 {
-    z__u16 frameCursor = 0;
     z__Arr(z__Arr(z__typeof(**spr->seq.data))) seqs;
-    z__auto tmpseq = z__Arr_getData(seqs);
+    z__Arr_new(&seqs, spr->seq.count);
+
+    z__size i = 0;
+    z__Arr_foreach(z__typeof(z__Arr_getData(seqs)) seq, seqs) {
+        seq->data = spr->seq.data[i];
+        seq->len = spr->seq.lens[i];
+        seq->lenUsed = spr->seq.lens[i];
+        i++;
+    }
+    
+    z__i32 frameCursor = 0, SeqCursor = 0;
+    z__auto tmp_seq = &z__Arr_getVal(seqs, SeqCursor);
+    char key = 0;
+
+    WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
 
     while (true)
     {
-        switch(getch())
+        switch(key)
         {
             case 'a': frameCursor--;
+                      if(frameCursor < 0){ frameCursor = 0; }break;
+
             case 'd': frameCursor++;
-            case 'q': return;
+                      if(frameCursor >= spr->frames){ frameCursor -= 1; } break;
+
+            case 'q': goto L_RETURN;
             default:  break;
         }
 
+        wclear(stdscr);
+        //wclear(status);
 
+        zse_rtC__sprite__sChar_PrintPadEnd(stdscr, 0, 0, 0, getmaxy(status), spr, frameCursor);
+        zse_rtC_L__mvwprintw(stdscr, 0, 0, "Frame : (%hd/%hd) | Seq : (%d/%d) |",
+                frameCursor, spr->frames, SeqCursor, z__Arr_getLen(seqs));
+
+        for(int i = 0; i < tmp_seq->lenUsed; i++){
+            zse_rtC_L__mvwprintw(status, 1, 0, "->%d", tmp_seq->data[i]);
+        }
+
+        //wrefresh(status);
+        wrefresh(stdscr);
+        key = zse_rtC_L__getch();
+
+    }
+
+    L_RETURN: {
+        wclear(status);
+        wclear(stdscr);
+
+        delwin(status);
+
+        spr->seq.data = z__REALLOC_SAFE(spr->seq.data, sizeof(*spr->seq.data));
+        z__size i = 0;
+        z__Arr_foreach(z__typeof(z__Arr_getData(seqs)) seq, seqs) {
+            spr->seq.data[i] = seq->data;
+            spr->seq.lens[i] = seq->lenUsed;
+        }
+
+        z__Arr_delete(&seqs);
+
+        return;
     }
 }
 
@@ -257,7 +306,7 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
                                     Brush.selection.pos = Brush.pos;
                                     Brush.selection.frame = Brush.frame;
                                 }                                    break;
-                        }
+                    }
 
                     zse_rtC_clearLine_set0(status);
                 } else if (tmpop == 'N') {

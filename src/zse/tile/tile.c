@@ -61,8 +61,8 @@ zset__Tileset zse_tile__tileset_getDefault(void)
 
 void zse_tile__tileset_deleteContent(zset__Tileset *ts)
 {
-    free(ts->tiles);
-    free(ts->tileTextureIDs);
+    z__FREE(ts->tiles);
+    z__FREE(ts->tileTextureIDs);
 
     ts->tileCount = -1;
 }

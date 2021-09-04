@@ -40,8 +40,10 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 
     z__float dt;
 
-    z__Arr(z__Arr(z__u16)) seqs;
-    
+    struct {
+		z__size count;
+		z__u16 *lens;
+		z__u16 **data; } seq;
 
 // for (int i = 0; i < seqSE[SeqNum]; ++i)
 // {
