@@ -5,7 +5,7 @@
 
 #include "../zse/zse.h"
 #include "../zse/map/map.h"
-#include "../zse/map/map_ch_draw.h"
+#include "../zse/map/ch_draw.h"
 #include "../zse/io/tisk/tisk.h"
 #define ZSE___TEST___SUCESSS true
 
@@ -32,13 +32,12 @@ static z__bool zse___TEST_map_export(void)
 	zse_rtT__D_set00();
 
 	_zse___TEST_map__draw(map);
-	map->chunks[0][2] = 2;
-	map->chunks[0][88] = 2;
-	map->chunks[0][44] = 2;
+	map->chunks[0][2] = 1;
+	map->chunks[0][88] = 1;
+	map->chunks[0][44] = 1;
 
 	z__Vint3 from = {{1, 1, 0}}
 		   , to = {{4, 8, 0}};
-	zse_map__draw_rec(map->chunks[0], (z__Vint2){{map->size.x, map->size.y}}, from, to, '.' - ' ');
 
 	zse_rtT_getkey();
 	zse_rtT__D_set00();
@@ -98,7 +97,7 @@ static z__bool zse___TEST_map(void)
 	return ZSE___TEST___SUCESSS;
 }
 
-#include "../zse/sprite/sprite_char.h"
+#include "../zse/sprite/schar.h"
 #include "../zse/io/tisk/tisk_sprite.h"
 void zse___TEST_spriteChar_createNexport(void)
 {
@@ -208,7 +207,7 @@ z__String zse_rtT__getString(z__char exitchar, z__u32 maxlen)
 
 		fputc('\r', stdout);fflush(stdout);
 		zse_rtT__D_eraseTillEndOfLine();
-		fputs(str.data, stdout);
+		fputs(str.str, stdout);
 		fflush(stdout);
 
 	};
@@ -230,6 +229,6 @@ int zse___TEST(void)
 	//zse___TEST_spriteChar();
 	//zse___TEST_printAsciiChart();
 	//zse___TEST___curses();
-	zse___TEST___tisk();
+	//zse___TEST___tisk();
 	return 0;
 }
