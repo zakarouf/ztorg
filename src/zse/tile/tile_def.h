@@ -14,32 +14,39 @@ typedef enum {
     , ZSE_TILE__ATTR_IS_floor           = 1 << 6
 } zset__E_tileAttributes;
 
+typedef z__Vector(z__f32, x, y, height, width) z__Rectangal;
 
 struct zset__Stile
 {
     char name[32];
     z__u8 mapSymb;
     z__u32 attr;
-
+    z__Arr(
+        struct {
+            z__Vint2 size;
+            z__Vint2 id;
+            z__Vector2 offset;
+        }
+    ) textures;
 };
 
-typedef struct _zse_tile__tileset
-{
-    struct zset__Stile *tiles;
-    z__i32 *tileTextureIDs;
-    z__i32 tileCount;
-} zset__Tileset;
+typedef struct {
+    z__Arr(struct zset__Stile) tiles;
+    //z__Vint2 unittex_size;
+} zse_T_Tileset;
+
+
 
 #define ZSE_tile__checkAttributeRAW(n, attr) ((n)&(attr))
-#define ZSE_tile__checkAttributeTILE(tile, attr) ((tile).attr&(attr))
-#define ZSE_tile__checkAttributeTILESET(tileset,n, attr) (tileset.tiles[n].attr&(attr))
+#define ZSE_tile__checkAttributeTILE(tile, attr1) ((tile).attr&(attr1))
+#define ZSE_tile__checkAttributeTILESET(tileset,n, attr1) ((tileset).tiles[n].attr&(attr1))
 
 #define ZSE_tile__setAttributeRAW(n, attr) { n |= attr }
-#define ZSE_tile__setAttributeTILE(tile, attr) { (tile).attr |= attr }
-#define ZSE_tile__setAttributeTILESET(tileset, n, attr) { tileset.tiles[n].attr |= attr }
+#define ZSE_tile__setAttributeTILE(tile, attr1) { (tile).attr |= attr1 }
+#define ZSE_tile__setAttributeTILESET(tileset, n, attr1) { tileset.tiles[n].attr |= attr1 }
 
 #define ZSE_tile__switchAttributeRAW(n, attr) { n ^= attr }
-#define ZSE_tile__switchAttributeTILE(tile, attr) { (tile).attr ^= attr }
-#define ZSE_tile__switchAttributeTILESET(tileset, n, attr) { tileset.tiles[n].attr ^= attr }
+#define ZSE_tile__switchAttributeTILE(tile, attr1) { (tile).attr ^= attr1 }
+#define ZSE_tile__switchAttributeTILESET(tileset, n, attr1) { tileset.tiles[n].attr ^= attr1 }
 
 #endif

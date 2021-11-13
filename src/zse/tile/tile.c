@@ -6,6 +6,9 @@
 #include "tile_def.h"
 #include "../config/config_tile.h"
 
+#include <z_/types/autotype.h>
+
+
 static struct zset__Stile* _tiles_getdefault(z__i32 *tileCount)
 {
     enum {MaxTiles = 8};
@@ -43,31 +46,45 @@ static struct zset__Stile* _tiles_getdefault(z__i32 *tileCount)
             sprintf(tiles[i].name,"%s", tile_desc[i]);
             tiles[i].mapSymb = symb[i];
             tiles[i].attr = attr[i];
-            
+            z__Arr_new(&tiles[i].textures, 8);
         }
 
     *tileCount = MaxTiles;
     return tiles;
 }
 
-zset__Tileset zse_tile__tileset_getDefault(void)
+zse_T_Tileset zse_tile__tileset_getDefault(void)
 {
-    zset__Tileset ts;
-    ts.tiles = _tiles_getdefault(&ts.tileCount);
-    ts.tileTextureIDs = z__CALLOC(ts.tileCount, sizeof(*ts.tileTextureIDs));
+    zse_T_Tileset ts;
+    ts.tiles.data = _tiles_getdefault(&ts.tiles.lenUsed);
 
     return ts;
 }
 
-void zse_tile__tileset_deleteContent(zset__Tileset *ts)
-{
-    z__FREE(ts->tiles);
-    z__FREE(ts->tileTextureIDs);
 
-    ts->tileCount = -1;
+
+zse_T_Tileset zse_tile__tileset_createEmpty(z__size tileCount, z__size textureCount)
+{
+    zse_T_Tileset tileset;
+    z__Arr_new(&tileset.tiles, tileCount);
+
+    z__Arr_foreach(z__auto i, tileset.tiles) {
+        z__Arr_new(&i->textures, textureCount);
+    }
+
+    return tileset;
 }
 
-void zse_tile__tileset_export(zset__Tileset *ts, char filename [ static 1 ])
+void zse_tile__tileset_deleteContent(zse_T_Tileset *ts)
+{
+    for(int i = 0; i < ts->tiles.len; i++) {
+        z__Arr_delete(&ts->tiles.data[i].textures);
+    }
+    z__Arr_delete(&ts->tiles);
+
+}
+
+void zse_tile__tileset_export(zse_T_Tileset *ts, char filename [ static 1 ])
 {
     char fullpath[128];
     snprintf(fullpath, sizeof(fullpath), _TILE_DEFAULT_EXPORT_DIRECTORY "%s", filename);
@@ -80,24 +97,26 @@ void zse_tile__tileset_export(zset__Tileset *ts, char filename [ static 1 ])
 
     fwrite(ZSE_ENGINE_VERSION, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
 
-    fwrite(&ts->tileCount, sizeof(ts->tileCount), 1, fp);
-    struct zset__Stile *tile = ts->tiles;
-    for (int i = 0; i < ts->tileCount; ++i)
+    fwrite(&ts->tiles.lenUsed, sizeof(ts->tiles.lenUsed), 1, fp);
+
+    struct zset__Stile *tile = ts->tiles.data;
+    for (int i = 0; i < ts->tiles.lenUsed; ++i)
     {
         fwrite(tile->name, sizeof(*tile->name), sizeof(tile->name)/sizeof(*tile->name), fp);
         fwrite(&tile->mapSymb, sizeof(tile->mapSymb), 1, fp);
         fwrite(&tile->attr, sizeof(tile->attr), 1, fp);
+        fwrite(&z__Arr_getUsed(tile->textures), sizeof(z__Arr_getUsed(tile->textures)), 1, fp);
+        fwrite(tile->textures.data, sizeof(*tile->textures.data), z__Arr_getUsed(tile->textures), fp);
 
         tile++;
     }
 
-    fwrite(ts->tileTextureIDs, sizeof(*ts->tileTextureIDs), ts->tileCount, fp);
     fclose(fp);
 }
 
-zset__Tileset zse_tile__tileset_load(char const filename [ static 1 ])
+zse_T_Tileset zse_tile__tileset_load(char const filename [ static 1 ])
 {
-    zset__Tileset ts = {0};
+    zse_T_Tileset ts = {0};
 
     char fullpath[128];
     snprintf(fullpath, sizeof(fullpath), _TILE_DEFAULT_EXPORT_DIRECTORY "%s", filename);
@@ -110,22 +129,34 @@ zset__Tileset zse_tile__tileset_load(char const filename [ static 1 ])
 
     char version[ZSE_ENGINE_VERSION_SIGN_SIZE];
     fread(version, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
-    fread(&ts.tileCount, sizeof(ts.tileCount), 1, fp);
+    
+    z__typeof(ts.tiles.len) tcount;
 
-    ts.tiles = z__CALLOC(sizeof(&ts.tiles), ts.tileCount);
+    fread(&tcount, sizeof(tcount), 1, fp);
+    
+    z__Arr_new(&ts.tiles, tcount);
 
-    struct zset__Stile *tile = ts.tiles;
-    for (int i = 0; i < ts.tileCount; ++i)
+    struct zset__Stile *tile = ts.tiles.data;
+    for (int i = 0; i < ts.tiles.len; ++i)
     {
         fread(tile->name, sizeof(*tile->name), sizeof(tile->name)/sizeof(*tile->name), fp);
         fread(&tile->mapSymb, sizeof(tile->mapSymb), 1, fp);
         fread(&tile->attr, sizeof(tile->attr), 1, fp);
 
+        
+        fread(&z__Arr_getUsed(tile->textures), sizeof(z__Arr_getUsed(tile->textures)), 1, fp);
+
+        int tmp_a = z__Arr_getUsed(tile->textures);
+        z__Arr_new(&tile->textures, tmp_a);
+        z__Arr_getLen(tile->textures) = z__Arr_getUsed(tile->textures);
+
+        fread(tile->textures.data, sizeof(*tile->textures.data), z__Arr_getUsed(tile->textures), fp);
+
         tile++;
     }
 
-    fread(ts.tileTextureIDs, sizeof(*ts.tileTextureIDs), ts.tileCount, fp);
     fclose(fp);
+    z__Arr_getUsed(ts.tiles) = z__Arr_getLen(ts.tiles);
 
     return ts;
 }
