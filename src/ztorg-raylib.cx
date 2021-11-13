@@ -1,0 +1,534 @@
+#include "zse/zse_all/zse_all.h"
+#include "zse/entity_old/entity.h"
+#undef KEY_END
+#undef KEY_HOME
+#undef KEY_LEFT
+#undef KEY_UP
+#undef KEY_DOWN
+#undef KEY_RIGHT
+#undef KEY_BACKSPACE
+#undef KEY_ENTER
+#include <raylib3.5/raylib.h>
+#include <stdlib.h>
+
+#include <z_/types/string.h>
+#include <z_/types/autotype.h>
+
+#define Z_FREE_ROTATION
+
+#ifdef Z_FREE_ROTATION
+#define TURN_SPEED Z_TURN_FREELOOK
+#define playermoveX(angle, spd) sinf(angle) * spd
+#define playermoveY(angle, spd) cosf(angle) * spd
+
+
+#else
+#define TURN_SPEED Z_TURN_NORMAL
+#define playermoveX(angle, spd) (int)sinf(angle) * spd
+#define playermoveY(angle, spd) (int)cosf(angle) * spd
+
+#endif 
+
+static Color Wall_color[11] = {BLACK ,WHITE, GRAY, ORANGE, BLACK, YELLOW, DARKGRAY, BROWN, PINK, LIME, BEIGE};
+static Color World_color[11] = {
+	BLACK
+	, BLUE
+	, BLUE
+	, BLUE
+	, BLUE
+	, BLUE
+	, SKYBLUE
+	, YELLOW
+	, GREEN
+	, DARKGREEN
+	, DARKBROWN
+};
+
+static Font gDefaultFont;
+
+//#define xy2Dto1D(x,y,X) x + ((y)*X)
+
+#define WINDOW_X 1000
+#define WINDOW_Y 600
+
+#define CUBESIZE 2.5f
+
+enum STAT_SHOW
+{
+	ST_SHOW_MINI_MAP,
+	ST_SHOW_HEALTH,
+	ST_SHOW_MAGE,
+};
+
+/* Data */
+
+
+
+static int raycast_demo_new(zse_T_MapCh *map, Vector4 player, z__Vector2 dir, z__Vector2 plane, zse_T_Tileset *tile)
+{
+#define w WINDOW_X
+	for(int x = 0; x < WINDOW_X; x++)
+    {
+      //calculate ray position and direction
+      const double cameraX = 2 * x / (double)w - 1; //x-coordinate in camera space
+      const double rayDirX = dir.x + plane.x * cameraX;
+      const double rayDirY = dir.y + plane.y * cameraX;
+      //which box of the map we're in
+      int mapX = player.x;
+      int mapY = player.y;
+
+      //length of ray from current position to next x or y-side
+      double sideDistX;
+      double sideDistY;
+
+       //length of ray from one x or y-side to next x or y-side
+      double deltaDistX = fabs(1 / rayDirX);
+      double deltaDistY = fabs(1 / rayDirY);
+      double perpWallDist;
+
+      //what direction to step in x or y-direction (either +1 or -1)
+      int stepX;
+      int stepY;
+
+      int hit = 0; //was there a wall hit?
+      int side; //was a NS or a EW wall hit?
+      //calculate step and initial sideDist
+      if(rayDirX < 0)
+      {
+        stepX = -1;
+        sideDistX = (player.x - mapX) * deltaDistX;
+      }
+      else
+      {
+        stepX = 1;
+        sideDistX = (mapX + 1.0 - player.x) * deltaDistX;
+      }
+      if(rayDirY < 0)
+      {
+        stepY = -1;
+        sideDistY = (player.y - mapY) * deltaDistY;
+      }
+      else
+      {
+        stepY = 1;
+        sideDistY = (mapY + 1.0 - player.y) * deltaDistY;
+      }
+      //perform DDA
+      while (hit == 0)
+      {
+        //jump to next map square, OR in x-direction, OR in y-direction
+        if(sideDistX < sideDistY)
+        {
+          sideDistX += deltaDistX;
+          mapX += stepX;
+          side = 0;
+        }
+        else
+        {
+          sideDistY += deltaDistY;
+          mapY += stepY;
+          side = 1;
+        }
+        //Check if ray has hit a wall
+        if(ZSE_map__CH_get(map, mapX, mapY, (int)player.z, 0, 0) > 0) hit = 1;
+      }
+      //Calculate distance projected on camera direction (Euclidean distance will give fisheye effect!)
+      if(side == 0) perpWallDist = (mapX - player.x + (1 - stepX) / 2) / rayDirX;
+      else          perpWallDist = (mapY - player.y + (1 - stepY) / 2) / rayDirY;
+
+#define h WINDOW_Y
+      //Calculate height of line to draw on screen
+      int lineHeight = (int)(h / perpWallDist);
+
+      //calculate lowest and highest pixel to fill in current stripe
+      int drawStart = -lineHeight / 2 + h / 2;
+      if(drawStart < 0)drawStart = 0;
+      int drawEnd = lineHeight / 2 + h / 2;
+      if(drawEnd >= h)drawEnd = h - 1;
+
+      //choose wall color
+      Color color;
+      switch(ZSE_map__CH_get(map, mapX, mapY, (int)player.z, 0, 0))
+      {
+        case 1:  color = RED;    break; //red
+        case 2:  color = GREEN;  break; //green
+        case 3:  color = BLUE;   break; //blue
+        case 4:  color = WHITE;  break; //white
+        default: color = YELLOW; break; //yellow
+      }
+
+      //give x and y sides different brightness
+      if(side == 1) {
+		  color.a = color.a / 2;
+	  }
+
+      //draw the pixels of the stripe as a vertical line
+	  DrawLine(x, drawStart, x, drawEnd, color);
+    }
+
+
+
+	return 0;
+
+}
+
+#if 0
+static int raycast_demo(zse_T_MapCh *map, Vector4 player, zse_T_Tileset *tile)
+{
+
+	for (int x = 0; x < WINDOW_X; x++)
+	{
+		float ray_angle = (player.w - FOV / 2.0f) + ((float)x / (float)WINDOW_X * FOV);
+		float ray_distance = 0;
+		int chech_if_hitwall = 0;
+
+		char out_of_bounds = 0;
+
+		float p_eyeX = sinf(ray_angle);
+		float p_eyeY = cosf(ray_angle);
+
+		int point = 4;
+
+		while (!chech_if_hitwall && ray_distance <= DEPTH && !out_of_bounds)
+		{
+			ray_distance += RAY_DISTANCE_INCREMENT;
+
+			int testX = (int)(player.x+0.5f + p_eyeX * ray_distance);
+			int testY = (int)(player.y+0.5f + p_eyeY * ray_distance);
+
+			if(testX < 0 || testX >= map->size.x || testY < 0 || testY >= map->size.y){
+
+				out_of_bounds = 1;
+				ray_distance = DEPTH;
+			}
+			else {
+
+				if(ZSE_map__CH_get(map ,testX, testY, (int)player.z, 0, 0))
+				{
+					chech_if_hitwall = 1;
+					point = ZSE_map__CH_get(map ,testX, testY, (int)player.z, 0, 0);
+				}
+			}	
+		} // WHILE LOOP END
+
+		int ceiling = (WINDOW_Y / 2) - WINDOW_Y / (ray_distance);
+		int floor = WINDOW_Y - ceiling;
+
+
+		Color shade = Fade(Wall_color[point], ((ray_distance/DEPTH)-1.0f)*-1.0f);
+		/*
+		if(ray_distance <= DEPTH / 4 )
+			shade = 0.9f;
+		else if(ray_distance <= DEPTH / 3)
+			shade =  0.7f;
+		else if(ray_distance <= DEPTH / 2 )
+			shade = 0.4f;
+		else if(ray_distance <= DEPTH)
+			shade = 0.1f;
+		else
+		{
+			shade = 0.0f;
+		}*/
+
+
+		if (!out_of_bounds) {
+			DrawLine(x, ceiling, x, floor, shade);
+		}
+			
+
+	}
+
+
+	return 0;
+}
+#endif
+
+static void drawmap (zse_T_MapCh *map, Vector2 at, Vector3 p)
+{
+	int recSize = 3;
+	const int minmapX = 101;
+	const int minmapY = 101;
+
+	int mapCursorx = p.x - (minmapX/recSize);
+	if (mapCursorx < 0)
+	{
+		mapCursorx = 0;
+	}
+
+	int mapCursory = p.y - (minmapY/recSize);
+	if (mapCursory < 0)
+	{
+		mapCursory = 0;
+	}
+
+	int mapEndx = p.x + (minmapX/recSize);
+	if (mapEndx < 0)
+	{
+		mapEndx = ZSE_map__CH_xsize(map);
+	}
+
+	int mapEndy = p.y + (minmapY/recSize);
+	if (mapEndy < ZSE_map__CH_ysize(map))
+	{
+		mapEndy = ZSE_map__CH_ysize(map);
+	}
+
+
+	for (int i = 0 ; i < ZSE_map__CH_ysize(map); ++i)
+	{
+		for (int j = 0 ; j < ZSE_map__CH_xsize(map); ++j)
+		{
+			DrawRectangle(j*recSize +at.x, i*recSize +at.y, recSize, recSize, Wall_color[ZSE_map__CH_get(map, j, i, 0, 0, 0)]);
+			mapCursorx++;
+		}
+		mapCursory++;
+	}
+	DrawRectangle((int)(at.x +p.x*recSize), (int)(at.y +p.y*recSize), recSize, recSize, BLACK);
+}
+
+static int _init(void)
+{
+	InitWindow(WINDOW_X, WINDOW_Y, "Raytest");
+	
+
+	SetWindowState(FLAG_VSYNC_HINT);
+	SetTargetFPS(60);
+
+	//gDefaultFont = LoadFont("data/fonts/FiraCode-Regular.ttf");
+	SetTextureFilter(gDefaultFont.texture, FILTER_BILINEAR);
+
+	return 0;
+}
+
+static void ztorg_infinity(ENTT_t *p1)
+{
+	int recSize = 4;
+	for (int i = (int)p1->Y; i < (WINDOW_Y+p1->Y)/recSize; ++i)
+	{
+		for (int j = (int)p1->X; j < (WINDOW_X+p1->X)/recSize; ++j)
+		{
+			DrawRectangle((j-p1->X) *recSize , (i-p1->Y) *recSize , recSize, recSize, World_color[(int)(zse_map_gen2d_get_solo(j, i, 0.4f, 10) *10) ]);
+		}
+	}
+}
+
+z__typeof(zset__mapChPlot) _g_map[100] = {
+	1,1,1,1,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,1,
+	1,1,1,1,1,1,1,1,1,1,
+};
+
+static void ztorg_main_loop (ENTT_t *p1, zse_T_MapCh *map, zse_T_Tileset *tileset)
+{
+	// Define the camera to look into our 3d world (position, target, up vector)
+
+	z__auto ori_map = *map->chunks;
+	*map->chunks = _g_map;
+
+	Vector3 player = {5.0f, 5.0f, 0.0f};
+	const Vector3 xlr8_max = {9.0f, 9.0f, 9.0f};
+	//const Vector3 xlr8_min = {1.0f, 1.0f, 1.0f};
+	const Vector3 xlr8_rate = {3.2f, 3.2f, 3.2f};
+
+	Vector3 xlr8 = xlr8_rate;
+
+	Vector3 player_tmp = player;
+	float playerA = 0.0f;
+	int collision = 1;
+
+	z__String msg = z__String_new(1024);
+
+	struct {
+		z__typeof(**map->chunks) plot;
+	} tile_cur = {0};
+
+
+	//speed modifiers
+    double moveSpeed = GetFrameTime() * 5.0; //the constant value is in squares/second
+    double rotSpeed = GetFrameTime() * 3.0; //the constant value is in radians/second
+
+	z__Vector2 dir = {-1, 0}, plane = {0, 0.66};
+
+	//Texture2D tex = LoadTexture("textures/ayy.png");
+    
+
+    // Set World Data
+    // 0 is Floor
+    // 1 is Wall
+
+
+//    SetCameraMode(cam3d, CAMERA_FIRST_PERSON); // Set a first person camera mode
+
+    while(!WindowShouldClose())
+    {
+
+    	float dt = GetFrameTime();
+		moveSpeed = dt * 5.0f;
+		rotSpeed = dt * 3.0f;
+
+    	// Update
+        //----------------------------------------------------------------------------------
+                         // Update camera
+        //----------------------------------------------------------------------------------
+
+    	player_tmp = player;
+
+    	if (IsKeyDown(KEY_D))
+    	{
+			//both camera direction and camera plane must be rotated
+			double oldDirX = dir.x;
+			dir.x = dir.x * cos(-rotSpeed) - dir.y * sin(-rotSpeed);
+		    dir.y = oldDirX * sin(-rotSpeed) + dir.y * cos(-rotSpeed);
+			double oldPlaneX = plane.x;
+			plane.x = plane.x * cos(-rotSpeed) - plane.y * sin(-rotSpeed);
+			plane.y = oldPlaneX * sin(-rotSpeed) + plane.y * cos(-rotSpeed);
+    	}
+
+    	if (IsKeyDown(KEY_A))
+    	{
+
+			//both camera direction and camera plane must be rotated
+			double oldDirX = dir.x;
+			dir.x = dir.x * cos(rotSpeed) - dir.y * sin(rotSpeed);
+		    dir.y = oldDirX * sin(rotSpeed) + dir.y * cos(rotSpeed);
+			double oldPlaneX = plane.x;
+			plane.x = plane.x * cos(rotSpeed) - plane.y * sin(rotSpeed);
+			plane.y = oldPlaneX * sin(rotSpeed) + plane.y * cos(rotSpeed); 
+
+    	}
+
+    	if (IsKeyDown(KEY_W))
+    	{
+    		
+    		player.x += dir.x * moveSpeed; 
+    		player.y += dir.y * moveSpeed;
+
+    		if ((player.x < 0 || player.y < 0 || player.x >= ZSE_map__CH_xsize(map) || player.y >= ZSE_map__CH_ysize(map)))
+    		{
+				player = player_tmp;
+    		}
+    	}
+
+    	if (IsKeyDown(KEY_S))
+    	{
+    		player.x -= dir.x * moveSpeed; 
+    		player.y -= dir.y * moveSpeed;
+
+
+    		if ((player.x < 0 || player.y < 0 || player.x >= ZSE_map__CH_xsize(map) || player.y >= ZSE_map__CH_ysize(map)))
+    		{
+				player = player_tmp;
+    		}
+    	}
+    	if (IsKeyPressed(KEY_E))
+    	{
+			int next_x = player.x + (dir.x * 2);
+			int next_y = player.y + (dir.y * 2);
+
+			if (!(next_x < 0 || next_y < 0 || next_x >= ZSE_map__CH_xsize(map) || next_y >= ZSE_map__CH_ysize(map)))
+    		{
+				z__auto plot = &ZSE_map__CH_get(
+								map, next_x, next_y, (int)player.z , 0, 0);
+
+				*plot = tile_cur.plot;
+
+    		}
+
+    	}
+		if(IsKeyPressed(KEY_C))
+		{
+			tile_cur.plot--;
+			if(tile_cur.plot < 0) tile_cur.plot = 0;
+		}
+		if(IsKeyPressed(KEY_V))
+		{
+			tile_cur.plot++;
+			if(tile_cur.plot >= tileset->tileCount) tile_cur.plot = tileset->tileCount-1;
+
+		}
+    	if (IsKeyPressed(KEY_Z))
+    	{
+    		player.z = (player.z > 0)? player.z-1:player.z;
+    	}
+    	if (IsKeyPressed(KEY_X))
+    	{
+    		player.z = (player.z < ZSE_map__CH_zsize(map)-1)? player.z+1:player.z;
+    	}
+    	if (IsKeyPressed(KEY_I))
+    	{
+    		collision ^= 1;
+    	}
+
+    	
+		z__auto plot = &ZSE_map__CH_get(map, (int)player.x, (int)player.y, (int)player.z , 0, 0);
+
+    	if (ZSE_tile__checkAttributeTILESET((*tileset), *plot,  ZSE_TILE__ATTR_IS_moveable)) {
+
+			z__auto plot_next = &ZSE_map__CH_get(
+					map,
+					(int)(player.x + playermoveX(playerA, 1)),
+					(int)(player.y + playermoveY(playerA, 1)),
+					(int)player.z , 0, 0);
+
+    		if(!*plot_next) {
+
+    			*plot_next = *plot;
+				*plot= 0; 	
+    		}
+    	} else {
+    		if (ZSE_tile__checkAttributeTILESET((*tileset), *plot, ZSE_TILE__ATTR_IS_block) && collision) {
+    			player = player_tmp;
+    		}
+    	}
+
+    	msg.used = snprintf(msg.str, msg.len,"X %.2f| Y %.2f| Z %.2f| A %.2f| AX %.2f| AY %.2f| TILE %d"
+				, player.x, player.y, player.z,playerA, xlr8.x, xlr8.y
+				, tile_cur.plot);
+        // Draw
+        //----------------------------------------------------------------------------------
+       	BeginDrawing();
+		ClearBackground(BLACK);
+
+			raycast_demo_new(map, (Vector4){player.x, player.y, player.z, playerA}, dir, plane, tileset);
+    		DrawText(msg.str, 10, WINDOW_Y - 15, 16, YELLOW);
+    		//ztorg_infinity(p1);
+    		drawmap(map, (Vector2){10, 10}, player);
+			//r_3D(WORLD_DATA, cam3d);
+			
+    		DrawFPS(WINDOW_X - 19, 1);
+
+		EndDrawing();
+        //----------------------------------------------------------------------------------
+
+    }
+
+	*map->chunks = ori_map;
+}
+
+
+int ztorg_ray (char name[])
+{
+	_init();
+	zse_T_MapCh *map = zse_map__ch_load__st(name);
+	zse_T_Tileset tileset = zse_tile__tileset_getDefault();
+
+	ENTT_t *p = zse_entt_init_ENTT_t(JACK);
+	p->X = 10;
+	p->Y = 10;
+
+	ztorg_main_loop (p, map, &tileset);
+
+	zse_tile__tileset_deleteContent(&tileset);
+	zse_entt_delete(p);
+
+	return 0;
+}
+
+
