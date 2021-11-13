@@ -10,7 +10,7 @@
 -----------------------------------------------*/
 //---------------------------------------------//
 
-#include "map_gen.h"
+#include "gen.h"
 
 static z__i64 _zse_mapgen_perlin_SEED;
 
@@ -69,11 +69,11 @@ static double _perlin_noise2d(double x, double y)
 
 
 
-void zse_map__genP_SetNoiseSeed(int seed)
+void zse_map__genP2d_SetNoiseSeed(int seed)
 {
     _zse_mapgen_perlin_SEED = seed;
 }
-int zse_map__genP_GetNoiseSeed(void)
+int zse_map__genP2d_GetNoiseSeed(void)
 {
     return _zse_mapgen_perlin_SEED;
 }

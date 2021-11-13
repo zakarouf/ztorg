@@ -2,6 +2,10 @@
 #define ZAKAROUF_ZSE__MAP_CHUNKTYPE_DEFINATIONS_H
 
 #include "../common.h"
+#include <z_/types/dynt.h>
+#include <z_/types/record.h>
+
+#include "obj_def.h"
 
 /* Main Header For Chunk Defination. */
 
@@ -76,28 +80,71 @@
 
 /*------------------------------------------------------------------------------*/
 /*---------------------------------------Types----------------------------------*/
-typedef z__u8 zset__mapChPlot;
+
+/*----------MapPlot----------*/
+typedef 
+    struct {
+        // Main data
+        z__u8 plot;
+
+        // Texture ID;
+        z__u16 texID;
+        z__f32 oriantaion;
+
+        // Attributes/Flags
+        z__u8 flags;
+} zse_T_MapCh_Plot;
+
+
+
 
 /*----------MapType------------*/
 
-typedef
-    struct {
-        z__Vint3 size;
-        zset__mapChPlot **chunks;
-        z__i8 chunkCount;
-        z__i8 chunkRadius;
-}zse_T_MapCh_Chunks;
-
-typedef struct __ZSE_MAP__TYPE_
-{
-    z__Vint3 size;              // Map size in x, y, z
-    zset__mapChPlot **chunks;
-
-    z__i8 chunkCount;
-    z__i8 chunkRadius;
-
-}zse_T_MapCh;
-
+/**
+ * zse_T_MapCh()
+ * Tileset Oriented Map Type with layers or z-dimention. and Multiple Chunks.
+ * size: Dimention of Each Chunk.
+ * chunkCount: Total no. of chunks allocated.
+ * chunkRadius: Radius of square-grid layout of chunks.
+ */
+#define zse_T_MapCh(T, ...)\
+    struct { \
+        /* Map Size in x, y, z  */                                                      \
+        z__Vint3 size;                                                                  \
+                                                                                        \
+        /* Total no. chunks allocated */                                                \
+        z__size chunkCount;                                                             \
+        /*Radius of square-grid layout of chunks. f(n) = ceil(2/n) - 1*/                \
+        z__u16 chunkRadius;                                                             \
+                                                                                        \
+        /**
+         * Main Data Stream
+         * * Of each point of 4D array normalized to 2D array (3D each)
+         * * The actual way it is being internalized is Described obove although
+         *   anyone is free change it.
+         */                                                                             \
+        T **chunks;                                                                     \
+                                                                                        \
+        /**
+         * Misc Map Objects.
+         * Can Contain: 
+         *  * Entities,
+         *  * Non Static Tile Objects,
+         *  * Anything Else.
+         * NOTE: This does not parse any any data, Only stores them for later use.
+         * NOTE: objectSet[chunk][obj];
+         * NOTE: Objects of the same type are stored side-by-side.
+         */                                                                 \
+        zse_T_Map_ObjectSetsArr *objectSets;                                \
+                                                                            \
+        /**
+         * Extra Stuff Declared later on (Optional)
+         * NOTE Initialization & Deletion of any heap data of the vars declared
+         *      here is upto the one who declared it in the first place as this module
+         *      can't predict the declaration beforehand.
+         */                                                         \
+        __VA_ARGS__;                                                \
+    }
 
 /*------------------------------------------
  * Common Funcs/Macro
@@ -149,15 +196,15 @@ typedef struct __ZSE_MAP__TYPE_
 
 
 
-#define ZSE_map__CH_get(map, x, y, z, ch_x, ch_y)\
+#define ZSE_map__CH_get(map, x1, y1, z1, ch_x, ch_y)\
     ((map)->chunks\
         [zse_xyz3Dto1D(ch_x, ch_y, 0,ZSE_map__CH_calcChunk_Side_fromRad(map), ZSE_map__CH_calcChunk_Side_fromRad(map))]\
-            [zse_xyz3Dto1D(x, y, z, (map)->size.x, (map)->size.y])
+            [zse_xyz3Dto1D(x1, y1, z1, (map)->size.x, (map)->size.y)])
 
-#define ZSE_map__CH_getraw(map, x, y, z, ch_num)\
+#define ZSE_map__CH_getraw(map, x1, y1, z1, ch_num)\
     ((map)->chunks\
         [ch_num]\
-            [zse_xyz3Dto1D(x, y, z, (map)->size.x, (map)->size.y)])
+            [zse_xyz3Dto1D(x1, y1, z1, (map)->size.x, (map)->size.y)])
 
 /* (p == playerCord|xyz|, C == chunkCord|xyz|, CSize == chunkSize|xyz|) */ 
 #define ZSE_map__CH_calcAbsPos(p, C, CSize) (((CSize)*(C)) + p)
