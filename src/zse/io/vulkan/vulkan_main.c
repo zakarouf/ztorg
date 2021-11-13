@@ -9,7 +9,6 @@
 
 #include "../../sys/sys.h"
 #include "vulkan.h"
-#include <z_/imp/print.h>
 #include <z_/imp/sys.h>
 #include <z_/imp/fio.h>
 #include <z_/imp/time.h>
@@ -299,7 +298,7 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
      * This is probably the worst way to do so.
      * -------------------------------------------------------------
      */
-    createInfo.codeSize = code.len * code.size;
+    createInfo.codeSize = code.len * code.unitsize;
 
     createInfo.pCode = (z__u32*)code.data;
 
@@ -314,8 +313,8 @@ static VkShaderModule _zse_rVK_createShaderModule(_zse_rVK_HANDLERS* Handle, z__
 
 static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 {
-    z__Dynt vertShaderCode = z__fio_Dynt_readFile("shaders/v.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
-    z__Dynt fragShaderCode = z__fio_Dynt_readFile("shaders/f.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
+    z__Dynt vertShaderCode = z__fio_Dynt_newFromFile("shaders/v.spv", 4 ,"Vertex Shader", -1); //zse_sys_readFile("shaders/vert.spv");
+    z__Dynt fragShaderCode = z__fio_Dynt_newFromFile("shaders/f.spv", 4 ,"Fragment Shader", -1); //zse_sys_readFile("shaders/frag.spv");
 
     if (vertShaderCode.data == NULL)
     {
@@ -506,8 +505,8 @@ static void _zse_rVK_createGraphicsPipeline(_zse_rVK_HANDLERS *Handle)
 
     // Clean up
 
-    z__Dynt_delete(&vertShaderCode, true);
-    z__Dynt_delete(&fragShaderCode, true);
+    z__Dynt_delete(&vertShaderCode);
+    z__Dynt_delete(&fragShaderCode);
     vkDestroyShaderModule(Handle->_rVK_device, fragShaderModule, NULL);
     vkDestroyShaderModule(Handle->_rVK_device, vertShaderModule, NULL);
 
@@ -885,7 +884,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
         z__StringList_push(&requiredExtensions, deviceExtensions->str_list[i], deviceExtensions->str_lens[i]);
     }
 
-    z__print(requiredExtensions, requiredExtensions.str_lens[0]);
+    //z__print(requiredExtensions, requiredExtensions.str_lens[0]);
 
     const uint32_t TotalExtentionsRequired = requiredExtensions.ll_used;
     uint32_t ExtentionsFound = 0;
