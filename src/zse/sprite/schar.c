@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "sprite_char_def.h"
+#include "schar_def.h"
 #include "../config/config_sprite_char.h"
 
 void zse_sprite__sChar_export(const zse_T_Sprite_sChar *spr ,const char filename[ static 1 ])

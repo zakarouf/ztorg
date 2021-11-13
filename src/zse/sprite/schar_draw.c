@@ -1,5 +1,5 @@
 #include <string.h>
-#include "sprite_char_draw.h"
+#include "schar_draw.h"
 
 void zse_sprite__sCharDraw_circle (zse_T_Sprite_sChar *spr ,z__Vint3 on , z__i32 r, zset__spritechtype val, z__u16 color)
 {

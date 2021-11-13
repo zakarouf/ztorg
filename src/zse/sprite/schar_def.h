@@ -25,7 +25,7 @@
 
 typedef z__u8 zset__spritechtype;
 
-typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
+typedef struct
 {
     z__u16 x, y, frames;
 	// union {
@@ -51,6 +51,23 @@ typedef struct _ZSE_SPRITE_TYPE_Char_STRUCT
 // }
 
 }zse_T_Sprite_sChar;
+
+#define zse_T_Sprite()\
+	struct {\
+	    z__Vint2 size;\
+		z__u32 totalFrames;\
+		\
+		z__float dt;\
+		\
+		z__Arr(\
+			struct{\
+				z__f32 speed;\
+				z__u32 seqlen;\
+				z__u32 *seqdata;\
+			}\
+		) seqs;\
+	}zse_T_Sprite_Img;
+
 
 #define ZSE_sprite__sChar_getX(spr) (spr).x
 #define ZSE_sprite__sChar_getY(spr) (spr).y
