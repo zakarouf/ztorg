@@ -1,5 +1,5 @@
 #include "../../common.h"
-#include "../../sprite/sprite_char_def.h"
+#include "../../sprite/schar_def.h"
 
 #include "tisk_color.h"
 #include <stdio.h>

@@ -3,7 +3,7 @@
 
 #include "curses.h"
 
-#include "../../sprite/sprite_char_def.h"
+#include "../../sprite/schar_def.h"
 
 int zse_rtC_spritePrintAll
 (
