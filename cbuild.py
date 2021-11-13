@@ -10,7 +10,7 @@ folderIgnore={
     , "demos_curses", "tools_curses", "tools_tisk", "tools_curses"
     , "logic", "ztorg", "map_old", "tile_old", "zse_all", "zse_test"}
 
-IgnoreNames={"cave_hunter.c", "zse.c"}
+IgnoreNames={"cave_hunter.c", "zse.c", "vector-style.c"}
 
 ignorePatternFront = ["."]
 ignorePatternEnd = []
@@ -18,9 +18,9 @@ onlyTakePatternEnd = [".c"]
 
 CC="gcc"
 ERRFLAGS = ["-Wall"]
-CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-Os", "-O2"] + ERRFLAGS
+CFLAGS=["-std=c99", "-ffunction-sections", "-fdata-sections", "-ftrack-macro-expansion=2", "-Os", "-O2"] + ERRFLAGS
 #LDFLAGS=["-lm", "-lncurses", "-lraylib"]
-LDFLAGS=["-I/usr/local/include" ,"-lm", "-lvulkan", "-lglfw", "-lncursesw", "-lzkcollection", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
+LDFLAGS=["-I/usr/local/include" ,"-lm", "-lvulkan", "-lraylib", "-lncursesw", "-lzkcollection", "-framework","opengl", "-Wl,-rpath", "-Wl,/usr/local/lib"]
 OUTEXE="build/z"
 
 
