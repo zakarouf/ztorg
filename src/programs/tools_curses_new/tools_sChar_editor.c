@@ -4,8 +4,10 @@
 #include <z_/types/arr.h>
 #include <z_/types/string.h>
 #include <z_/types/llist.h>
+#include <z_/types/autotype.h>
 
 #include <z_/imp/fio.h>
+#include <z_/imp/time.h>
 
 #include "tools.h"
 #include "../../zse/sys/sys.h"
@@ -13,8 +15,8 @@
 #include "../../zse/io/curses/curses.h"
 #include "../../zse/io/curses/curses_sprite.h"
 
-#include "../../zse/sprite/sprite_char.h"
-#include "../../zse/sprite/sprite_char_draw.h"
+#include "../../zse/sprite/schar.h"
+#include "../../zse/sprite/schar_draw.h"
 
 static const char ZSE_T_SPRSR_OP_HELPTEXT_ITEMS = 21;
 static const char *ZSE_T_SPRSR_OP_HELPTEXT[] = {
@@ -115,7 +117,7 @@ static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
 static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
 {
     z__Arr(z__Arr(z__typeof(**spr->seq.data))) seqs;
-    z__Arr_new(&seqs, spr->seq.count);
+    z__Arr_new(&seqs, spr->seq.count+1);
 
     z__size i = 0;
     z__Arr_foreach(z__typeof(z__Arr_getData(seqs)) seq, seqs) {
@@ -125,40 +127,65 @@ static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
         i++;
     }
     
-    z__i32 frameCursor = 0, SeqCursor = 0;
+    z__i32 frameCursor = 0, SeqCursor = 0, SeqAt = 0;
     z__auto tmp_seq = &z__Arr_getVal(seqs, SeqCursor);
     char key = 0;
 
-    WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 5, 0);
+    WINDOW * status = newwin(5, getmaxx(stdscr), getmaxy(stdscr) - 10, 0);
+
+#define AddBy(var, by, limit)\
+    {var += by; if(var > limit){var -= by;}}
+#define SubBy(var, by, limit)\
+    {var -= by; if(var < limit){var += by;}}
 
     while (true)
     {
         switch(key)
         {
             case 'a': frameCursor--;
-                      if(frameCursor < 0){ frameCursor = 0; }break;
+                      if(frameCursor < 0){ frameCursor = 0; }
+                        break;
 
-            case 'd': frameCursor++;
-                      if(frameCursor >= spr->frames){ frameCursor -= 1; } break;
+            case 's': frameCursor++;
+                      if(frameCursor >= spr->frames){ frameCursor -= 1; } 
+                        break;
 
-            case 'q': goto L_RETURN;
+            case 'z': SeqAt--;
+                      if(SeqAt < 0){SeqAt = 0;}
+                        break;
+
+            case 'x': SeqAt++;
+                      if(SeqAt >= z__Arr_getLen((*tmp_seq))){ SeqAt -= 1; }
+                      if(SeqAt >= z__Arr_getUsed((*tmp_seq))){
+                          z__Arr_getUsed((*tmp_seq)) = SeqAt;
+                      }
+                        break;
+
+            
+
+
+            case 'q': goto L_RETURN; break;
             default:  break;
         }
 
-        wclear(stdscr);
-        //wclear(status);
+        werase(stdscr);
+        //werase(status);
+
+        
 
         zse_rtC__sprite__sChar_PrintPadEnd(stdscr, 0, 0, 0, getmaxy(status), spr, frameCursor);
-        zse_rtC_L__mvwprintw(stdscr, 0, 0, "Frame : (%hd/%hd) | Seq : (%d/%d) |",
-                frameCursor, spr->frames, SeqCursor, z__Arr_getLen(seqs));
+        mvwprintw(stdscr, spr->y, 0, "Frame : (%hd/%hd) | Seq : (%d/%d) |\n",
+                frameCursor, spr->frames, SeqAt, z__Arr_getLen((*tmp_seq)));
 
         for(int i = 0; i < tmp_seq->lenUsed; i++){
-            zse_rtC_L__mvwprintw(status, 1, 0, "->%d", tmp_seq->data[i]);
+            wprintw(stdscr, "->%d", tmp_seq->data[i]);
         }
 
-        //wrefresh(status);
+        wrefresh(status);
         wrefresh(stdscr);
-        key = zse_rtC_L__getch();
+        
+        
+        key = zse_rtC_L__wgetch(status);
 
     }
 
@@ -168,7 +195,7 @@ static void _tools_spr_sChar_editor_editSequence(zse_T_Sprite_sChar *spr)
 
         delwin(status);
 
-        spr->seq.data = z__REALLOC_SAFE(spr->seq.data, sizeof(*spr->seq.data));
+        spr->seq.data = z__REALLOC_SAFE(spr->seq.data, sizeof(*spr->seq.data) * z__Arr_getUsed(seqs));
         z__size i = 0;
         z__Arr_foreach(z__typeof(z__Arr_getData(seqs)) seq, seqs) {
             spr->seq.data[i] = seq->data;

@@ -3,11 +3,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.4.2] -CURRENT
-### Added
-- Tile Module, Rewoked
-- Sprite Module, Reworked
+## [0.4.3] -CURRENT
 
+
+## [0.4.2] -2021-11-13
+### Added
+- Tile Module, Reworked
+- Sprite Module, Reworked
+- Map Module, Reworked (Now Completely Generic).
+
+### Changed
+- Entity, Changed Player to Actor.
 
 ## [0.4.1] -2021-4-6
 ### Added

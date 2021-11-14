@@ -168,9 +168,15 @@ int main(int argc, char const *argv[])
     
     /* Sprite Char Editor */
     //void zse_tools_curses_spr_sChar_editor_mainloop(void);  zse_tools_curses_spr_sChar_editor_mainloop();
+
+    /* Raylib  */
+    //void ztorg_ray (const char name[]); ztorg_ray (argv[1]);
     
     /* Demos */
     //demo_clock();
+
+    void rpg(void); rpg();
+
 
     #ifdef ZSE___TEST___ON
 

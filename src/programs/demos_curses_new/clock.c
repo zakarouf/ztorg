@@ -3,8 +3,8 @@
 #include "../../zse/io/curses/curses.h"
 #include "../../zse/io/curses/curses_sprite.h"
 
-#include "../../zse/sprite/sprite_char.h"
-#include "../../zse/sprite/sprite_char_draw.h"
+#include "../../zse/sprite/schar.h"
+#include "../../zse/sprite/schar_draw.h"
 
 #include "demo.h"
 #include <z_/imp/time.h>

@@ -56,7 +56,7 @@ enum STAT_SHOW
 
 /* Data */
 
-static int raycast_demo(ST_WORLD_t *map, Vector4 player, TILESET_t *tile)
+static int raycast_demo(zse_T_MapCh *map, Vector4 player, zse_T_Tileset *tile)
 {
 
 	for (int x = 0; x < WINDOW_X; x++)
@@ -79,17 +79,17 @@ static int raycast_demo(ST_WORLD_t *map, Vector4 player, TILESET_t *tile)
 			int testX = (int)(player.x+0.5f + p_eyeX * ray_distance);
 			int testY = (int)(player.y+0.5f + p_eyeY * ray_distance);
 
-			if(testX < 0 || testX >= map->Xsize || testY < 0 || testY >= map->Ysize){
+			if(testX < 0 || testX >= map->size.x || testY < 0 || testY >= map->size.y){
 
 				out_of_bounds = 1;
 				ray_distance = DEPTH;
 			}
 			else {
 
-				if(map->chunk[zse_xyz3Dto1D(testX, testY, (int)player.z , map->Xsize, map->Ysize)])
+				if(ZSE_map__CH_get(map ,testX, testY, (int)player.z, 0, 0))
 				{
 					chech_if_hitwall = 1;
-					point = map->chunk[zse_xyz3Dto1D(testX, testY, (int)player.z , map->Xsize, map->Ysize)];
+					point = ZSE_map__CH_get(map ,testX, testY, (int)player.z, 0, 0);
 				}
 			}	
 		} // WHILE LOOP END
@@ -128,7 +128,7 @@ static int raycast_demo(ST_WORLD_t *map, Vector4 player, TILESET_t *tile)
 	return 0;
 }
 
-static void drawmap (ST_WORLD_t *map, Vector2 at, Vector3 p)
+static void drawmap (zse_T_MapCh *map, Vector2 at, Vector3 p)
 {
 	int recSize = 3;
 	const int minmapX = 101;
@@ -149,21 +149,21 @@ static void drawmap (ST_WORLD_t *map, Vector2 at, Vector3 p)
 	int mapEndx = p.x + (minmapX/recSize);
 	if (mapEndx < 0)
 	{
-		mapEndx = map->Xsize;
+		mapEndx = ZSE_map__CH_xsize(map);
 	}
 
 	int mapEndy = p.y + (minmapY/recSize);
-	if (mapEndy < map->Ysize)
+	if (mapEndy < ZSE_map__CH_ysize(map))
 	{
-		mapEndy = map->Ysize;
+		mapEndy = ZSE_map__CH_ysize(map);
 	}
 
 
-	for (int i = 0 ; i < map->Ysize; ++i)
+	for (int i = 0 ; i < ZSE_map__CH_ysize(map); ++i)
 	{
-		for (int j = 0 ; j < map->Xsize; ++j)
+		for (int j = 0 ; j < ZSE_map__CH_xsize(map); ++j)
 		{
-			DrawRectangle(j*recSize +at.x, i*recSize +at.y, recSize, recSize, Wall_color[map->chunk[zse_xyz3Dto1D(j, i, (int)p.z, map->Xsize, map->Ysize)]]);
+			DrawRectangle(j*recSize +at.x, i*recSize +at.y, recSize, recSize, Wall_color[ZSE_map__CH_get(map, j, i, 0, 0, 0)]);
 			mapCursorx++;
 		}
 		mapCursory++;
@@ -197,7 +197,7 @@ static void ztorg_infinity(ENTT_t *p1)
 	}
 }
 
-static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
+static void ztorg_main_loop (ENTT_t *p1, zse_T_MapCh *map, zse_T_Tileset *tileset)
 {
 	// Define the camera to look into our 3d world (position, target, up vector)
 
@@ -266,7 +266,7 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
     		
     		player.x += playermoveX(playerA, (8.0f*dt)) ;
     		player.y += playermoveY(playerA, (8.0f*dt)) ;
-    		if ((player.x < 0 || player.y < 0 || player.x >= map->Xsize || player.y >= map->Ysize))
+    		if ((player.x < 0 || player.y < 0 || player.x >= ZSE_map__CH_xsize(map) || player.y >= ZSE_map__CH_ysize(map)))
     		{
 				player = player_tmp;
     		}
@@ -277,7 +277,7 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
 
     		player.x -= playermoveX(playerA, (10.0f*dt));
     		player.y -= playermoveY(playerA, (10.0f*dt));
-    		if ((player.x < 0 || player.y < 0 || player.x >= map->Xsize || player.y >= map->Ysize))
+    		if ((player.x < 0 || player.y < 0 || player.x >= ZSE_map__CH_xsize(map) || player.y >= ZSE_map__CH_ysize(map)))
     		{
 				player = player_tmp;
     		}
@@ -293,7 +293,7 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
     	}
     	if (IsKeyPressed(KEY_X))
     	{
-    		player.z = (player.z < map->Zsize-1)? player.z+1:player.z;
+    		player.z = (player.z < ZSE_map__CH_zsize(map)-1)? player.z+1:player.z;
     	}
 
 
@@ -314,9 +314,9 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
     		xlr8.y += xlr8_rate.y + xlr8.y/2 *dt;
     	}
     	
-
-
-    	if (tileset->tile[map->chunk[zse_xyz3Dto1D((int)player.x, (int)player.y, (int)player.z , map->Xsize, map->Ysize)]].attr &TILE_ISMOVE)
+		z__auto plot = ZSE_map__CH_get(map, (int)player.x, (int)player.y, (int)player.z , 0, 0);
+/*
+    	if (ZSE_tile__checkAttributeTILESET(tileset, plot,  ZSE_TILE__ATTR_IS_moveable))
     	{
     		if(map->chunk[zse_xyz3Dto1D((int)(player.x + playermoveX(playerA, 1.0f)), (int)(player.y + playermoveY(playerA, 1.0f)), (int)player.z ,map->Xsize, map->Ysize)] == 0)
     		{
@@ -331,7 +331,7 @@ static void ztorg_main_loop (ENTT_t *p1, ST_WORLD_t *map, TILESET_t *tileset)
     		}
     		
     	}
-
+*/
 
 
     	sprintf(msg, "X %.2f| Y %.2f| Z %.2f| A %.2f| AX %.2f| AY %.2f| ", player.x, player.y, player.z,playerA, xlr8.x, xlr8.y);
@@ -359,9 +359,8 @@ int ztorg_ray (char name[])
 {
 	_init();
 	char *returntilesetname = malloc(ZSE_MAX_FILENAME_SIZE);
-
-	ST_WORLD_t *map = zse_map_load_st(name , returntilesetname);
-	TILESET_t tileset = zse_tileset_get(returntilesetname);
+	zse_T_MapCh *map = zse_map__ch_load__st(name);
+	zse_T_Tileset tileset = zse_tile__tileset_getDefault();
 
 	ENTT_t *p = zse_entt_init_ENTT_t(JACK);
 	p->X = 10;
@@ -369,7 +368,7 @@ int ztorg_ray (char name[])
 
 	ztorg_main_loop (p, map, &tileset);
 
-	zse_map_delete_st(map);
+	zse_tile__tileset_deleteContent(&tileset);
 	zse_entt_delete(p);
 
 	return 0;
