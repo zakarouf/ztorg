@@ -165,7 +165,7 @@ void zse_rtC__drawHorizortalGraphRuler_nocheck(
 
     rulerGap += 1;
 
-    for (int i = at_x; i < upto_x; i += rulerGap)
+    for (z__u32 i = at_x; i < upto_x; i += rulerGap)
     {
         mvwaddch(win ,at_y, i, ACS_TTEE);
         mvwprintw(win, at_y+1, i-1, "%.1f", ruler_x);

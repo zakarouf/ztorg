@@ -153,8 +153,8 @@ static void _zse_rGL_getShader
 {
     z__String vertShaderSource = z__String_newFromFile((char *)pathVert);
     z__String fragShaderSource = z__String_newFromFile((char *)pathFrag);
-    const char *vSource = vertShaderSource.str;
-    const char *fSource = fragShaderSource.str;
+    const char *vSource = vertShaderSource.data;
+    const char *fSource = fragShaderSource.data;
 
     *vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 

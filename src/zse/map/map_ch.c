@@ -10,7 +10,7 @@ inline void zse_map_ch_createEmpty__raw(
 	, z__size plotsize
 	, void * **chunk, zse_T_Map_ObjectSetsArr **objectSets, z__size *chunkAndObjCount)
 {
-	*chunkAndObjCount = ZSE_map__CH_calcChunk_Count_fromRad__num(chunkRadius);
+	*chunkAndObjCount = ZSE_map_ch_calcChunk_Count_fromRad__num(chunkRadius);
 	*objectSets = z__New0(**objectSets, *chunkAndObjCount);
 
 	*chunk = z__CALLOC(sizeof(*chunk), *chunkAndObjCount);
@@ -39,4 +39,3 @@ inline void zse_map_ch_delete__raw(
 	z__FREE(chunks);
 	z__FREE(objectSets);
 }
-

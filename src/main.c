@@ -155,6 +155,9 @@ void mainpgm(int argc, char const *argv[])
 #endif
 
 #include "programs/demos_curses_new/demo.h"
+
+
+
 int main(int argc, char const *argv[])
 {
     //mainpgm(argc, argv);
@@ -175,7 +178,7 @@ int main(int argc, char const *argv[])
     /* Demos */
     //demo_clock();
 
-    void rpg(void); rpg();
+    //void rpg(void); rpg();
 
 
     #ifdef ZSE___TEST___ON

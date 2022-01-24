@@ -7,10 +7,7 @@
 
 void zse_sprite__sChar_export(const zse_T_Sprite_sChar *spr ,const char filename[ static 1 ])
 {
-	char fullpath[128];
-	snprintf(fullpath, sizeof(fullpath), SPRITES_PARENTDIR "%s", filename);
-
-	FILE *fp = fopen (fullpath, "wb");
+	FILE *fp = fopen (filename, "wb");
 	if (!fp)
 	{
 		return;
@@ -40,10 +37,7 @@ zse_T_Sprite_sChar zse_sprite__sChar_load(const char filename[ static 1 ])
 {
 	zse_T_Sprite_sChar spr = {0};
 
-	char fullpath[128];
-	snprintf(fullpath, sizeof(fullpath), SPRITES_PARENTDIR "%s", filename);
-
-	FILE *fp = fopen (fullpath, "rb");
+	FILE *fp = fopen (filename, "rb");
 	if (!fp)
 	{
 		return spr;

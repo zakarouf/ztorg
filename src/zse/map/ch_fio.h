@@ -5,6 +5,7 @@
 
 #include "../common.h"
 #include "ch_def.h"
+#include "obj.h"
 
 //---------------------//
 
@@ -60,7 +61,7 @@ void zse_map_ch_export_st__raw(
 
 #define zse_map_ch_load_st(map, name)\
 	{\
-		FILE *cd, *ch;									\
+		FILE *_map_ch_lod_st_cd, *_map_ch_lod_st_ch;	\
 		zse_map_ch_load_st__raw(						\
 				  name									\
 				, sizeof(**(map)->chunks)				\
@@ -68,9 +69,9 @@ void zse_map_ch_export_st__raw(
 				, &(map)->size							\
 				, &(map)->objectSets					\
 				, &(map)->chunkCount					\
-				, &cd									\
-				, &cd);									\
-		fclose(ch); fclose(cd);							\
+				, &_map_ch_lod_st_ch					\
+				, &_map_ch_lod_st_cd);					\
+		fclose(_map_ch_lod_st_ch); fclose(_map_ch_lod_st_cd); \
 	}
 
 #define zse_map_ch_load_st_fp(map, name, ch, cd)\
@@ -89,19 +90,20 @@ void zse_map_ch_export_st__raw(
 
 #define zse_map_ch_export_st(map, name, chunkno, shouldwriteObjects)\
 	{													\
-		FILE *cd, *ch;									\
-		z__typeof(chunkno) _map_ch_exp_st = chunkno;	\
-		if(chunkno < (map)->chunkCount{				\
+		FILE *_map_ch_exp_st_cd, *_map_ch_exp_st_ch;	\
+		z__typeof(chunkno) _map_ch_exp_st_chN = chunkno;\
+		if(_map_ch_exp_st_chN < (map)->chunkCount){		\
 			zse_map_ch_export_st__raw(					\
 				  name									\
-				, (map)->chunks[chunkno]				\
+				, (map)->chunks[_map_ch_exp_st_chN]		\
 				, sizeof(**(map)->chunks)				\
 				, (map)->size							\
-				, (map)->objectSets[_map_ch_exp_st]		\
+				, (map)->objectSets[_map_ch_exp_st_chN]	\
 				, shouldwriteObjects					\
-				, &cd									\
-				, &ch);									\
-			fclose(ch, cd);								\
+				, &_map_ch_exp_st_cd					\
+				, &_map_ch_exp_st_ch);					\
+			fclose(_map_ch_exp_st_cd);					\
+			fclose(_map_ch_exp_st_ch);					\
 		}												\
 	}
 
@@ -156,27 +158,24 @@ void zse_map_ch_export_st__raw(
 				, should_writeObjects));			\
 	}
 
-#define zse_map_ch_load_commondata_fp(name, map, fp)\
-	{\
-		*(fp) = zse_map_ch_load_commondata__raw(	\
+#define zse_map_ch_load_commondata_fp(name, map)\
+		zse_map_ch_load_commondata__raw(			\
 					name,							\
 					&(map)->size					\
 				);									\
-	}
 
-#define zse_map_ch_load_chunk_fp(name, cords, map, chnum, fp)\
-	{											\
-		*(fp) = zse_map_ch_load_chunk__raw(		\
+#define zse_map_ch_load_chunk_fp(name, cords, map, chnum)\
+		zse_map_ch_load_chunk__raw(				\
 					name						\
 				  , cords						\
 				  , sizeof(**(map)->chunks)		\
 				  , (map)->size					\
 				  , &(map)->chunks[chnum]		\
 				  , &(map)->objectSets[chnum]); \
-	}
 
 
 /*------------------------------------------------------------------------------*/
 /*------------------------------------------------------------------------------*/
 
 #endif
+

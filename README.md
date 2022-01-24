@@ -2,6 +2,11 @@
 
 ![licence](https://img.shields.io/badge/licence-GPL--3.0-important)
 
+## NOTE
+**THIS REPO IS ARCHIVED.**
+Due to this project being created when I started learning C, there has been a lot of changes that needs to be done. But at this moment, I have decided to start from square one instead of incremental updates to the old messed up code base.
+
+---
 This is My First Attempt to have something remotely big Project.
 
 - A collection of mudules and libraries I wrote or put to-gether for just making anything.

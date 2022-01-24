@@ -3,7 +3,6 @@
 
 #include "config_map.h"
 
-#define MAP_CH_GENERAL_DIRECTORY "./maps/"
 #define MAP_CH_FILE_IDENT "CH00"
 
 #endif

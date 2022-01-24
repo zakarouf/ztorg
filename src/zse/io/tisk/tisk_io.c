@@ -11,7 +11,7 @@
 
 void zse_rtT_io_printString(z__String *s)
 {
-    fwrite(s->str, sizeof(*s->str), s->len, stdout);
+    fwrite(s->data, sizeof(*s->data), s->len, stdout);
     fflush(stdout);
 }
 

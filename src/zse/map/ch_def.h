@@ -146,39 +146,7 @@ typedef
         __VA_ARGS__;                                                \
     }
 
-/*------------------------------------------
- * Common Funcs/Macro
- *------------------------------------------
- */
-/* <== Old From Deprecated Map type
-#define zse_mapx(map) map->Xsize
-#define zse_mapy(map) map->Ysize
-#define zse_mapz(map) map->Zsize
 
-#define ZSE_mapIN_CHUNKRADIUSSIZE_DEFAULT 1
-#define ZSE_mapIN_CHUNK_XY_SIZE_DEFAULT 32
-#define ZSE_mapIN_CHUNK_Z_SIZE_DEFAULT 1
-
-#define ZSE_map__ch_absPos(p, C, CSize) ((CSize)*(C)) + p
-#define ZSE_map__ch_xy(mapIN) mapIN->ChunkSizeXY
-#define ZSE_map__ch_SideCLen(_MaxChunkRadius) (1 + (2*(_MaxChunkRadius)))
-#define ZSE_map__ch_TotalChunkNo(_MaxChunkRadius) zse_mapInSideCLen(_MaxChunkRadius)*zse_mapInSideCLen(_MaxChunkRadius)
-#define ZSE_map__ch_ChunksMid(_MaxChunkRadius) (int)( ((float)zse_mapINTotalChunkNo(_MaxChunkRadius) /2) - 0.5f )
-#define ZSE_map__ch_Chunks_Atgetxyz(chunkno, x, y, z, mapIN) (IN_WORLD_t*)mapIN->chunk[chunkno][zse_xyz3Dto1D(x, y, z, mapIN->ChunkSizeXY, mapIN->ChunkSizeXY)]
-
-#define ZSE_map__ch_chunklineStartEnd(ch , start, end, _MaxChunkRadius) \
-    {                                                               \
-        end = zse_mapInSideCLen(_MaxChunkRadius) * ch;              \
-        start = zse_mapInSideCLen(_MaxChunkRadius) * (ch>0? ch-1:0);\
-    }
-#define ZSE_map__ch_chunklineStartEndPLR(start, end ,_MaxChunkRadius) \
-    {                                                                                                                   \
-        end = (int) ((zse_mapInChunksMid(_MaxChunkRadius) + (float)(zse_mapInSideCLen(_MaxChunkRadius)/2 + 0.5f)));     \
-        start = (int) ((zse_mapInChunksMid(_MaxChunkRadius) - (float)(zse_mapInSideCLen(_MaxChunkRadius)/2 - 0.5f)));   \
-    }
-*/
-
- // <== New
 
 #define ZSE_map__CH_DEFAULT_RADIUS_SIZE 1
 #define ZSE_map__CH_DEFAULT_X_SIZE 		32
@@ -186,40 +154,43 @@ typedef
 #define ZSE_map__CH_DEFAULT_Z_SIZE 		16
 
 
-#define ZSE_map__CH_size(map)        (map)->size
-#define ZSE_map__CH_xsize(map)       (map)->size.x
-#define ZSE_map__CH_ysize(map)       (map)->size.y
-#define ZSE_map__CH_zsize(map)       (map)->size.z
+#define ZSE_map_ch_size(map)        (map)->size
+#define ZSE_map_ch_xsize(map)       (map)->size.x
+#define ZSE_map_ch_ysize(map)       (map)->size.y
+#define ZSE_map_ch_zsize(map)       (map)->size.z
 
-#define ZSE_map__CH_chunkCount(map)  (map)->chunkCount
-#define ZSE_map__CH_chunkRadius(map) (map)->chunkRadius
+#define ZSE_map_ch_chunkCount(map)  (map)->chunkCount
+#define ZSE_map_ch_chunkRadius(map) (map)->chunkRadius
 
 
 
-#define ZSE_map__CH_get(map, x1, y1, z1, ch_x, ch_y)\
+#define ZSE_map_ch_get(map, x1, y1, z1, ch_x, ch_y, ch_z)\
     ((map)->chunks\
-        [zse_xyz3Dto1D(ch_x, ch_y, 0,ZSE_map__CH_calcChunk_Side_fromRad(map), ZSE_map__CH_calcChunk_Side_fromRad(map))]\
+        [zse_xyz3Dto1D(ch_x, ch_y, ch_z, ZSE_map_ch_calcChunk_Side_fromRad(map), ZSE_map_ch_calcChunk_Side_fromRad(map))]\
             [zse_xyz3Dto1D(x1, y1, z1, (map)->size.x, (map)->size.y)])
 
-#define ZSE_map__CH_getraw(map, x1, y1, z1, ch_num)\
+#define ZSE_map_ch_getraw(map, x1, y1, z1, ch_num)\
     ((map)->chunks\
         [ch_num]\
             [zse_xyz3Dto1D(x1, y1, z1, (map)->size.x, (map)->size.y)])
 
+
 /* (p == playerCord|xyz|, C == chunkCord|xyz|, CSize == chunkSize|xyz|) */ 
-#define ZSE_map__CH_calcAbsPos(p, C, CSize) (((CSize)*(C)) + p)
+#define ZSE_map_ch_calcAbsPos(p, C, CSize) (((CSize)*(C)) + p)
 
 
-#define ZSE_map__CH_calcChunk_Side_fromRad(map)   (1 + (2 * ((map)->chunkRadius)))
-#define ZSE_map__CH_calcChunk_Count_fromRad(map)  ZSE_map__CH_calcChunk_Side_fromRad(map) * ZSE_map__CH_calcChunk_Side_fromRad(map)
-#define ZSE_map__CH_calcChunk_Mid_fromRad(map)    (z__int)( ((z__float)ZSE_map__CH_calcChunk_Count_fromRad(map) /2) - 0.5f )
+#define ZSE_map_ch_calcChunk_Side_fromRad(map)   (1 + (2 * ((map)->chunkRadius)))
+#define ZSE_map_ch_calcChunk_Count_fromRad(map)\
+    ZSE_map_ch_calcChunk_Side_fromRad(map) * ZSE_map_ch_calcChunk_Side_fromRad(map)
 
-#define ZSE_map__CH_calcChunk_Side_fromRad__num(radius)   (1 + (2 * (radius)))
-#define ZSE_map__CH_calcChunk_Count_fromRad__num(radius)  ZSE_map__CH_calcChunk_Side_fromRad__num(radius) * ZSE_map__CH_calcChunk_Side_fromRad__num(radius)
-#define ZSE_map__CH_calcChunk_Mid_fromRad__num(radius)    (z__int)( ((z__float)ZSE_map__CH_calcChunk_Count_fromRad__num(radius) /2) - 0.5f )
+#define ZSE_map_ch_calcChunk_Mid_fromRad(map)    (z__int)( ((z__float)ZSE_map_ch_calcChunk_Count_fromRad(map) /2) - 0.5f )
 
-#define ZSE_map__CH_setChunk_Count_fromRad(map)   { (map)->chunkCount = ZSE_map__CH_calcChunk_Count_fromRad(map) }
-#define ZSE_map__CH_evalChunk_Count_fromRad(map)  ((map)->chunkCount == ZSE_map__CH_calcChunk_Count_fromRad(map)? true: false)
+#define ZSE_map_ch_calcChunk_Side_fromRad__num(radius)   (1 + (2 * (radius)))
+#define ZSE_map_ch_calcChunk_Count_fromRad__num(radius)  ZSE_map_ch_calcChunk_Side_fromRad__num(radius) * ZSE_map_ch_calcChunk_Side_fromRad__num(radius)
+#define ZSE_map_ch_calcChunk_Mid_fromRad__num(radius)    (z__int)( ((z__float)ZSE_map_ch_calcChunk_Count_fromRad__num(radius) /2) - 0.5f )
+
+#define ZSE_map_ch_setChunk_Count_fromRad(map)   { (map)->chunkCount = ZSE_map_ch_calcChunk_Count_fromRad(map) }
+#define ZSE_map_ch_evalChunk_Count_fromRad(map)  ((map)->chunkCount == ZSE_map_ch_calcChunk_Count_fromRad(map)? true: false)
 
 
 /* ----------------------------------------- *** ----------------------------------------- */

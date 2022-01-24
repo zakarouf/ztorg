@@ -886,7 +886,7 @@ static bool _zse_rVK__phd_checkDeviceExtensionSupport(VkPhysicalDevice device, z
 
     //z__print(requiredExtensions, requiredExtensions.str_lens[0]);
 
-    const uint32_t TotalExtentionsRequired = requiredExtensions.ll_used;
+    const uint32_t TotalExtentionsRequired = requiredExtensions.list_lenUsed;
     uint32_t ExtentionsFound = 0;
 
     for (int i = 0; i < extensionCount; ++i)
@@ -988,13 +988,13 @@ static VkPhysicalDevice _zse_rVK_pickPhysicalDevice(int *errorCode, VkInstance i
 static z__StringList _zse_rVK_getRequiredExtentions()
 {
 
-    z__StringList strLines = z__StringList_new(5);
-
     // Extentions
     uint32_t glfwExtensionCount = 0;
     const char** glfwExtensions;
 
     glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    z__StringList strLines = z__StringList_new(glfwExtensionCount);
 
     for (int i = 0; i < glfwExtensionCount; ++i)
     {
@@ -1003,9 +1003,9 @@ static z__StringList _zse_rVK_getRequiredExtentions()
 
     z__StringList_push(&strLines, VK_EXT_DEBUG_UTILS_EXTENSION_NAME, -1 );
 
-    NOTPUB_log_normal("%d\n", strLines.ll_used);
+    NOTPUB_log_normal("%d\n", strLines.list_lenUsed);
 
-    for (int i = 0; i < strLines.ll_used; ++i)
+    for (int i = 0; i < strLines.list_lenUsed; ++i)
     {
         NOTPUB_log_normal(" -- EXT: %s\n", strLines.str_list[i]);        
     }
@@ -1048,7 +1048,7 @@ static VkInstance _zse_rVK_createInstance(int *errorCode)
     // Extentions
     z__StringList ExtentionsLayer = _zse_rVK_getRequiredExtentions();
 
-    createInfo.enabledExtensionCount = ExtentionsLayer.ll_used;
+    createInfo.enabledExtensionCount = ExtentionsLayer.list_lenUsed;
     createInfo.ppEnabledExtensionNames = (const char *const *) ExtentionsLayer.str_list;
 
 

@@ -9,7 +9,7 @@
 #include <z_/types/autotype.h>
 
 
-static struct zset__Stile* _tiles_getdefault(z__i32 *tileCount)
+static struct zset__Stile* _tiles_getdefault(z__u32 *tileCount)
 {
     enum {MaxTiles = 8};
     struct zset__Stile *tiles = z__MALLOC(sizeof(*tiles) * MaxTiles);
@@ -81,7 +81,6 @@ void zse_tile__tileset_deleteContent(zse_T_Tileset *ts)
         z__Arr_delete(&ts->tiles.data[i].textures);
     }
     z__Arr_delete(&ts->tiles);
-
 }
 
 void zse_tile__tileset_export(zse_T_Tileset *ts, char filename [ static 1 ])

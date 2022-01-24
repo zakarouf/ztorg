@@ -99,7 +99,7 @@ static zse_T_Sprite_sChar _tools_spr_sChar_editor_load_new(void)
         else if (op == 'O')
         {
             z__StringList filenames = z__fio_getfnames("./sprites");
-            zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.str_list, filenames.ll_used, __tmpbuff, 32);
+            zse_rtC__selectListS(stdscr, 0, 0, (const char **)filenames.str_list, filenames.list_lenUsed, __tmpbuff, 32);
             z__StringList_delete(&filenames);
 
             spr = zse_sprite__sChar_load(__tmpbuff);
@@ -384,7 +384,9 @@ void zse_tools_curses_spr_sChar_editor_mainloop(void)
 
         
         mvwprintw(status, 1, 0, "POS [%hd,%hd] Frame - %3d/%3d Color No. %d"
-            , Brush.pos.x, Brush.pos.y, Brush.frame, Brush.sprCur->frames-1, ZSE_sprite__sChar_getColorFg(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
+            , Brush.pos.x, Brush.pos.y, Brush.frame
+            , Brush.sprCur->frames-1
+            , ZSE_sprite__sChar_getColorFg(Brush.sprCur[0], Brush.pos.x, Brush.pos.y, Brush.frame));
 
         mvwprintw(status, 3, 0, "Current: %d"
             , sprBuffer.current);

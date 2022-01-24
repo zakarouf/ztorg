@@ -8,3 +8,4 @@ int zse_map__genP2d_GetNoiseSeed(void);
 void zse_map__genP2d_SetNoiseSeed(int seed);
 
 #endif
+

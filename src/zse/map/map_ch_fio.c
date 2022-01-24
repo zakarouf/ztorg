@@ -7,6 +7,7 @@
 #include <z_/types/result.h>
 #include <z_/types/option.h>
 #include <z_/imp/sys.h>
+#include <z_/imp/fio.h>
 
 #include "ch.h"
 #include "ch_fio.h"
@@ -19,6 +20,10 @@
 #else
 	#define logprint(fmt, ...)
 #endif
+
+#define COLOR_NORMAL 7
+#define COLOR_ERROR 1
+#define COLOR_WARNING 2
 
 /*----
  main world data file naming format 'x,y,z.bin'
@@ -34,16 +39,23 @@ FILE* zse_map_ch_export_chunk__raw(
 	, zse_T_Map_ObjectSetsArr const objectSet
 	, z__bool should_writeObjects)
 {
-	#define lgp(fmt, ...)	logprint(0, "Writing Map Chunk: " fmt, __VA_ARGS__)
+	#define lgp(fmt, ...)	logprint(5, "Writing Map Chunk: " fmt, __VA_ARGS__)
 	#define lgpERROR(fmt, ...)	logprint(1, "Writing Map Chunk: ERROR: " fmt, __VA_ARGS__)
 	#define lgpWARNING(fmt, ...)	logprint(2, "Writing Map Chunk: WARNING: " fmt, __VA_ARGS__)
 
 	char file[128];
-	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
+	snprintf(file, 128, "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
 	FILE *fp = fopen(file, "wb");
 
+	if(fp == NULL) {
+		lgpERROR("Map Chunk Save Failed, %s", mapname);
+		return NULL;
+	}
+
+	/* Dump All the Plot data */
 	fwrite(chunk, plotsize, chunksize.x * chunksize.z * chunksize.y, fp);
 
+	/* Dump All the Generic Objects */
 	if(should_writeObjects) {
 		lgp("Dumping %d Objects", z__Arr_getUsed(objectSet));
 		fwrite(&z__Arr_getUsed(objectSet), sizeof(z__Arr_getUsed(objectSet)), 1, fp);
@@ -51,10 +63,7 @@ FILE* zse_map_ch_export_chunk__raw(
 		for(int i = 0; i < z__Arr_getUsed(objectSet); i++) {
 
 			z__Dynt *_obj = &z__Arr_getVal(objectSet, i);
-			fwrite(&_obj->typeID, sizeof(_obj->typeID), 1, fp);
-			fwrite(&_obj->unitsize, sizeof(_obj->unitsize), 1, fp);
-			fwrite(&_obj->lenUsed, sizeof(_obj->lenUsed), 1, fp);
-			fwrite(_obj->data, _obj->unitsize, _obj->lenUsed, fp);
+			z__fio_Dynt_dump(_obj, fp);
 
 			lgp("(%d/%d) Objects %s(s) Dump\n"
 				"       |- ID %d\n"
@@ -89,14 +98,18 @@ FILE* zse_map_ch_export_commondata__raw(
 	  char const mapname[]
 	, z__Vint3 chunksize)
 {
-	#define lgp(fmt, ...)	logprint(0, "Writing Map Common Data: " fmt, __VA_ARGS__)
-	#define lgpERROR(fmt, ...)	logprint(1, "Writing Map Common Data: ERROR: " fmt, __VA_ARGS__)
-	#define lgpWARNING(fmt, ...)	logprint(2, "Writing Map Common Data: WARNING: " fmt, __VA_ARGS__)
+	#define lgp(fmt, ...)	logprint(COLOR_NORMAL, "Writing Map Common Data: " fmt, __VA_ARGS__)
+	#define lgpERROR(fmt, ...)	logprint(COLOR_ERROR, "Writing Map Common Data: ERROR: " fmt, __VA_ARGS__)
+	#define lgpWARNING(fmt, ...)	logprint(COLOR_WARNING, "Writing Map Common Data: WARNING: " fmt, __VA_ARGS__)
 
 	char file[128];
-	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
+	snprintf(file, 128, "%s/" MAP_DATAFILE_COMMON, mapname);
 	FILE *fp = fopen(file, "wb");
-	
+	if(fp == NULL) {
+		lgpERROR("Map Common Data Save Failed, %s", mapname);
+		return NULL;
+	}
+
 	lgp("Writing Version %s", "");
 	fwrite(ZSE_ENGINE_VERSION, ZSE_ENGINE_VERSION_SIGN_SIZE, 1, fp);
 
@@ -120,20 +133,21 @@ void zse_map_ch_export_st__raw(
 	, FILE **cd_fp
 	, FILE **ch_fp)
 {
-	#define lgp(fmt, ...)	logprint(0, "Exporting Map: " fmt, __VA_ARGS__)
-	#define lgpERROR(fmt, ...)	logprint(1, "Exporting Map: ERROR: " fmt, __VA_ARGS__)
-	#define lgpWARNING(fmt, ...)	logprint(2, "Exporting Map: WARNING: " fmt, __VA_ARGS__)
+	#define lgp(fmt, ...)	logprint(COLOR_NORMAL, "Exporting Map: " fmt, __VA_ARGS__)
+	#define lgpERROR(fmt, ...)	logprint(COLOR_ERROR, "Exporting Map: ERROR: " fmt, __VA_ARGS__)
+	#define lgpWARNING(fmt, ...)	logprint(COLOR_WARNING, "Exporting Map: WARNING: " fmt, __VA_ARGS__)
 
-	char mapdir[96] = MAP_CH_GENERAL_DIRECTORY;
-	lgp("Map Directory \"%s\"", mapdir);
+	mkdir(mapname, 0777);
+	lgp("Map Directory \"%s\"", mapname);
 
-	strncat(mapdir, mapname, sizeof(mapdir) - sizeof(MAP_CH_GENERAL_DIRECTORY));
-		mkdir(mapdir, 0755);
-	
 	*cd_fp = zse_map_ch_export_commondata__raw(mapname, chunksize);
 	*ch_fp = zse_map_ch_export_chunk__raw(mapname, (z__Vint3){{0, 0, 0}}, chunk, plotsize, chunksize, objectSet, should_writeObjects);
 
-	lgp("Map Saved as in %s", mapdir);
+	if(ch_fp == NULL || cd_fp == NULL){
+		lgpERROR("Map Save Failed, %s", mapname);
+	} else {
+		lgp("Map Saved as in %s", mapname);
+	}
 
 	#undef lgp
 	#undef lgpERROR
@@ -148,7 +162,7 @@ FILE* zse_map_ch_load_chunk__raw(
 	, void **chunk
 	, zse_T_Map_ObjectSetsArr *objectSet)
 {
-	#define lgp(fmt, ...)	logprint(0, "Loading Map Chunk: " fmt, __VA_ARGS__)
+	#define lgp(fmt, ...)	logprint(COLOR_NORMAL, "Loading Map Chunk: " fmt, __VA_ARGS__)
 	#define lgpERROR(fmt, ...)	logprint(1, "Loading Map Chunk: ERROR: " fmt, __VA_ARGS__)
 	#define lgpWARNING(fmt, ...)	logprint(2, "Loading Map Chunk: WARNING: " fmt, __VA_ARGS__)
 
@@ -156,7 +170,7 @@ FILE* zse_map_ch_load_chunk__raw(
 	lgp("Chunk Cord %d, %d, %d", Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
 
 	char file[128];
-	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
+	snprintf(file, 128, "%s/%d,%d,%d.bin", mapname, Chunk_cords.x, Chunk_cords.y, Chunk_cords.z);
 	
 	FILE *fp = fopen(file, "rb");
 	if (fp == NULL) {
@@ -189,20 +203,9 @@ FILE* zse_map_ch_load_chunk__raw(
 		z__Arr_resize(objs, sz);
 	}
 
-	
 	for(int o = 0; o < objs->len; o++) {
 		z__Dynt *i = &objs->data[o];
-		
-		fread(&i->typeID, sizeof(i->typeID), 1, fp);
-		fread(&i->unitsize, sizeof(i->unitsize), 1, fp);
-		fread(&i->lenUsed, sizeof(i->lenUsed), 1, fp);
-		i->len = i->lenUsed;
-		i->comment = NULL;
-		i->commentLen = 0;
-
-		i->data = z__MALLOC(i->unitsize * i->lenUsed);
-		fread(i->data, i->unitsize, i->lenUsed, fp);
-		
+		z__fio_Dynt_newLoad(i, fp);		
 		lgp("(%d/%d) Object %s(s) Loaded\n"
 			"       |- ID %d\n"
 			"       |- UnitSize %ld bytes\n"
@@ -222,12 +225,12 @@ FILE* zse_map_ch_load_commondata__raw(
 	  const char mapname[]
 	, z__Vint3 *chunksize)
 {
-	#define lgp(fmt, ...)	logprint(0, "Loading Map Common Data: " fmt, __VA_ARGS__)
+	#define lgp(fmt, ...)	logprint(COLOR_NORMAL, "Loading Map Common Data: " fmt, __VA_ARGS__)
 	#define lgpERROR(fmt, ...)	logprint(1, "Loading Map Common Data: ERROR: " fmt, __VA_ARGS__)
 	#define lgpWARNING(fmt, ...)	logprint(2, "Loading Map Common Data: WARNING: " fmt, __VA_ARGS__)
 
 	char file[128];
-	snprintf(file, 128, MAP_CH_GENERAL_DIRECTORY "%s/" MAP_DATAFILE_COMMON, mapname);
+	snprintf(file, 128, "%s/" MAP_DATAFILE_COMMON, mapname);
 	FILE *fp = fopen(file, "rb");
 	if(!fp) {
 		lgpERROR("%s :: Couldn't Load Common Data", mapname);
@@ -261,7 +264,7 @@ int zse_map_ch_load_st__raw(
 	, FILE **cd_fp
 	, FILE **ch_fp)
 {
-	#define lgp(fmt, ...)	logprint(0, "Loading Map: " fmt, __VA_ARGS__)
+	#define lgp(fmt, ...)	logprint(COLOR_NORMAL, "Loading Map: " fmt, __VA_ARGS__)
 	#define lgpERROR(fmt, ...)	logprint(1, "Loading Map: ERROR: " fmt, __VA_ARGS__)
 	#define lgpWARNING(fmt, ...)	logprint(2, "Loading Map: WARNING: " fmt, __VA_ARGS__)
 

@@ -233,7 +233,7 @@ void rpgoi(void)
 	zse_map_ch_obj_push(&map, 0, enemypos.data, sizeof(*enemypos.data), enemypos.lenUsed, 8);
 
 	// Write map data on disk
-	zse_map_ch_export_st(&map, "kk", 0, true);
+	zse_map_ch_export_st(&map, "kk", 0, true);;
 
 	zse_map_ch_delete(&map);
 	z__Arr_delete(&enemypos);
